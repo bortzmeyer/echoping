@@ -9,5 +9,8 @@ echo "On some systems, you may NEED to be root."
 
 ./echoping -P 0xa0 central.internatif.org
 
+# IPTOS_THROUGHPUT  
+./echoping -P 0x08 central.internatif.org
+
 
 

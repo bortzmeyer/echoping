@@ -96,11 +96,17 @@ layer priority depends upon the network protocol and link protocol
 in use.  For more details see
 .B SO_PRIORITY
 in
-.BR socket (7).
+.BR socket(7).
 .IP -P\ n
 Set the IP type of service octet in the transmitted packets to the
 least significant eight bits of the integer
 .IR n .
+See
+.BR ip(7) 
+or
+.BR ip(4) 
+(depending on your Unix). /usr/include/netinet/ip.h may contain
+interesting constants for setting Type Of Service.
 .SH EXAMPLES
 .IP echoping\ \-v\ foobar.example.com
 Tests the remote machine with TCP echo (one test).
@@ -170,7 +176,7 @@ You may need to be superuser to set some
 .B -p
 or
 .B -P
-values.
+values (precedence on Linux, for instance).
 
 .SH BUGS
 
