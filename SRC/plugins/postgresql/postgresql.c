@@ -33,6 +33,7 @@ postgresql_usage (const char *msg)
       printf ("PostgreSQL plugin error: %s\n", msg);
     }
   poptPrintUsage (postgresql_poptcon, stdout, 0);
+  fprintf (stderr, "  [SQL-request]\n");
   exit (1);
 }
 
@@ -42,6 +43,7 @@ init (const int argc, const char **argv,
 {
   int value;
   char *msg = malloc (256);
+  char *rest;
   char *hostname;
   /* popt variables */
   struct poptOption options[] = {
@@ -58,21 +60,24 @@ init (const int argc, const char **argv,
     err_quit ("UDP makes no sense for a PostgreSQL connection");
   postgresql_poptcon = poptGetContext (NULL, argc,
 				       argv, options,
-				       POPT_CONTEXT_KEEP_FIRST);
+				       POPT_CONTEXT_POSIXMEHARDER);
   while ((value = poptGetNextOpt (postgresql_poptcon)) > 0)
     {
-      if (value < -1)
-	{
-	  sprintf (msg, "%s: %s",
-		   poptBadOption (postgresql_poptcon, POPT_BADOPTION_NOALIAS),
-		   poptStrerror (value));
-	  postgresql_usage (msg);
-	}
     }
-  hostname = poptGetArg (postgresql_poptcon);	/* Not used */
+  if (value < -1)
+    {
+      sprintf (msg, "%s: %s",
+	       poptBadOption (postgresql_poptcon, POPT_BADOPTION_NOALIAS),
+	       poptStrerror (value));
+      postgresql_usage (msg);
+    }
+  /* hostname = poptGetArg (postgresql_poptcon);    /* Not used */
   request = poptGetArg (postgresql_poptcon);
   if (request == NULL)
     request = "SELECT now()";
+  rest = poptGetArg (postgresql_poptcon);
+  if (rest != NULL)
+    postgresql_usage ("Erroneous additional arguments");
   if (conninfo == NULL)
     conninfo = "";
   return NULL;			/* We only use the conninfo, echoping does not see our hostname or port */
