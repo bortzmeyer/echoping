@@ -15,6 +15,7 @@ poptContext postgresql_poptcon;
 PGconn *conn;
 PGresult *res;
 char *conninfo;
+echoping_options global_options;
 
 void
 postgresql_usage (const char *msg)
@@ -28,23 +29,25 @@ postgresql_usage (const char *msg)
 }
 
 char *
-init (const int argc, const char **argv)
+init (const int argc, const char **argv,
+      const echoping_options global_external_options)
 {
   int value;
   char *msg = malloc (256);
+  char *hostname;
   /* popt variables */
   struct poptOption options[] = {
     {"conninfo", 'c', POPT_ARG_STRING, &conninfo, 0,
      "Connection information for the Postgresql server. Something like 'host=foo dbname=bar''",
-     "request"},
-    {"request", 'r', POPT_ARG_STRING, &request, 0,
-     "Request/query (in SQL) to send to the Postgresql server. Only SELECT are supported.",
-     "request"},
+     ""},
     {"readall", 'a', POPT_ARG_NONE, &readall, 0,
      "Read all the data sent by the Postgresql server",
      ""},
     POPT_AUTOHELP POPT_TABLEEND
   };
+  global_options = global_external_options;
+  if (global_options.udp)
+    err_quit ("UDP makes no sense for a PostgreSQL connection");
   postgresql_poptcon = poptGetContext (NULL, argc,
 				       argv, options,
 				       POPT_CONTEXT_KEEP_FIRST);
@@ -58,10 +61,12 @@ init (const int argc, const char **argv)
 	  postgresql_usage (msg);
 	}
     }
-  if (request == NULL)		/* TODO: a default like SELECT now()? */
-    postgresql_usage ("Mandatory request missing");
+  hostname = poptGetArg (postgresql_poptcon);	/* Not used */
+  request = poptGetArg (postgresql_poptcon);
+  if (request == NULL)
+    request = "SELECT now()";
   if (conninfo == NULL)
-    postgresql_usage ("Mandatory connection information missing");
+    conninfo = "";
   return NULL;			/* We only use the conninfo, echoping does not see our hostname or port */
 }
 
@@ -89,6 +94,8 @@ execute ()
       printf ("Cannot run \"%s\": %s\n", request, PQresultErrorMessage (res));
       return -1;
     }
+  if (global_options.verbose)
+    printf ("%d tuples returned\n", PQntuples (res));
   if (readall)
     {
       for (row = 0; row++; row < PQntuples (res))

@@ -35,7 +35,7 @@
 #include        <math.h>
 #include        <dlfcn.h>
 
-/* popt library TODO: what if missing? */
+/* popt library */
 #include        <popt.h>
 
 #ifdef OPENSSL
@@ -119,11 +119,17 @@ struct result
 };
 
 unsigned short timeout_flag;
-
+struct echoping_struct
+{
+  unsigned short udp; /* Use the UDP protocol (TCP is the default) */
+  unsigned short verbose;
+};
+typedef struct echoping_struct echoping_options;
 #ifndef IN_PLUGIN
 /* The functions we will find in the plugin */
-/* Initializes the plugin with its arguments. Returns the port name or number. */
-typedef char * (*init_f) (const int argc, const char **argv);
+/* Initializes the plugin with its arguments. Returns the port name or number or NULL if the plugin wants to use the raw interface. */
+typedef char *(*init_f) (const int argc, const char **argv,
+			 const echoping_options global_options);
 init_f plugin_init;
 typedef void (*start_f) (struct addrinfo *);
 start_f plugin_start;

@@ -29,7 +29,7 @@ whois_usage (const char *msg)
 }
 
 char *
-init (const int argc, const char **argv)
+init (const int argc, const char **argv, echoping_options global_options)
 {
   int value;
   char *msg = malloc (256);
@@ -43,6 +43,9 @@ init (const int argc, const char **argv)
      ""},
     POPT_AUTOHELP POPT_TABLEEND
   };
+  if (global_options.udp)
+    err_quit ("UDP is incompatible with this whois plugin");
+  /* Will probably be cached before because /etc/services have no entry for UDP port 43 */
   whois_poptcon = poptGetContext (NULL, argc,
 				  argv, options, POPT_CONTEXT_KEEP_FIRST);
   while ((value = poptGetNextOpt (whois_poptcon)) > 0)
@@ -105,5 +108,7 @@ execute ()
   return 1;
 }
 
-void terminate() {
+void
+terminate ()
+{
 }

@@ -16,11 +16,12 @@ cooked one by returning a port name or NULL from the init() function.
 
 You will have to provide three functions:
 
-char * init (const int argc, const char **argv) Accepts remaining
-  arguments (you have to use popt to parse them, or do it by hand,
-  getopt does not allow you to resume the parsing) and returns a
-  string identifying the port name (cooked interface) or NULL (raw
-  interface).
+char * init (const int argc, const char **argv, const echoping_options options)) 
+  Accepts remaining arguments (you have to use popt to parse them, or do
+  it by hand, getopt does not allow you to resume the parsing) and
+  returns a string identifying the port name (cooked interface) or NULL
+  (raw interface). The options struct will give you the global options
+  (see echoping.h).
 
 For the cooked interface:
 

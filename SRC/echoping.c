@@ -88,7 +88,6 @@ main (argc, argv)
   char *ext;
   void *plugin;
   int plugin_result;
-  char *dl_result;
 
   void to_alarm ();		/* our alarm() signal handler */
   void interrupted ();
@@ -141,6 +140,7 @@ main (argc, argv)
   int tos;
   int tos_requested = 0;
   char *p;
+  echoping_options global_options;
 
   /* popt variables */
   const struct poptOption options[] = {
@@ -173,6 +173,9 @@ main (argc, argv)
     POPT_TABLEEND
   };
   poptContext poptcon;
+
+  global_options.udp = 0;
+  global_options.verbose = 0;
 
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
@@ -457,7 +460,10 @@ main (argc, argv)
 	{
 	  err_sys ("Cannot find init in %s: %s", plugin_name, dlerror ());
 	}
-      plugin_port_name = plugin_init (remaining, (const char **) leftover);
+      global_options.udp = udp;
+      global_options.verbose = verbose;
+      plugin_port_name =
+	plugin_init (remaining, (const char **) leftover, global_options);
       if (plugin_port_name != NULL)
 	{
 	  strcpy (port_name, plugin_port_name);
@@ -889,7 +895,7 @@ main (argc, argv)
 	{
 	  plugin_result = plugin_execute ();
 	  if (plugin_result == -2)
-	    err_quit("");
+	    err_quit ("");
 	}
       else
 	{
