@@ -16,7 +16,7 @@ else
 fi],
 plugins="random whois dns postgresql ldap")
 for plugin in $plugins; do
-  if test ! -d $srcdir/plugins/$plugin ; then
+  if test ! -d $srcdir/$plugin ; then
     AC_MSG_ERROR([No such plugin $plugin])
   fi
   eval ${plugin}_BUILD=1

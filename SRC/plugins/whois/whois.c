@@ -6,6 +6,10 @@
 
 #define IN_PLUGIN
 #include "../../echoping.h"
+#ifdef HAVE_CONFIG_H
+#include "../../config.h"
+#include "config.h"
+#endif
 
 #define MAX_REQUEST 256
 

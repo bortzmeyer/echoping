@@ -10,7 +10,7 @@ echo ""
 for plugin in `ls plugins`; do
 	if [ -d plugins/$plugin ]; then
 	    cd plugins/$plugin
-	    if [ -x test.sh ]; then
+	    if [ -x ./test.sh ]; then
 		echo "Testing $plugin..."
 		sh ./test.sh
 		echo ""

@@ -1,6 +1,9 @@
-dnl Created automatically on Sat Jun 12 22:56:52 CEST 2004
+dnl Created automatically on Tue Jun 15 21:33:27 CEST 2004
 if test "$dns_BUILD" = 1; then
   AC_CONFIG_SUBDIRS(dns)
+fi
+if test "$ldap_BUILD" = 1; then
+  AC_CONFIG_SUBDIRS(ldap)
 fi
 if test "$postgresql_BUILD" = 1; then
   AC_CONFIG_SUBDIRS(postgresql)
