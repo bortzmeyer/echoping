@@ -20,17 +20,12 @@ my_perror ()
 
 /* VARARGS1 */
 void
-err_ret (va_alist)
-     va_dcl
+err_ret (char *str, ...)
 {
   va_list args;
-  char *fmt;
 
-  va_start (args);		/* TODO: use stdarg, otherwise, on *some*
-				   platforms: "macro `va_start' used with just one arg" because OpenSSL
-				   includes stdarg. */
-  fmt = va_arg (args, char *);
-  vfprintf (stderr, fmt, args);
+  va_start (args, str);		
+  vfprintf (stderr, str, args);
   va_end (args);
 
   my_perror ();
@@ -52,15 +47,12 @@ err_ret (va_alist)
 
 /* VARARGS1 */
 void
-err_quit (va_alist)
-     va_dcl
+err_quit (char *str, ...)
 {
   va_list args;
-  char *fmt;
 
-  va_start (args);
-  fmt = va_arg (args, char *);
-  vfprintf (stderr, fmt, args);
+  va_start (args, str);
+  vfprintf (stderr, str, args);
   fputc ('\n', stderr);
   va_end (args);
 
@@ -78,16 +70,13 @@ err_quit (va_alist)
  */
 
 /* VARARGS1 */
-void
-err_sys (va_alist)
-     va_dcl
+void 
+err_sys (char *str, ...)
 {
   va_list args;
-  char *fmt;
 
-  va_start (args);
-  fmt = va_arg (args, char *);
-  vfprintf (stderr, fmt, args);
+  va_start (args, str);
+  vfprintf (stderr, str, args);
   va_end (args);
 
   my_perror ();

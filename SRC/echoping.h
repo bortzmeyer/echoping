@@ -28,10 +28,7 @@
 #include	<sys/socket.h>
 #include	<netinet/in.h>
 #include	<arpa/inet.h>
-#ifndef OPENSSL
-/* OpenSSL includes stdarg :-( */
-#include        <varargs.h>
-#endif
+#include        <stdarg.h>
 #include        <sys/time.h>
 #include        <errno.h>
 #include        <unistd.h>
@@ -44,8 +41,6 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-
-#include        <varargs.h>
 #endif /* OpenSSL */
 
 #ifndef FALSE
@@ -120,9 +115,9 @@ char *server;
 
 /* error.c */
 void usage ();
-void err_sys ();
-void err_ret ();
-void err_quit ();
+void err_sys (char *str, ...);
+void err_ret (char *str, ...);
+void err_quit (char *str, ...);
 char *sys_err_str ();
 /* writen.c */
 int writen ();
