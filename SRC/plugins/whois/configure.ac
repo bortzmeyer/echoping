@@ -7,18 +7,7 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_ARG_WITH(popt,
- [--with-popt[=DIR]  popt command-line parsing library],dnl
- [if test "$withval" != "no"; then
-   if test "$withval" != "yes"; then
-        POPTROOT=$withval
-        LDFLAGS="${LDFLAGS} -L$POPTROOT/lib"
-        CPPFLAGS="${CPPFLAGS} -I$POPTROOT/include"  
-   fi
-  else
-        AC_MSG_ERROR([The popt command-line parsing library is mandatory for this plugin])
- fi],
-)
+m4_include([../configure-plugins.ac])
 
 WHOIS_BUILD=1
 AC_CHECK_FUNCS(poptGetContext,, 

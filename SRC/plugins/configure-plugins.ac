@@ -1,0 +1,31 @@
+LIBIDN=1
+AC_ARG_WITH(libidn,
+ [--with-libidn[=DIR]   Internationalized Domain Names support (needs GNU libidn)],dnl
+ [if test "$withval" != "no"; then
+   if test "$withval" != "yes"; then
+	IDNROOT=$withval
+	LDFLAGS="${LDFLAGS} -L$IDNROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$IDNROOT/include"  
+   fi
+ else
+   LIBIDN=0
+ fi],
+)
+if test "$LIBIDN" = "1"; then
+AC_DEFINE(LIBIDN,,[Internationalized Domain Names support])
+fi
+
+AC_ARG_WITH(popt,
+ [--with-popt[=DIR]  popt command-line parsing library],dnl
+ [if test "$withval" != "no"; then
+   if test "$withval" != "yes"; then
+        POPTROOT=$withval
+        LDFLAGS="${LDFLAGS} -L$POPTROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$POPTROOT/include"  
+   fi
+  else
+        AC_MSG_ERROR([The popt command-line parsing library is mandatory for this plugin])
+ fi],
+)
+
+dnl $Id$

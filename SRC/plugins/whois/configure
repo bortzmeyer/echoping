@@ -799,6 +799,7 @@ if test -n "$ac_init_help"; then
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+--with-libidn=DIR   Internationalized Domain Names support (needs GNU libidn)
 --with-popt=DIR  popt command-line parsing library
 
 Some influential environment variables:
@@ -2277,6 +2278,30 @@ test -z "$INSTALL_PROGRAM" && INSTALL_PROGRAM='${INSTALL}'
 test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
+
+
+LIBIDN=1
+
+# Check whether --with-libidn or --without-libidn was given.
+if test "${with_libidn+set}" = set; then
+  withval="$with_libidn"
+   if test "$withval" != "no"; then
+   if test "$withval" != "yes"; then
+	IDNROOT=$withval
+	LDFLAGS="${LDFLAGS} -L$IDNROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$IDNROOT/include"
+   fi
+ else
+   LIBIDN=0
+ fi
+fi;
+if test "$LIBIDN" = "1"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define LIBIDN
+_ACEOF
+
+fi
 
 
 
