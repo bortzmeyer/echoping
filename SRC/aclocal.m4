@@ -171,6 +171,7 @@ fi
 ])
 
 # Check GNU libidn
+# TODO: check the patched libc with AI_IDN. See libidn, in libc/getaddrinfo-idn.txt.
 AC_DEFUN([CF_LIB_LIBIDN],
 [
 AC_CHECK_LIB(idn,idna_to_ascii_8z,
