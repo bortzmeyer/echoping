@@ -29,6 +29,9 @@ struct timeval max, min, total, median, temp;
 unsigned int successes, attempts = 0;
 unsigned int size = DEFLINE;
 unsigned int j = 0;
+#ifdef HAVE_GETADDRINFO
+int family = PF_UNSPEC;
+#endif
 struct result
 {
   unsigned short valid;
@@ -49,17 +52,30 @@ main (argc, argv)
   signed char ch;
 
   int sockfd;
+#ifdef HAVE_GETADDRINFO
+  struct addrinfo hints, *res;
+  int error;
+  char hbuf[NI_MAXHOST], pbuf[NI_MAXSERV];
+#ifdef NI_WITHSCOPEID
+  const int niflags = NI_NUMERICHOST | NI_NUMERICSERV | NI_WITHSCOPEID;
+#else
+  const int niflags = NI_NUMERICHOST | NI_NUMERICSERV;
+#endif
+#endif
+
   FILE *files = NULL;
   CHANNEL channel;
+#ifndef HAVE_GETADDRINFO
   struct hostent *hostptr;
   struct sockaddr_in serv_addr;
   struct sockaddr_in udp_cli_addr;	/* client's Internet socket
 					 * addr */
   struct servent *sp = NULL;
-  int verbose = FALSE;
   char *server_address;
   u_int addr;
   struct in_addr *ptr;
+#endif
+  int verbose = FALSE;
   int n, nr = 0;
   int rc;
 #ifdef OPENSSL
@@ -90,7 +106,9 @@ main (argc, argv)
   unsigned short size_requested = 0;
   char *url = "";
   short port = 0;
+#ifndef HAVE_GETADDRINFO
   char *text_port = malloc (6);
+#endif
 #if USE_SIGACTION
   struct sigaction mysigaction;
 #endif
@@ -140,7 +158,7 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:46")) != EOF)
     {
       switch (ch)
 	{
@@ -272,6 +290,20 @@ main (argc, argv)
 	      exit (1);
 	    }
 	  break;
+	case '4':
+#ifdef HAVE_GETADDRINFO
+	  family = AF_INET;
+#endif
+	  break;
+	case '6':
+#ifdef HAVE_GETADDRINFO
+	  family = AF_INET6;
+#else
+	  (void) fprintf (stderr,
+			  "%s: not compiled for IPv6 support.\n", progname);
+	  exit (1);
+#endif
+	  break;
 	default:
 	  usage ();
 	}
@@ -284,16 +316,6 @@ main (argc, argv)
 		      progname);
       exit (1);
     }
-/*  
-   Version 2.1 now allows global timeouts for TCP connections
-   *
-   if (!udp && (timeout_requested))
-   {
-   (void) fprintf (stderr,
-   "%s: Time out ignored for TCP connections.\n", progname);
-   exit (1);
-   }
- */
   if ((http || smtp) && (fill_requested))
     {
       (void) fprintf (stderr,
@@ -405,19 +427,33 @@ main (argc, argv)
 	{
 	  find_server_and_port (server, &port, port_name);
 	  if (port == 0)
+#ifdef HAVE_GETADDRINFO
 	    port = 3130;
+#else
+	    port_name = "3130";
+#endif
 	}
       else
 	{
 	  find_server_and_port (server, &port, port_name);
 	  if (port == 0)
+#ifdef HAVE_GETADDRINFO
 	    port = 80;
+#else
+	    port_name = "80";
+#endif
 	}
-
+#ifndef HAVE_GETADDRINFO
       sprintf (text_port, "(port %d)", ntohs (port));
+#else
+      port_name = malloc (5);	/* To prevent overflow. A short uses at most
+				   5 digits in decimal form */
+      sprintf (port_name, "%hd", ntohs (port));
+#endif
     }
 #endif
   signal (SIGINT, interrupted);
+#ifndef HAVE_GETADDRINFO
   if ((addr = inet_addr (server)) == INADDR_NONE)
     {
       if ((hostptr = gethostbyname (server)) == NULL)
@@ -427,10 +463,6 @@ main (argc, argv)
 	}
       server_address = *(hostptr->h_addr_list);	/* First item of the
 						 * list */
-      /*
-       * addr = (u_long) *server_address; 
-       */
-      /* ptr.s_addr = addr; */
       ptr = (struct in_addr *) server_address;	/* hostptr->h_addr_list
 						 * points actually to
 						 * u_longs, not strings */
@@ -441,6 +473,23 @@ main (argc, argv)
       ptr = (struct in_addr *) malloc (sizeof (struct in_addr));
       ptr->s_addr = addr;
     }
+#else
+  memset (&hints, 0, sizeof (hints));
+  hints.ai_family = family;
+  hints.ai_socktype = udp ? SOCK_DGRAM : SOCK_STREAM;
+  /* printf ("DEBUG: server %s:%d (%s)\n", server, ntohs(port), port_name);  */
+  error = getaddrinfo (server, port_name, &hints, &res);
+  if (error)
+    err_quit ("getaddrinfo error for host: %s %s",
+	      server, gai_strerror (error));
+  if (getnameinfo (res->ai_addr, res->ai_addrlen, hbuf, sizeof (hbuf),
+		   pbuf, sizeof (pbuf), niflags) != 0)
+    {
+      strcpy (hbuf, "?");
+      strcpy (pbuf, "?");
+    }
+#endif
+#ifndef HAVE_GETADDRINFO
   if (!http && !icp)		/* Already find */
     {
       if (!udp)
@@ -462,7 +511,6 @@ main (argc, argv)
    * Fill in the structure "serv_addr" with the address of the server
    * that we want to connect with.
    */
-
   bzero ((char *) &serv_addr, sizeof (serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = addr;
@@ -474,11 +522,17 @@ main (argc, argv)
     {
       serv_addr.sin_port = port;
     }
+#endif
+
 
 #ifdef HTTP
   if (http)
     {
+#ifdef HAVE_GETADDRINFO
+      sendline = make_http_sendline (url, server, (int) ntohs (atoi (pbuf)));
+#else
       sendline = make_http_sendline (url, server, (int) ntohs (port));
+#endif
     }
   else
 #endif
@@ -538,6 +592,14 @@ main (argc, argv)
 	if ((sslh = SSL_new (ctx)) == NULL)
 	  err_sys ("Cannot initialize SSL context");
 #endif
+#ifdef HAVE_GETADDRINFO
+      /*
+       * Open a socket.
+       */
+      if ((sockfd = socket (res->ai_family,
+			    res->ai_socktype, res->ai_protocol)) < 0)
+	err_sys ("Can't open socket");
+#else
       if (!udp)
 	{
 	  /*
@@ -562,6 +624,7 @@ main (argc, argv)
 	      err_sys ("bind error");
 	    }
 	}
+#endif
 #ifdef USE_PRIORITY
       if (priority_requested)
 	{
@@ -601,20 +664,32 @@ main (argc, argv)
 	    {
 	      printf
 		("Trying to connect to internet address %s %s to transmit %u bytes...\n",
+#ifdef HAVE_GETADDRINFO
+		 hbuf, pbuf, n);
+#else
 		 inet_ntoa (*ptr), (port == 0 ? "" : text_port), n);
+#endif
 	    }
 #ifdef ICP
 	  if (icp)
 	    {
 	      printf
 		("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
+#ifdef HAVE_GETADDRINFO
+		 length, hbuf);
+#else
 		 length, inet_ntoa (*ptr));
+#endif
 	    }
 #endif
 	  else
 	    {
 	      printf ("Trying to send %u bytes to internet address %s...\n",
+#ifdef HAVE_GETADDRINFO
+		      size, hbuf);
+#else
 		      size, inet_ntoa (*ptr));
+#endif
 	    }
 #ifdef FLUSH_OUTPUT
 	  if (fflush ((FILE *) NULL) != 0)
@@ -649,8 +724,12 @@ main (argc, argv)
 	   * Connect to the server.
 	   */
 
+#ifdef HAVE_GETADDRINFO
+	  if (connect (sockfd, res->ai_addr, res->ai_addrlen) < 0)
+#else
 	  if (connect (sockfd, (struct sockaddr *) &serv_addr,
 		       sizeof (serv_addr)) < 0)
+#endif
 	    {
 	      if ((errno == EINTR) && (timeout_flag))
 		{
@@ -661,7 +740,7 @@ main (argc, argv)
 		    {
 		      err_sys ("I cannot flush");
 		    }
-#endif
+#endif	/* « */
 		}
 	      else
 		err_sys ("Can't connect to server");
@@ -708,9 +787,14 @@ main (argc, argv)
 #ifdef USE_TTCP
 	  if (ttcp)
 	    {
+#ifdef HAVE_GETADDRINFO
 	      if (sendto (sockfd, sendline, n, MSG_EOF,
 			  (struct sockaddr *) &serv_addr,
 			  sizeof (serv_addr)) != n)
+#else
+	      if (sendto (sockfd, sendline, n, MSG_EOF,
+			  res->ai_addr, res->ai_addrlen) != n)
+#endif
 		err_sys ("sendto error on socket");
 	      if (verbose)
 		{
@@ -774,8 +858,13 @@ main (argc, argv)
 #ifdef ICP
 	      if (icp)
 		{
+#ifdef GET_HAVEADDRINFO
+		  if (sendto (sockfd, sendline, length, 0,
+			      res->ai_addr, res->ai_addrlen) != length)
+#else
 		  if (sendto (sockfd, sendline, length, 0,
 			      &serv_addr, sizeof (serv_addr)) != length)
+#endif
 		    err_sys ("sendto error on socket");
 		}
 	      else

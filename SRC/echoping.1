@@ -21,6 +21,8 @@ echoping \- tests a remote host with TCP or UDP
 .RI [-P tos] 
 .RI [-C] 
 .RI [-S] 
+.RI [-4] 
+.RI [-6] 
 .B hostname
 [:port]
 
@@ -70,7 +72,7 @@ Use the "chargen" service instead of echo
 .IP -h\ url
 Use the HTTP protocol (instead of echo) for the given URL. The URL has to
 be a relative one (for instance '/' or '/pics/foobar.gif') because HTTP 1.0
-servers will not understand a request for an absolute URL.
+servers will «not understand a request for an absolute URL.
 .IP -i\ url
 Use the ICP protocol (instead of echo) for the given URL. The URL has to
 be an absolute one. This is mostly for testing Squid Web proxy/caches.
@@ -94,6 +96,12 @@ in
 .IP -P\ n
 Set the IP type of service octet in the transmitted packets to the
 least significant eight bits of the integer
+.IR n .
+.IP -4
+Uses IPv4 only
+.IR n .
+.IP -6
+Uses IPv6 only
 .IR n .
 .SH EXAMPLES
 .IP echoping\ \-v\ foobar.example.com

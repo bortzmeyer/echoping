@@ -88,7 +88,7 @@ void
 usage ()
 {
   fprintf (stderr,
-	   "Usage: %s [-v] [-r] [-f fill] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-i url] [-p priority] [-P tos] [-C] [-S] hostname[:port]\n",
+	   "Usage: %s [-v] [-r] [-f fill] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-i url] [-p priority] [-P tos] [-C] [-S] [-4] [-6] hostname[:port]\n",
 	   progname);
   exit (1);
 }

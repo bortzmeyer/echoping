@@ -3,9 +3,9 @@ Stephane Bortzmeyer <bortz@users.sourceforge.net>
 
 With help from:
 
-W. Richard Stevens, author of the book "Unix network programming"
-for his book and his many examples (a lot of the code comes from
-him by copy-and-paste).
+The late W. Richard Stevens, author of the book "Unix network
+programming" for his book and his many examples (a lot of the code
+comes from him by copy-and-paste).
 
 Pierre Beyssac <pb@fasterix.freenix.org> author of the "bing" tool for
 examples of code and beta-testing.
@@ -19,6 +19,9 @@ and porting.
 
 Glen Turner <glen.turner@aarnet.edu.au> for the Type Of Service code.
 
+Munechika Sumikawa <sumikawa@ebina.hitachi.co.jp>, from the KAME
+project, for the getaddrinfo() code, necessary for IPv6 support.
+
 The Pasteur Institute because the work was done when working on the
 French national Web cache project, while being an employee of the
 Institute.
@@ -27,3 +30,4 @@ Institute.
 
 
 $Id$
+
