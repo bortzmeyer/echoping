@@ -41,10 +41,10 @@ nsError (error, domain)
       (void) fprintf (stderr, "Unknown domain: %s\n", domain);
       break;
     case NO_DATA:
-      (void) fprintf (stderr, "No NS records for %s\n", domain);
+      (void) fprintf (stderr, "No records for %s\n", domain);
       break;
     case TRY_AGAIN:
-      (void) fprintf (stderr, "No response for NS query\n");
+      (void) fprintf (stderr, "No response for query\n");
       break;
     default:
       (void) fprintf (stderr, "Unexpected error\n");
@@ -68,7 +68,7 @@ init (const int argc, const char **argv)
 {
   int value;
   char *msg = malloc (256);
-  char *type_name;
+  char *type_name = NULL;
   /* popt variables */
   struct poptOption options[] = {
     {"request", 'r', POPT_ARG_STRING, &request, 0,
@@ -93,16 +93,41 @@ init (const int argc, const char **argv)
     }
   if (request == NULL)
     dns_usage ("Mandatory request missing");
-
+  if (type_name == NULL)
+    type = T_A;
+  else
+    {				/* TODO: a better algorithm. Use dns_rdatatype_fromtext in BIND ? */
+      if (!strcmp (type_name, "A"))
+	type = T_A;
+      else if (!strcmp (type_name, "NS"))
+	type = T_NS;
+      else if (!strcmp (type_name, "SOA"))
+	type = T_SOA;
+      else if (!strcmp (type_name, "MX"))
+	type = T_MX;
+      else if (!strcmp (type_name, "AAAA"))
+	type = T_AAAA;
+      else
+	dns_usage ("Unknown type");
+    }
   return "domain";
 }
 
 void
 start (struct addrinfo *res)
 {
+  struct sockaddr name_server_sockaddr;
+  struct sockaddr_in name_server_sockaddr_in;
   name_server = *res;
+  name_server_sockaddr = *name_server.ai_addr;
+  /* Converts a generic sockaddr to an IPv4 sockaddr_in */
+  (void) memcpy ((void *) &name_server_sockaddr_in, &name_server_sockaddr,
+		 sizeof (struct sockaddr));
   if (res_init () < 0)
     err_sys ("res_init");
+  _res.nsaddr_list[0] = name_server_sockaddr_in;	/* TODO: and IPv6? */
+  _res.nscount = 1;
+  _res.options &= ~(RES_DNSRCH | RES_DEFNAMES | RES_NOALIASES);
 }
 
 int
@@ -116,7 +141,7 @@ execute ()
   int response_length;		/* buffer length */
   if ((response_length = res_query (request,	/* the domain we care about   */
 				    C_IN,	/* Internet class records     */
-				    T_NS,	/* Look up name server records */
+				    type,	/* Look up name server records */
 				    (u_char *) & response,	/*response buffer */
 				    sizeof (response)))	/*buffer size    */
       < 0)
@@ -124,6 +149,7 @@ execute ()
       nsError (h_errno, request);	/* report the error           */
       return -1;		/* and quit                   */
     }
+  /* TODO: better analysis of the replies. For instance, replies can be in the authority section (delegation info) */
   return 0;
 }
 
