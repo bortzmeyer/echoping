@@ -44,9 +44,7 @@ main (argc, argv)
   extern char *optarg;
   extern int optind;
 
-  /* TODO: Sun's C compiler does not know "signed" (bug #623444). And
-     getopt returns an int, anyway */
-  signed char ch;
+  int result;
 
   int sockfd;
   struct addrinfo hints, *res;
@@ -145,9 +143,10 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA46")) != EOF)
+  while ((result =
+	  getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA46")) != -1)
     {
-      switch (ch)
+      switch ((char) result)
 	{
 	case 'v':
 	  verbose = TRUE;
@@ -1193,7 +1192,7 @@ printstats ()
 	  tvadd (&median, &good_results[successes / 2]);
 	  tvavg (&median, 2);
 	}
-      printf ("Median  time: %d.%06d seconds (%.0f bytes per sec.)\n",
+      printf ("Median time: %d.%06d seconds (%.0f bytes per sec.)\n",
 	      (int) median.tv_sec, (int) median.tv_usec,
 	      (double) size / tv2double (median));
     }
