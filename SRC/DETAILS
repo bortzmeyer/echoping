@@ -1,6 +1,13 @@
 Some details about echoping
 ------------
 
+echoping is a debugging tool. It is not a "end user" tool. For
+instance, HTTP testing takes host names, not URLs as parameters (if
+you want to test in a more HTTPish way, use wget). Also, when
+connecting to a server which has both IPv4 and IPv6 addresses,
+echoping does not try every address in turn like most user-oriented
+programs do. If you want to test only the IPv4 address, use the
+address, not the host name.
 
 echo service:
 
