@@ -102,6 +102,7 @@ AC_ARG_ENABLE(ttcp,
  fi)
 
 dnl Type Of Service
+dnl Linux only, it seems. Anyone knows a standard way to do so?
 AC_MSG_CHECKING([Type Of Service])
 AC_TRY_COMPILE(
  [#include <sys/types.h>

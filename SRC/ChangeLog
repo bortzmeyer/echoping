@@ -1,7 +1,7 @@
 
 	* Support for microsecond wait (uses usleep)
-	* New option (-p) to set socket priority
-	* New option (-P) to set IP Type of Service octet
+	* New option (-p) to set socket priority (Linux only)
+	* New option (-P) to set IP Type of Service octet (Linux only)
 
 4.1.0 (2001-02-14)
 
