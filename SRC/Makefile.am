@@ -9,11 +9,12 @@ echoping_LDADD =
 DOCS=DETAILS
 
 TESTS=test-echoping-local test-echoping-remote test-echoping-icp
+MORE_TESTS=test-echoping-crypto 
 
 test: check
 tests: check
 
-EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS)
+EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
 
 ## Otherwise, we depend on GNUmake, but for CVS users, not for regular
 ## tarball users
