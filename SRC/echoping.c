@@ -24,8 +24,10 @@ unsigned short timeout_flag;
 /* Global variables for main and printstats */
 
 int return_code = 0;
+int rc;
 unsigned int number = 1;
 struct timeval max, min, total, median, stddev, temp;
+struct timeval conntv, connectedtv, sendtv, recvtv;
 unsigned int successes, attempts = 0;
 unsigned int size = DEFLINE;
 unsigned int j = 0;
@@ -58,7 +60,6 @@ main (argc, argv)
   CHANNEL channel;
   int verbose = FALSE;
   int n, nr = 0;
-  int rc;
 #ifdef OPENSSL
   int sslcode;
   char rand_file[MAXLINE];
@@ -659,7 +660,7 @@ main (argc, argv)
 	  /*
 	   * Connect to the server.
 	   */
-
+	  (void) gettimeofday (&conntv, (struct timezone *) NULL);
 	  if (connect (sockfd, res->ai_addr, res->ai_addrlen) < 0)
 	    {
 	      if ((errno == EINTR) && (timeout_flag))
@@ -676,6 +677,16 @@ main (argc, argv)
 	      else
 		err_sys ("Can't connect to server");
 	    }
+	  else
+	    {
+	      (void) gettimeofday (&connectedtv, (struct timezone *) NULL);
+	      temp = connectedtv;
+	      tvsub (&temp, &conntv);
+	      if (verbose)
+		printf ("TCP Latency: %d.%06d seconds\n", (int) temp.tv_sec,
+			(int) temp.tv_usec);
+	    }
+
 	  if (verbose && tcp)
 	    {
 	      printf ("Connected...\n");
@@ -800,6 +811,7 @@ main (argc, argv)
 	    }
 	  if (verbose)
 	    {
+	      (void) gettimeofday (&sendtv, (struct timezone *) NULL);
 #ifdef ICP
 	      if (icp)
 		printf ("Sent (%d bytes)...\n", length);
@@ -815,6 +827,35 @@ main (argc, argv)
 #endif
 	    }
 	}
+
+      {
+	fd_set mask;
+	int n = 0;
+
+	FD_ZERO (&mask);
+
+	if (!(http && ssl))
+	  n = fileno (files);
+#ifdef OPENSSL
+	else
+	  {
+	    n = fileno (files);
+	  }
+#endif
+
+	FD_SET (n, &mask);
+	if (select (n + 1, &mask, 0, 0, NULL) > 0)
+	  {
+	    (void) gettimeofday (&recvtv, (struct timezone *) NULL);
+	    temp = recvtv;
+	    tvsub (&temp, &sendtv);
+	    if (verbose)
+	      printf ("Application Latency: %d.%06d seconds\n",
+		      (int) temp.tv_sec, (int) temp.tv_usec);
+	  }
+
+      }
+
       if ((port_to_use == USE_ECHO) || (port_to_use == USE_CHARGEN) ||
 	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
 	  (port_to_use == USE_SMTP))
@@ -844,6 +885,8 @@ main (argc, argv)
 		  nr = smtp_read_response_from_server (files);
 		}
 #endif
+
+
 	    }
 	  else
 	    {

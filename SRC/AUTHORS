@@ -19,14 +19,15 @@ and porting.
 
 Glen Turner <glen.turner@aarnet.edu.au> for the Type Of Service code.
 
-An unknown KAME contributor for the adaptation to the new API, which
-allows IPv6.
+Munechika Sumikawa <sumikawa@ebina.hitachi.co.jp>, a KAME contributor,
+for the adaptation to the new API, which allows IPv6.
+
+Luca Deri <deri@ntop.org> for the patch separating kernel (TCP) and
+application latency.
 
 The Pasteur Institute because the work was done when working on the
 French national Web cache project, while being an employee of the
 Institute.
-
-
 
 
 $Id$
