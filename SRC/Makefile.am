@@ -9,7 +9,7 @@ echoping_LDADD =
 DOCS=DETAILS
 
 TESTS=test-echoping-local test-echoping-remote 
-MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echoping-tos
+MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echoping-tos test-echoping-ipv6
 
 test: check
 tests: check
