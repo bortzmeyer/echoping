@@ -74,6 +74,7 @@ SSL_readline (sslh, ptr, maxlen, ln)
 	{
 	  rc = SSL_read (sslh, SSL_buffer, maxlen);
 	  buf_end = rc;
+	  buf_ptr = 0;
 	}
       /* No more data in the buffer */
       else if (buf_ptr == buf_end)
@@ -82,7 +83,12 @@ SSL_readline (sslh, ptr, maxlen, ln)
 	  rc = SSL_read (sslh, SSL_buffer, maxlen);
 	  buf_end = rc;
 	}
-      for (oi = buf_ptr, i = buf_ptr; SSL_buffer[i] != '\n'; i++)
+      /* Todo: we have a probleme here is the first SSL_read sent back
+         a text not finished by a \n. See www.SSL.de for an
+         example. */
+      for (oi = buf_ptr, i = buf_ptr; 
+	   i <= buf_end && SSL_buffer[i] != '\n'; 
+	   i++)
 	{
 	  *ptr++ = SSL_buffer[i];
 	  buf_ptr++;
