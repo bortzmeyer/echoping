@@ -129,10 +129,10 @@ read_from_server (CHANNEL fs, short ssl)
     }
   /* Read the body */
   if (!ssl)
-    nr = readline (fs, big_recvline, MAXTOREAD, FALSE);
+    nr = readline (fs.fs, big_recvline, MAXTOREAD, FALSE);
 #ifdef OPENSSL
   else
-    nr = SSL_readline (fs, big_recvline, MAXTOREAD, FALSE);
+    nr = SSL_readline (fs.ssl, big_recvline, MAXTOREAD, FALSE);
 #endif
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
     return -1;
