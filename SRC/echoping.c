@@ -98,6 +98,13 @@ main (argc, argv)
 
   unsigned short stop_at_newlines = 1;
 
+  int priority;
+  int priority_requested = 0;
+  int tos;
+  int tos_requested = 0;
+  char *arg_end;
+
+
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
   max_timeval.tv_sec = 1000000000;
@@ -115,7 +122,7 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:p:P:")) != EOF)
     {
       switch (ch)
 	{
@@ -153,6 +160,39 @@ main (argc, argv)
 	case 'f':
 	  fill = *optarg;
 	  fill_requested = 1;
+	  break;
+        case 'p':
+	  priority = (int)strtol( optarg,
+				  &arg_end,
+				  0);
+	  if (arg_end == optarg || arg_end == '\0')
+	    {
+	      (void) fprintf (stderr,
+			      "%s: socket priority (-p) should be numeric.\n",
+			      progname);
+	      exit (1);
+	    }
+	  else
+	    {
+	      priority_requested = 1;
+	    }
+	  break;
+        case 'P':
+	  tos = (int)strtol( optarg,
+			     &arg_end,
+			     0);
+	  if (arg_end == optarg || arg_end == '\0')
+	    {
+	      (void) fprintf (stderr,
+			      "%s: IP type of service (-P) should be "
+			      "numeric.\n",
+			      progname);
+	      exit (1);
+	    }
+	  else
+	    {
+	      tos_requested = 1;
+	    }
 	  break;
 	case 's':
 	  size = atoi (optarg);
@@ -414,6 +454,40 @@ main (argc, argv)
 		    sizeof (udp_cli_addr)) < 0)
 	    {
 	      err_sys ("bind error");
+	    }
+	}
+      if (priority_requested)
+	{
+	  if (verbose)
+	    {
+	      printf ("Setting socket priority to %d (0x%02x)\n",
+		      priority,
+		      (unsigned int)priority);
+	    }
+	  if (setsockopt(sockfd,
+			 SOL_SOCKET,
+			 SO_PRIORITY,
+			 (void *)&priority,
+			 (socklen_t)sizeof(priority)))
+	    {
+	      err_sys("Failed setting socket priority");
+	    }
+	}
+      if (tos_requested)
+	{
+	  if (verbose)
+	    {
+	      printf ("Setting IP type of service octet to %d (0x%02x)\n",
+		      tos,
+		      (unsigned int)tos);
+	    }
+	  if (setsockopt(sockfd,
+			 SOL_IP,
+			 IP_TOS,
+			 (void *)&tos,
+			 (socklen_t)sizeof(tos)))
+	    {
+	      err_sys("Failed setting IP type of service octet");
 	    }
 	}
       if (verbose)

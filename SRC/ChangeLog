@@ -1,5 +1,8 @@
-3.0.0 (2000-06-30)
+3.0.0-gdt1 (2000-07-07)
+	* New option (-p) to set socket priority
+	* New option (-P) to set IP Type of Service octet
 
+3.0.0 (2000-06-30)
 	* Autoconf/automake support
 	* Fix a bug in ICP timeout
 	  

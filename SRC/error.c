@@ -95,7 +95,11 @@ err_sys (va_alist)
 void
 usage ()
 {
-  fprintf (stderr, "Usage: %s [-v] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] server-name[:port]\n", progname);
+  fprintf (stderr,
+           "Usage: %s [-v] [-t timeout] [-c] [-d] [-u] [-s size] "
+           "[-n number] [-w delay] [-h url] [-p priority] [-P tos] "
+           "server-name[:port]\n",
+           progname);
   exit (1);
 }
 
