@@ -13,7 +13,7 @@ const char *request = NULL;
 const char *base = NULL;
 int scope = LDAP_SCOPE_BASE;
 const char *hostname;
-unsigned int port = 0;
+int port = 0;
 LDAP *session;
 poptContext ldap_poptcon;
 echoping_options global_options;
@@ -34,18 +34,18 @@ init (const int argc, const char **argv,
       const echoping_options global_external_options)
 {
   int value;
-  char *msg;
+  char *msg = malloc (MAX_LINE);
   char *scope_string = NULL;
   /* popt variables */
   struct poptOption options[] = {
     {"request", 'r', POPT_ARG_STRING, &request, 0,
-     "Request (filter) to send to the LDAP server", 'r'},
+     "Request (filter) to send to the LDAP server", "r"},
     {"base", 'b', POPT_ARG_STRING, &base, 0,
-     "Base of the LDAP tree", 'b'},
+     "Base of the LDAP tree", "b"},
     {"scope", 's', POPT_ARG_STRING, &scope_string, 0,
-     "Scope of the search in the LDAP tree (sub, one or base)", 's'},
+     "Scope of the search in the LDAP tree (sub, one or base)", "s"},
     {"port", 'p', POPT_ARG_INT, &port, 0,
-     "TCP port to connect to the LDAP server", 'p'},
+     "TCP port to connect to the LDAP server", "p"},
     POPT_AUTOHELP POPT_TABLEEND
   };
   global_options = global_external_options;
@@ -55,13 +55,13 @@ init (const int argc, const char **argv,
 				 argv, options, POPT_CONTEXT_KEEP_FIRST);
   while ((value = poptGetNextOpt (ldap_poptcon)) > 0)
     {
-      if (value < -1)
-	{
-	  sprintf (msg, "%s: %s",
-		   poptBadOption (ldap_poptcon, POPT_BADOPTION_NOALIAS),
-		   poptStrerror (value));
-	  ldap_usage (msg);
-	}
+    }
+  if (value < -1)
+    {
+      sprintf (msg, "%s: %s",
+	       poptBadOption (ldap_poptcon, POPT_BADOPTION_NOALIAS),
+	       poptStrerror (value));
+      ldap_usage (msg);
     }
   if (port == 0)
     port = LDAP_PORT;
@@ -105,6 +105,15 @@ execute ()
 			  &response);
   if (result != 0)
     {
+/* 
+TODO: unfortunately, ldap_init does not connect to the LDAP server. So
+connection errors (e.g. firewall), will be detected only here and loop
+will go on. To quote the man page: ldap_init() acts just like
+ldap_open(), but does not open a connection to the LDAP server.  The
+actual connection open will occur when the first operation is
+attempted.  At this time, ldap_init() is preferred.  ldap_open() will
+be depreciated in a later release.  
+*/
       err_ret ("Cannot search \"%s\": %s", request, ldap_err2string (result));
       return -1;
     }
