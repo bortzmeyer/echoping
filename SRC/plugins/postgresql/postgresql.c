@@ -58,7 +58,7 @@ init (const int argc, const char **argv)
 	  postgresql_usage (msg);
 	}
     }
-  if (request == NULL) /* TODO: a default like SELECT now()? */
+  if (request == NULL)		/* TODO: a default like SELECT now()? */
     postgresql_usage ("Mandatory request missing");
   if (conninfo == NULL)
     postgresql_usage ("Mandatory connection information missing");
@@ -66,18 +66,16 @@ init (const int argc, const char **argv)
 }
 
 void
-start (struct addrinfo *res)
+start_raw ()
 {
   conn = PQconnectdb (conninfo);
   if (conn == NULL)
     {
-      printf ("Cannot create connection\n");
-      exit (1);
+      err_quit ("Cannot create connection\n");
     }
   if (PQstatus (conn) == CONNECTION_BAD)
     {
-      printf ("Connection failed: %s\n", PQerrorMessage (conn));
-      exit (1);
+      err_quit ("Connection failed: %s\n", PQerrorMessage (conn));
     }
 }
 

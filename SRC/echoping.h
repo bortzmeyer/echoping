@@ -127,6 +127,8 @@ typedef char * (*init_f) (const int argc, const char **argv);
 init_f plugin_init;
 typedef void (*start_f) (struct addrinfo *);
 start_f plugin_start;
+typedef void (*start_raw_f) ();
+start_raw_f plugin_raw_start;
 typedef int (*execute_f) ();
 execute_f plugin_execute;
 typedef void (*terminate_f) ();

@@ -18940,6 +18940,7 @@ _ACEOF
  fi
 fi;
 
+
 # Check whether --with-popt or --without-popt was given.
 if test "${with_popt+set}" = set; then
   withval="$with_popt"

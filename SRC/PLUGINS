@@ -1,22 +1,42 @@
-If you want to write your own plugins, they will have to provide three
-functions:
+If you want to write your own plugins, you will first have to decide
+wether your plugin uses a "cooked" hostname or a "raw" one.
 
-char * init (const int argc, const char **argv)
-  Accepts remaining arguments (you have to use popt to parse them, or
-do it by hand, getopt does not allow you to resume the parsing) and
-returns a string identifying the port name. If it makes no sense, you
-can safely return NULL.
+In the first case, the cooked hostname, your plugin will receive from
+echoping a struct addrinfo. All the DNS stuff, including IDN, is
+performed by echoping. You can immediately start using the struct
+addrinfo.
+
+But some libraries (typically, the one used by the DBMS) do not work
+on struct addrinfo but on strings such as "dbname=test
+hostname=foo.bar". Plugins using these libraries will have to use the
+raw interface.
+
+You indicate to echoping wether you use the raw interface or the
+cooked one by returning a port name or NULL from the init() function.
+
+You will have to provide three functions:
+
+char * init (const int argc, const char **argv) Accepts remaining
+  arguments (you have to use popt to parse them, or do it by hand,
+  getopt does not allow you to resume the parsing) and returns a
+  string identifying the port name (cooked interface) or NULL (raw
+  interface).
+
+For the cooked interface:
 
 void start (struct addrinfo *res)
   Typically just stores the res structure for later use.
 
-TODO: two start() routines, one which takes a struct addrinfo and one
-which does not (PostgreSQL or MySQL does not use struct addrinfo but a
-string)?
+For the raw interface:
+
+void start_raw ()
+  Typically connects to the server.
 
 int execute ()
   Connects and do whatever the protocol requires. It is called once
-  per iteration. It returns >=0 if it succeeds and -1 if it failed.
+  per iteration. It returns >=0 if it succeeds, -1 if it failed
+  temporarily (so echoping will continue its loop) and -2 if it failes
+  permanently (so echoping will stop the iteration).
 
 void terminate ()
   Cleans everything. It is called after all iterations.
@@ -24,11 +44,12 @@ void terminate ()
 Start your plugin source code with:
 
 #define IN_PLUGIN
-#include "../echoping.h"
+#include "/wherever/echoping/is/installed/echoping.h"
 
 You can look at random.c, the simplest plugin, and whois.c, the
 simplest which still does something useful.
 
-TODO: documentation of the plugin. A man page echoping_PLUGINNAME?
+The documentation of the plugin should be in a manual page named
+echoping_PLUGINNAME. See the above plugins for examples.
 
 $Id$

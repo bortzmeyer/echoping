@@ -85,11 +85,10 @@ err_sys (char *str, ...)
 }
 
 void
-usage ()
+usage (poptContext context)
 {
-  fprintf (stderr,
-	   "Usage: %s [-4] [-6] [-v] [-r] [-f fill] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-i url] [-p priority] [-P tos] [-C] [-S] [-m plugin] hostname[:port]\n",
-	   progname);
+  poptPrintUsage (context, stderr, 0);
+  fprintf (stderr, " hostname [plugin-options...]\n");
   exit (1);
 }
 
@@ -110,11 +109,11 @@ sys_err_str ()
 
   if (errno != 0)
     {
-      sprintf (msgstr, "(%s)", strerror(errno));
+      sprintf (msgstr, "(%s)", strerror (errno));
     }
   else
     {
       msgstr[0] = '\0';
-	}
+    }
   return (msgstr);
 }

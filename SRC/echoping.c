@@ -87,6 +87,7 @@ main (argc, argv)
   char *plugin_name, *complete_plugin_name = NULL;
   char *ext;
   void *plugin;
+  int plugin_result;
   char *dl_result;
 
   void to_alarm ();		/* our alarm() signal handler */
@@ -100,6 +101,7 @@ main (argc, argv)
 #endif
 
   char *plugin_port_name, *port_name;
+  unsigned short plugin_raw;
   unsigned short port_to_use = USE_ECHO;
   unsigned short http = 0;
   unsigned short smtp = 0;
@@ -143,6 +145,7 @@ main (argc, argv)
   /* popt variables */
   const struct poptOption options[] = {
     {"verbose", 'v', POPT_ARG_NONE, &verbose, 'v'},
+    {"help", '?', POPT_ARG_NONE, NULL, '?'},
     {"size", 's', POPT_ARG_INT, &size, 's'},
     {"number", 'n', POPT_ARG_INT, &number, 'n'},
 #ifdef HAVE_USLEEP
@@ -167,7 +170,7 @@ main (argc, argv)
     {"ipv4", '4', POPT_ARG_NONE, NULL, '4'},
     {"ipv6", '6', POPT_ARG_NONE, NULL, '6'},
     {"module", 'm', POPT_ARG_STRING, &plugin_name, 'm'},
-    {NULL, 0, 0, NULL, 0, NULL, NULL}
+    POPT_TABLEEND
   };
   poptContext poptcon;
 
@@ -192,20 +195,25 @@ main (argc, argv)
     }
   progname = (char *) argv[0];
 
-  poptcon = poptGetContext (NULL, argc, argv, options, 0);
+  poptcon =
+    poptGetContext (NULL, argc, argv, options, POPT_CONTEXT_POSIXMEHARDER);
 
-  while ((!module_find) && (result = poptGetNextOpt (poptcon)) != -1)
+  while ((result = poptGetNextOpt (poptcon)) != -1)
     {
       if (result < -1)
 	{
-	  printf ("%s: %s",
-		  poptBadOption (poptcon, POPT_BADOPTION_NOALIAS),
-		  poptStrerror (result));
-	  usage ();
+	  fprintf (stderr, "%s: %s\n",
+		   poptBadOption (poptcon, POPT_BADOPTION_NOALIAS),
+		   poptStrerror (result));
+	  usage (poptcon);
 	}
       remaining--;
       switch ((char) result)
 	{
+	case '?':
+	  poptPrintHelp (poptcon, stdout, 0);
+	  fprintf (stdout, " hostname [plugin-options...]\n");
+	  exit (0);
 	case 'v':
 	  break;
 	case 'r':
@@ -324,7 +332,7 @@ main (argc, argv)
 	  break;
 	default:
 	  printf ("Unknown character option %d (%c)", result, (char) result);
-	  usage ();
+	  usage (poptcon);
 	}
     }
   if (udp && ((port_to_use == USE_CHARGEN) ||
@@ -445,29 +453,43 @@ main (argc, argv)
 	     plugin_name, PLUGINS_DIR, dlerror ());
 	}
       plugin_init = dlsym (plugin, "init");
-      if (! plugin_init)
+      if (!plugin_init)
 	{
-	  err_sys ("Cannot find init in %s: %s", plugin_name, dlerror());
+	  err_sys ("Cannot find init in %s: %s", plugin_name, dlerror ());
 	}
       plugin_port_name = plugin_init (remaining, (const char **) leftover);
       if (plugin_port_name != NULL)
-	strcpy (port_name, plugin_port_name);
-      else
-	port_name = 0;
-      plugin_start = dlsym (plugin, "start");
-      if (! plugin_start)
 	{
-	  err_sys ("Cannot find start in %s: %s", plugin_name, dlerror());
+	  strcpy (port_name, plugin_port_name);
+	  plugin_raw = FALSE;
+	  plugin_start = dlsym (plugin, "start");
+	  if (!plugin_start)
+	    {
+	      err_sys ("Cannot find start in %s: %s", plugin_name,
+		       dlerror ());
+	    }
+	}
+      else
+	{
+	  port_name = 0;
+	  plugin_raw = TRUE;
+	  plugin_raw_start = dlsym (plugin, "start_raw");
+	  if (!plugin_raw_start)
+	    {
+	      err_sys ("Cannot find start_raw in %s: %s", plugin_name,
+		       dlerror ());
+	    }
 	}
       plugin_execute = dlsym (plugin, "execute");
       if (!plugin_execute)
 	{
-	  err_sys ("Cannot find execute in %s: %s", plugin_name, dlerror());
+	  err_sys ("Cannot find execute in %s: %s", plugin_name, dlerror ());
 	}
       plugin_terminate = dlsym (plugin, "terminate");
-      if (! plugin_terminate)
+      if (!plugin_terminate)
 	{
-	  err_sys ("Cannot find terminate in %s: %s", plugin_name, dlerror());
+	  err_sys ("Cannot find terminate in %s: %s", plugin_name,
+		   dlerror ());
 	}
     }
   if (!udp && !ttcp)
@@ -475,11 +497,11 @@ main (argc, argv)
       tcp = 1;
     }
   if (remaining == 0)
-    usage ();
+    usage (poptcon);
   if (!module_find && remaining != 1)
     {
-      printf ("%d args remaning, should be 1\n", remaining);
-      usage ();
+      printf ("%d args remaining, should be 1\n", remaining);
+      usage (poptcon);
     }
   if (verbose)
     {
@@ -613,18 +635,21 @@ main (argc, argv)
 	}
     }				/* Else it is an address, do not IDNize it */
 #endif
-  error = getaddrinfo (server, port_name, &hints, &res);
-  if (error)
+  if (!plugin || !plugin_raw)
     {
-      err_quit ("getaddrinfo error for host: %s %s",
-		server, gai_strerror (error));
-    }
+      error = getaddrinfo (server, port_name, &hints, &res);
+      if (error)
+	{
+	  err_quit ("getaddrinfo error for host: %s %s",
+		    server, gai_strerror (error));
+	}
 
-  if (getnameinfo (res->ai_addr, res->ai_addrlen, hbuf, sizeof (hbuf),
-		   pbuf, sizeof (pbuf), niflags) != 0)
-    {
-      strcpy (hbuf, "?");
-      strcpy (pbuf, "?");
+      if (getnameinfo (res->ai_addr, res->ai_addrlen, hbuf, sizeof (hbuf),
+		       pbuf, sizeof (pbuf), niflags) != 0)
+	{
+	  strcpy (hbuf, "?");
+	  strcpy (pbuf, "?");
+	}
     }
   if (plugin)
     {
@@ -632,7 +657,10 @@ main (argc, argv)
 	{
 	  printf ("Running start() for the plugin %s...\n", plugin_name);
 	}
-      plugin_start (res);
+      if (plugin_raw)
+	plugin_raw_start ();
+      else
+	plugin_start (res);
     }
 #ifdef HTTP
   if (http)
@@ -823,9 +851,12 @@ main (argc, argv)
 	    }
 	  else
 	    {
-	      printf
-		("Trying to call plugin %s for internet address %s %s...\n",
-		 plugin_name, hbuf, pbuf);
+	      if (plugin_raw)
+		printf ("Trying to call plugin %s...\n", plugin_name);
+	      else
+		printf
+		  ("Trying to call plugin %s for internet address %s %s...\n",
+		   plugin_name, hbuf, pbuf);
 	    }
 	}
 #ifdef FLUSH_OUTPUT
@@ -856,8 +887,9 @@ main (argc, argv)
       (void) gettimeofday (&oldtv, (struct timezone *) NULL);
       if (plugin)
 	{
-	  plugin_execute ();
-	  /* TODO: do something with the return code */
+	  plugin_result = plugin_execute ();
+	  if (plugin_result == -2)
+	    err_quit("");
 	}
       else
 	{

@@ -98,8 +98,15 @@ AC_ARG_WITH(gnutls,
         CPPFLAGS="${CPPFLAGS} -I$GNUTLSROOT/include"  
    fi
  fi],
- dnl Default: disable it
-)
+ dnl Default: disable it 
+) 
+
+dnl TODO: test if the getopt variable optreset exists and, if it
+dnl does, we can use getopt (Free BSDs and MacOS X). This implies to
+dnl maintain the two versions, popt and getopt, while echoping has 
+dnl many options. It probably means a high-level language to describe
+dnl the options and to produce the two versions. gengetopt is an obvious
+dnl candidate.
 AC_ARG_WITH(popt,
  [  --with-popt[=DIR]  popt command-line parsing library],dnl
  [if test "$withval" != "no"; then
