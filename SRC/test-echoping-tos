@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# $Id$
+
+echo ""
+echo "Since this tests tries remote servers, a failure is not always "
+echo " echoping's fault: it may be a network problem."
+echo "On some systems, you may NEED to be root."
+
+./echoping -P 0xa0 central.internatif.org
+
+
+
