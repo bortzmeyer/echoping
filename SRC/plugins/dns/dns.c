@@ -14,8 +14,8 @@ struct addrinfo name_server;
 poptContext dns_poptcon;
 char *request;
 int type;
-short use_tcp = FALSE;
-short no_recurse = FALSE;
+boolean use_tcp = FALSE;
+boolean no_recurse = FALSE;
 
 /* nsError stolen from Liu & Albitz check_soa (in their book "DNS and BIND") */
 
@@ -58,9 +58,10 @@ dns_usage (const char *msg)
 {
   if (msg)
     {
-      printf ("Error: %s\n", msg);
+      fprintf (stderr, "Error: %s\n", msg);
     }
-  poptPrintUsage (dns_poptcon, stdout, 0);
+  poptPrintUsage (dns_poptcon, stderr, 0);
+  fprintf (stderr, "  request\n");
   exit (1);
 }
 
@@ -68,13 +69,12 @@ char *
 init (const int argc, const char **argv)
 {
   int value;
+  int c;
+  char *hostname;
   char *msg = malloc (256);
-  char *type_name = NULL;
+  char *type_name, *upper_type_name = NULL;
   /* popt variables */
   struct poptOption options[] = {
-    {"request", 'r', POPT_ARG_STRING, &request, 0,
-     "Request (a domain name) to send to the name server",
-     "request"},
     {"type", 't', POPT_ARG_STRING, &type_name, 0,
      "Type of resources queried (A, MX, SOA, etc)",
      "type"},
@@ -98,27 +98,38 @@ init (const int argc, const char **argv)
 	  dns_usage (msg);
 	}
     }
+  hostname = (char *) poptGetArg (dns_poptcon);	/* Not used */
+  request = (char *) poptGetArg (dns_poptcon);
   if (request == NULL)
     dns_usage ("Mandatory request missing");
-  if (type_name == NULL)
+  if ((type_name == NULL) || !strcmp(type_name, ""))
     type = T_A;
   else
-    {				/* TODO: a better algorithm. Use dns_rdatatype_fromtext in BIND ? */
-      if (!strcmp (type_name, "A"))
+    {		
+      /* TODO: a better algorithm. Use dns_rdatatype_fromtext in BIND ? */
+      upper_type_name = (char *) malloc(strlen(type_name));
+      for (c=0; c<strlen(type_name); c++)
+	upper_type_name[c] = toupper(type_name[c]);
+      upper_type_name[strlen(type_name)] = '\0';
+      if (!strcmp (upper_type_name, "A"))
 	type = T_A;
-      else if (!strcmp (type_name, "AAAA"))
+      else if (!strcmp (upper_type_name, "AAAA"))
 	type = T_AAAA;
-      else if (!strcmp (type_name, "NS"))
+      else if (!strcmp (upper_type_name, "NS"))
 	type = T_NS;
-      else if (!strcmp (type_name, "SOA"))
+      else if (!strcmp (upper_type_name, "SOA"))
 	type = T_SOA;
-      else if (!strcmp (type_name, "MX"))
+      else if (!strcmp (upper_type_name, "MX"))
 	type = T_MX;
-      else if (!strcmp (type_name, "SRV"))
+      else if (!strcmp (upper_type_name, "SRV"))
 	type = T_SRV;
-      else if (!strcmp (type_name, "TXT"))
+      else if (!strcmp (upper_type_name, "CNAME"))
+	type = T_CNAME;
+      else if (!strcmp (upper_type_name, "PTR"))
+	type = T_PTR;
+      else if (!strcmp (upper_type_name, "TXT"))
 	type = T_TXT;
-      else
+      else 
 	dns_usage ("Unknown type");
     }
   return "domain";
@@ -136,7 +147,7 @@ start (struct addrinfo *res)
 		 sizeof (struct sockaddr));
   if (res_init () < 0)
     err_sys ("res_init");
-  _res.nsaddr_list[0] = name_server_sockaddr_in;	/* TODO: and IPv6? Detect _resext with autoconf (*BSD) and use it */
+  _res.nsaddr_list[0] = name_server_sockaddr_in;	/* TODO: and IPv6? We now if we have _res_ext (xBSD) so we should use HAVE_RES_EXT here */
   _res.nscount = 1;
   _res.options &= ~(RES_DNSRCH | RES_DEFNAMES | RES_NOALIASES);
   if (use_tcp)

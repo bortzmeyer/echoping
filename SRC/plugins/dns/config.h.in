@@ -21,6 +21,12 @@
 /* Define to 1 if you have the `poptGetContext' function. */
 #undef HAVE_POPTGETCONTEXT
 
+/* Define if you have the _res variable */
+#undef HAVE_RES
+
+/* Define if you have the _res_ext variable (for IPv6) */
+#undef HAVE_RES_EXT
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
