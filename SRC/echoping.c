@@ -82,7 +82,7 @@ main (argc, argv)
 #endif
   unsigned char fill = ' ';
   unsigned int fill_i;
-  unsigned short fill_requested = 0;
+  boolean fill_requested = 0;
   unsigned int i = 0;
   char *plugin_name, *complete_plugin_name = NULL;
   char *ext;
@@ -92,34 +92,34 @@ main (argc, argv)
   void to_alarm ();		/* our alarm() signal handler */
   void interrupted ();
   unsigned int timeout = 10;
-  unsigned short timeout_requested = 0;
-  unsigned short size_requested = 0;
+  boolean timeout_requested = 0;
+  boolean size_requested = 0;
   char *url = "";
 #if USE_SIGACTION
   struct sigaction mysigaction;
 #endif
 
   char *plugin_port_name, *port_name;
-  unsigned short plugin_raw;
-  unsigned short port_to_use = USE_ECHO;
-  unsigned short http = 0;
-  unsigned short smtp = 0;
-  unsigned short discard = 0;
-  unsigned short chargen = 0;
-  unsigned short udp = 0;
-  unsigned short icp = 0;
+  boolean plugin_raw;
+  boolean port_to_use = USE_ECHO;
+  boolean http = 0;
+  boolean smtp = 0;
+  boolean discard = 0;
+  boolean chargen = 0;
+  boolean udp = 0;
+  boolean icp = 0;
 
-  unsigned short nocache = 0;
+  boolean nocache = 0;
 
 #ifdef ICP
   icp_opcode opcode = ICP_OP_QUERY;
 #endif
 
-  unsigned short ttcp = 0;
-  unsigned short tcp = 0;
-  unsigned short ssl = 0;
+  boolean ttcp = 0;
+  boolean tcp = 0;
+  boolean ssl = 0;
 
-  unsigned short stop_at_newlines = 1;
+  boolean stop_at_newlines = 1;
 
 #ifdef OPENSSL
   SSL_METHOD *meth;

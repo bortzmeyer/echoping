@@ -112,19 +112,27 @@ typedef union _CHANNEL
 }
 CHANNEL;
 
+#if __sparc__ && __GNUC__
+/* There is a bug in gcc 2.95 and gcc 3.3 on UltraSparc platforms, that is triggered when you give addresses of shorts to the popt library. See
+   for instance Debian bug #254322. Alignment bug? */
+typedef unsigned int boolean;
+#else
+typedef unsigned int boolean;
+#endif
+
 struct result
 {
-  unsigned short valid;
+  boolean valid;
   struct timeval timevalue;
 };
 
-unsigned short timeout_flag;
+boolean timeout_flag;
 struct echoping_struct
 {
-  unsigned short udp; /* Use the UDP protocol (TCP is the default) */
-  unsigned short only_ipv4;
-  unsigned short only_ipv6;
-  unsigned short verbose;
+  boolean udp;			/* Use the UDP protocol (TCP is the default) */
+  boolean only_ipv4;
+  boolean only_ipv6;
+  boolean verbose;
 };
 typedef struct echoping_struct echoping_options;
 #ifndef IN_PLUGIN
@@ -226,7 +234,7 @@ int smtp_read_response_from_server ();
 
 extern char *progname;
 
-extern unsigned short timeout_flag;
+extern boolean timeout_flag;
 
 #ifndef HEADER_INCLUDED
 #define HEADER_INCLUDED
