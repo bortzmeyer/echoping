@@ -1,5 +1,8 @@
 @BOTTOM@
 
+/* Do we have getaddrinfo()? */
+#undef HAVE_GETADDRINFO_PROTO
+
 /* Do we have POSIX signals? */
 #undef HAVE_SIGACTION
 

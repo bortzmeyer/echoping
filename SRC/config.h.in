@@ -18,9 +18,6 @@
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
 #undef TIME_WITH_SYS_TIME
 
-/* Define if you have the getaddrinfo function.  */
-#undef HAVE_GETADDRINFO
-
 /* Define if you have the gethostbyname function.  */
 #undef HAVE_GETHOSTBYNAME
 
@@ -48,6 +45,9 @@
 /* Version number of package */
 #undef VERSION
 
+
+/* Do we have getaddrinfo()? */
+#undef HAVE_GETADDRINFO_PROTO
 
 /* Do we have POSIX signals? */
 #undef HAVE_SIGACTION
