@@ -1,3 +1,7 @@
+4.0.1 (2001-01-26)
+
+	* Fix SSL bug when using -n (#130078)
+
 4.0.0 (2001-01-25)
 
 	* SSL (Secure Sockets Layer) support
