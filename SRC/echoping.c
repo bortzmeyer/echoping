@@ -530,7 +530,7 @@ main (argc, argv)
   memset (&hints_numeric, 0, sizeof (hints_numeric));
   hints_numeric.ai_family = family;
   hints_numeric.ai_flags = AI_NUMERICHOST;
-  error = getaddrinfo (server, port_name, &hints_numeric, NULL);
+  error = getaddrinfo (server, port_name, &hints_numeric, &res);
   if (error && error == EAI_NONAME)	/* A name, not an address */
     {
       if ((result =
