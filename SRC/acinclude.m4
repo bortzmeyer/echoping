@@ -126,7 +126,6 @@ AC_TRY_LINK([#include <math.h>
 ]) 
 ])
 
-
 dnl Check the port name for HTTP. Everyone should declare "http" but
 dnl not everyone does. This test is BUGgy, we should use a program
 dnl which calls getservbyname() otherwise we miss NIS tables, for

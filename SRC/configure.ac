@@ -151,6 +151,9 @@ AC_CHECK_FUNCS(getaddrinfo getnameinfo inet_ntop, ,
 		
 AC_CHECK_FUNCS(gettimeofday socket sigaction strerror, , AC_MSG_ERROR(Missing mandatory function))
 AC_CHECK_FUNCS(usleep)
+AC_CHECK_FUNCS(dlopen, , 
+   [AC_CHECK_LIB(dl,dlopen, ,
+       [AC_MSG_ERROR([echoping requires dlopen (dynamic loading of libraries) for plugins])])])
 
 if test "$LIBIDN" = "1"; then
 CF_LIB_LIBIDN
@@ -251,6 +254,7 @@ if test "$GCC" = yes; then
         CFLAGS="$CFLAGS -Wall"
 fi
 
+AC_CONFIG_SUBDIRS(plugins)
 AC_OUTPUT(Makefile)
 
 AC_DEFUN([DISPLAY_SETTING],

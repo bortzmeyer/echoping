@@ -33,6 +33,7 @@
 #include        <string.h>
 #include        <signal.h>
 #include        <math.h>
+#include        <dlfcn.h>
 
 #ifdef OPENSSL
 #include <openssl/crypto.h>
@@ -113,6 +114,20 @@ struct result
   unsigned short valid;
   struct timeval timevalue;
 };
+
+unsigned short timeout_flag;
+
+#ifndef IN_PLUGIN
+/* The functions we will find in the plugin */
+/* Initializes the plugin with its arguments. Returns the port name or number. */
+typedef char * (*init_f) (const int argc, const char **argv);
+init_f plugin_init;
+typedef void (*start_f) (struct addrinfo *);
+start_f plugin_start;
+typedef void (*execute_f) ();
+execute_f plugin_execute;
+#endif
+
 #endif
 
 struct timeval null_timeval;

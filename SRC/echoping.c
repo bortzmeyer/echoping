@@ -11,7 +11,6 @@
 
 
 char *progname;
-unsigned short timeout_flag;
 
 #include	"echoping.h"
 
@@ -83,6 +82,9 @@ main (argc, argv)
   unsigned char fill = ' ';
   unsigned short fill_requested = 0;
   unsigned int i = 0;
+  char *plugin_name = NULL;
+  void *plugin;
+  char *dl_result;
 
   void to_alarm ();		/* our alarm() signal handler */
   void interrupted ();
@@ -154,7 +156,7 @@ main (argc, argv)
     }
   progname = argv[0];
   while ((result =
-	  getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA46")) != -1)
+	  getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA46m:")) != -1)
     {
       switch ((char) result)
 	{
@@ -299,6 +301,9 @@ main (argc, argv)
 	case '6':
 	  family = AF_INET6;
 	  break;
+	case 'm':
+	  plugin_name = optarg;
+	  break;
 	default:
 	  usage ();
 	}
@@ -311,16 +316,6 @@ main (argc, argv)
 		      progname);
       exit (1);
     }
-/*  
-   Version 2.1 now allows global timeouts for TCP connections
-   *
-   if (!udp && (timeout_requested))
-   {
-   (void) fprintf (stderr,
-   "%s: Time out ignored for TCP connections.\n", progname);
-   exit (1);
-   }
- */
   if ((http || smtp) && (fill_requested))
     {
       (void) fprintf (stderr,
@@ -410,6 +405,34 @@ main (argc, argv)
       exit (1);
     }
 #endif
+  if (plugin_name)
+    {
+      /* TODO: add '.so' to the plugin name if it's not already there */
+      plugin = dlopen (plugin_name, RTLD_NOW);
+      if (!plugin)
+	{
+	  err_sys ("Cannot load \"%s\": %s", plugin_name, dlerror ());
+	}
+      plugin_init = dlsym (plugin, "init");
+      dl_result = dlerror ();
+      if (dl_result)
+	{
+	  err_sys ("Cannot find init in %s: %s", plugin_name, dl_result);
+	}
+      strcpy (port_name, plugin_init (argc, argv));
+      plugin_start = dlsym (plugin, "start");
+      dl_result = dlerror ();
+      if (dl_result)
+	{
+	  err_sys ("Cannot find start in %s: %s", plugin_name, dl_result);
+	}
+      plugin_execute = dlsym (plugin, "execute");
+      dl_result = dlerror ();
+      if (dl_result)
+	{
+	  err_sys ("Cannot find execute in %s: %s", plugin_name, dl_result);
+	}
+    }
   if (!udp && !ttcp)
     {
       tcp = 1;
@@ -565,12 +588,11 @@ main (argc, argv)
       strcpy (hbuf, "?");
       strcpy (pbuf, "?");
     }
-
-  /*
-   * Fill in the structure "serv_addr" with the address of the server
-   * that we want to connect with.
-   */
-
+  if (verbose)
+    {
+      printf ("Running start() for the plugin %s...\n", plugin_name);
+    }
+  plugin_start (res);
 #ifdef HTTP
   if (http)
     {
@@ -674,89 +696,105 @@ main (argc, argv)
       /*
        * Open a socket.
        */
-      if ((sockfd =
-	   socket (res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
-	err_sys ("Can't open socket");
-      if (udp)
+      if (!plugin)
 	{
-	  struct addrinfo hints2, *res2;
+	  if ((sockfd =
+	       socket (res->ai_family, res->ai_socktype,
+		       res->ai_protocol)) < 0)
+	    err_sys ("Can't open socket");
+	  if (udp)
+	    {
+	      struct addrinfo hints2, *res2;
 
-	  memset (&hints2, 0, sizeof (hints2));
-	  hints2.ai_family = res->ai_family;
-	  hints2.ai_flags = AI_PASSIVE;
-	  hints2.ai_socktype = SOCK_DGRAM;
-	  error = getaddrinfo (NULL, "0", &hints2, &res2);
-	  if (error)
-	    {
-	      err_sys ("getaddrinfo error");
+	      memset (&hints2, 0, sizeof (hints2));
+	      hints2.ai_family = res->ai_family;
+	      hints2.ai_flags = AI_PASSIVE;
+	      hints2.ai_socktype = SOCK_DGRAM;
+	      error = getaddrinfo (NULL, "0", &hints2, &res2);
+	      if (error)
+		{
+		  err_sys ("getaddrinfo error");
+		}
+	      if (bind (sockfd, res2->ai_addr, res2->ai_addrlen) < 0)
+		{
+		  err_sys ("bind error");
+		}
 	    }
-	  if (bind (sockfd, res2->ai_addr, res2->ai_addrlen) < 0)
-	    {
-	      err_sys ("bind error");
-	    }
-	}
 #ifdef USE_PRIORITY
-      if (priority_requested)
-	{
-	  if (verbose)
+	  if (priority_requested)
 	    {
-	      printf ("Setting socket priority to %d (0x%02x)\n",
-		      priority, (unsigned int) priority);
+	      if (verbose)
+		{
+		  printf ("Setting socket priority to %d (0x%02x)\n",
+			  priority, (unsigned int) priority);
+		}
+	      if (setsockopt (sockfd,
+			      SOL_SOCKET,
+			      SO_PRIORITY,
+			      (void *) &priority,
+			      (socklen_t) sizeof (priority)))
+		{
+		  err_sys ("Failed setting socket priority");
+		}
 	    }
-	  if (setsockopt (sockfd,
-			  SOL_SOCKET,
-			  SO_PRIORITY,
-			  (void *) &priority, (socklen_t) sizeof (priority)))
-	    {
-	      err_sys ("Failed setting socket priority");
-	    }
-	}
 #endif
 #if USE_TOS
-      if (tos_requested)
-	{
-	  if (verbose)
+	  if (tos_requested)
 	    {
-	      printf ("Setting IP type of service octet to %d (0x%02x)\n",
-		      tos, (unsigned int) tos);
+	      if (verbose)
+		{
+		  printf ("Setting IP type of service octet to %d (0x%02x)\n",
+			  tos, (unsigned int) tos);
+		}
+	      if (setsockopt (sockfd,
+			      SOL_IP,
+			      IP_TOS, (void *) &tos,
+			      (socklen_t) sizeof (tos)))
+		{
+		  err_sys ("Failed setting IP type of service octet");
+		}
 	    }
-	  if (setsockopt (sockfd,
-			  SOL_IP,
-			  IP_TOS, (void *) &tos, (socklen_t) sizeof (tos)))
-	    {
-	      err_sys ("Failed setting IP type of service octet");
-	    }
-	}
 #endif
+	}
       if (verbose)
 	{
-	  if (tcp)
+	  if (!plugin)
 	    {
-	      printf
-		("Trying to connect to internet address %s %s to transmit %u bytes...\n",
-		 hbuf, pbuf, n);
-	    }
+	      if (tcp)
+		{
+		  printf
+		    ("Trying to connect to internet address %s %s to transmit %u bytes...\n",
+		     hbuf, pbuf, n);
+		}
 #ifdef ICP
-	  if (icp)
-	    {
-	      printf
-		("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
-		 length, hbuf);
-	    }
+	      if (icp)
+		{
+		  printf
+		    ("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
+		     length, hbuf);
+		}
 #endif
+	      else
+		{
+		  printf
+		    ("Trying to send %u bytes to internet address %s...\n",
+		     size, hbuf);
+		}
+	    }
 	  else
 	    {
-	      printf ("Trying to send %u bytes to internet address %s...\n",
-		      size, hbuf);
+	      printf
+		("Trying to call plugin %s for internet address %s %s...\n",
+		 plugin_name, hbuf, pbuf);
 	    }
-#ifdef FLUSH_OUTPUT
-	  if (fflush ((FILE *) NULL) != 0)
-	    {
-	      err_sys ("I cannot flush");
-	    }
-#endif
 	}
-      if (tcp && timeout_requested)	/* echoping's timeout has a different semantic in TCP and UDP */
+#ifdef FLUSH_OUTPUT
+      if (fflush ((FILE *) NULL) != 0)
+	{
+	  err_sys ("I cannot flush");
+	}
+#endif
+      if ((tcp || plugin) && timeout_requested)	/* echoping's timeout has a different semantic in TCP and UDP */
 	{
 #ifdef USE_SIGACTION
 	  mysigaction.sa_handler = to_alarm;
@@ -776,19 +814,53 @@ main (argc, argv)
 	  alarm (timeout);
 	}
       (void) gettimeofday (&oldtv, (struct timezone *) NULL);
-      if (!ttcp && !icp)
+      if (plugin)
 	{
-	  /*
-	   * Connect to the server.
-	   */
-	  (void) gettimeofday (&conntv, (struct timezone *) NULL);
-	  if (connect (sockfd, res->ai_addr, res->ai_addrlen) < 0)
+	  plugin_execute ();
+	}
+      else
+	{
+	  if (!ttcp && !icp)
 	    {
-	      if ((errno == EINTR) && (timeout_flag))
+	      /*
+	       * Connect to the server.
+	       */
+	      (void) gettimeofday (&conntv, (struct timezone *) NULL);
+	      if (connect (sockfd, res->ai_addr, res->ai_addrlen) < 0)
 		{
-		  printf ("Timeout while connecting\n");
-		  close (sockfd);
-		  continue;
+		  if ((errno == EINTR) && (timeout_flag))
+		    {
+		      printf ("Timeout while connecting\n");
+		      close (sockfd);
+		      continue;
+#ifdef FLUSH_OUTPUT
+		      if (fflush ((FILE *) NULL) != 0)
+			{
+			  err_sys ("I cannot flush");
+			}
+#endif
+		    }
+		  else
+		    err_sys ("Can't connect to server");
+		}
+	      else
+		{
+		  if (tcp)
+		    {
+		      (void) gettimeofday (&connectedtv,
+					   (struct timezone *) NULL);
+		      temp = connectedtv;
+		      tvsub (&temp, &conntv);
+		      if (verbose)
+			{
+			  printf ("Connected...\n");
+			  printf ("TCP Latency: %d.%06d seconds\n",
+				  (int) temp.tv_sec, (int) temp.tv_usec);
+			}
+		    }
+		}
+	      if (verbose && tcp)
+		{
 #ifdef FLUSH_OUTPUT
 		  if (fflush ((FILE *) NULL) != 0)
 		    {
@@ -796,116 +868,150 @@ main (argc, argv)
 		    }
 #endif
 		}
-	      else
-		err_sys ("Can't connect to server");
-	    }
-	  else
-	    {
-	      if (tcp)
-		{
-		  (void) gettimeofday (&connectedtv,
-				       (struct timezone *) NULL);
-		  temp = connectedtv;
-		  tvsub (&temp, &conntv);
-		  if (verbose)
-		    {
-		      printf ("Connected...\n");
-		      printf ("TCP Latency: %d.%06d seconds\n",
-			      (int) temp.tv_sec, (int) temp.tv_usec);
-		    }
-		}
-	    }
-
-	  if (verbose && tcp)
-	    {
-#ifdef FLUSH_OUTPUT
-	      if (fflush ((FILE *) NULL) != 0)
-		{
-		  err_sys ("I cannot flush");
-		}
-#endif
-	    }
-	  if (!udp && !ssl)
-	    if ((files = fdopen (sockfd, "r")) == NULL)
-	      err_sys ("Cannot fdopen");
+	      if (!udp && !ssl)
+		if ((files = fdopen (sockfd, "r")) == NULL)
+		  err_sys ("Cannot fdopen");
 #ifdef OPENSSL
-	  if (ssl)
-	    {
-	      SSL_set_fd (sslh, sockfd);
-	      if (SSL_connect (sslh) == -1)
-		if ((errno == EINTR) && (timeout_flag))
-		  {
-		    printf ("Timeout while starting SSL\n");
-		    close (sockfd);
-		    continue;
-		  }
-	      if (verbose)
-		printf ("SSL connection using %s\n", SSL_get_cipher (sslh));
-	      /* We could check the server's certificate or other funny
-	         things */
-	    }
+	      if (ssl)
+		{
+		  SSL_set_fd (sslh, sockfd);
+		  if (SSL_connect (sslh) == -1)
+		    if ((errno == EINTR) && (timeout_flag))
+		      {
+			printf ("Timeout while starting SSL\n");
+			close (sockfd);
+			continue;
+		      }
+		  if (verbose)
+		    printf ("SSL connection using %s\n",
+			    SSL_get_cipher (sslh));
+		  /* We could check the server's certificate or other funny
+		     things */
+		}
 #endif
 #ifdef GNUTLS
-	  if (ssl)
-	    {
-	      tls_result = gnutls_init (&session, GNUTLS_CLIENT);
-	      if (tls_result != 0)
-		err_sys ("Cannot create a new TLS session");
-	      gnutls_set_default_priority (session);
-	      gnutls_certificate_type_set_priority (session,
-						    cert_type_priority);
-	      gnutls_credentials_set (session, GNUTLS_CRD_CERTIFICATE, xcred);
-	      gnutls_transport_set_ptr (session,
-					(gnutls_transport_ptr) sockfd);
-	      tls_result = gnutls_handshake (session);
-	      if (tls_result < 0)
+	      if (ssl)
 		{
-		  if ((errno == EINTR) && (timeout_flag))
+		  tls_result = gnutls_init (&session, GNUTLS_CLIENT);
+		  if (tls_result != 0)
+		    err_sys ("Cannot create a new TLS session");
+		  gnutls_set_default_priority (session);
+		  gnutls_certificate_type_set_priority (session,
+							cert_type_priority);
+		  gnutls_credentials_set (session, GNUTLS_CRD_CERTIFICATE,
+					  xcred);
+		  gnutls_transport_set_ptr (session,
+					    (gnutls_transport_ptr) sockfd);
+		  tls_result = gnutls_handshake (session);
+		  if (tls_result < 0)
 		    {
-		      printf ("Timeout while starting TLS\n");
-		      close (sockfd);
-		      continue;
+		      if ((errno == EINTR) && (timeout_flag))
+			{
+			  printf ("Timeout while starting TLS\n");
+			  close (sockfd);
+			  continue;
+			}
+		      else
+			{
+			  err_sys ("Cannot start the TLS session: %s",
+				   gnutls_strerror (tls_result));
+			}
 		    }
+		  if (verbose)
+		    printf ("TLS connection using \"%s\"\n",
+			    gnutls_cipher_get_name (gnutls_cipher_get
+						    (session)));
+		  /* We could check the server's certificate or other funny
+		     things. See http://www.gnu.org/software/gnutls/documentation/gnutls/gnutls.html#SECTION00622000000000000000 */
+		}
+#endif
+	    }
+	  /* Not T/TCP */
+	  else
+	    {
+	      /* No initial connection */
+	    }
+	  if ((port_to_use == USE_ECHO) || (port_to_use == USE_DISCARD) ||
+	      (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
+	      (port_to_use == USE_SMTP))
+	    {
+#ifdef USE_TTCP
+	      if (ttcp)
+		{
+		  if (sendto (sockfd, sendline, n, MSG_EOF,
+			      res->ai_addr, res->ai_addrlen) != n)
+		    err_sys ("sendto error on socket");
+		  if (verbose)
+		    {
+		      printf ("T/TCP connection done\n");
+		    }
+		}
+	      else
+#endif
+	      if (!udp)
+		{
+		  if (!ssl)
+		    {
+		      /* Write something to the server */
+		      if (writen (sockfd, sendline, n) != n)
+			{
+			  if ((nr < 0 || nr != n) && timeout_flag)
+			    {
+			      nr = n;
+			      printf ("Timeout while writing\n");
+			      close (sockfd);
+			      continue;
+			    }
+			  else
+			    err_sys ("writen error on socket");
+			}
+		    }
+#ifdef OPENSSL
 		  else
 		    {
-		      err_sys ("Cannot start the TLS session: %s",
-			       gnutls_strerror (tls_result));
+		      if ((rc = SSL_write (sslh, sendline, n)) != n)
+			{
+			  if ((nr < 0 || nr != n) && timeout_flag)
+			    {
+			      nr = n;
+			      printf ("Timeout while writing\n");
+			      close (sockfd);
+			      continue;
+			    }
+			  else
+			    {
+			      sslcode = ERR_get_error ();
+			      err_sys ("SSL_write error on socket: %s",
+				       ERR_error_string (sslcode, NULL));
+			    }
+			}
+		      /* printf ("DEBUG: writing %s with SSL\n", sendline); */
 		    }
-		}
-	      if (verbose)
-		printf ("TLS connection using \"%s\"\n",
-			gnutls_cipher_get_name (gnutls_cipher_get (session)));
-	      /* We could check the server's certificate or other funny
-	         things. See http://www.gnu.org/software/gnutls/documentation/gnutls/gnutls.html#SECTION00622000000000000000 */
-	    }
 #endif
-	}
-      /* Not T/TCP */
-      else
-	{
-	  /* No initial connection */
-	}
-      if ((port_to_use == USE_ECHO) || (port_to_use == USE_DISCARD) ||
-	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
-	  (port_to_use == USE_SMTP))
-	{
-#ifdef USE_TTCP
-	  if (ttcp)
-	    {
-	      if (sendto (sockfd, sendline, n, MSG_EOF,
-			  res->ai_addr, res->ai_addrlen) != n)
-		err_sys ("sendto error on socket");
-	      if (verbose)
-		{
-		  printf ("T/TCP connection done\n");
-		}
-	    }
-	  else
+#ifdef GNUTLS
+		  else
+		  {
+		    if ((rc =
+			 gnutls_record_send (session, sendline,
+					     strlen (sendline))) != n)
+		      {
+			if ((nr < 0 || nr != n) && timeout_flag)
+			  {
+			    nr = n;
+			    printf ("Timeout while writing\n");
+			    close (sockfd);
+			    continue;
+			  }
+			else
+			  {
+			    err_sys
+			      ("gnutls_record_send error %d on socket: %s",
+			       rc, gnutls_strerror (rc));
+			  }
+		      }
+		    /* printf ("DEBUG: writing %s with TLS\n", sendline); */
+		  }
 #endif
-	  if (!udp)
-	    {
-	      if (!ssl)
-		{
 		  /* Write something to the server */
 		  if (writen (sockfd, sendline, n) != n)
 		    {
@@ -920,278 +1026,220 @@ main (argc, argv)
 			err_sys ("writen error on socket");
 		    }
 		}
+	      else
+		{
+#ifdef ICP
+		  if (icp)
+		    {
+		      if (sendto (sockfd, sendline, length, 0,
+				  res->ai_addr, res->ai_addrlen) != length)
+			err_sys ("sendto error on socket");
+		    }
+		  else
+#endif
+		    /*
+		     * if (sendto(sockfd, sendline, n, 0,
+		     * &serv_addr, sizeof(serv_addr)) != n)
+		     * err_sys("sendto error on socket");
+		     */
+		  if (send (sockfd, sendline, n, 0) != n)
+		    err_sys ("send error on socket");
+		}
+	      if (verbose)
+		{
+		  (void) gettimeofday (&sendtv, (struct timezone *) NULL);
+#ifdef ICP
+		  if (icp)
+		    printf ("Sent (%d bytes)...\n", length);
+		  else
+#endif
+		    printf ("Sent (%d bytes)...\n", n);
+
+#ifdef FLUSH_OUTPUT
+		  if (fflush ((FILE *) NULL) != 0)
+		    {
+		      err_sys ("I cannot flush");
+		    }
+#endif
+		}
+	    }
+
+	  if (tcp && !discard)
+	    {
+	      fd_set mask;
+	      int n = 0;
+
+	      FD_ZERO (&mask);
+
+	      if (!(http && ssl))
+		n = fileno (files);
 #ifdef OPENSSL
 	      else
 		{
-		  if ((rc = SSL_write (sslh, sendline, n)) != n)
-		    {
-		      if ((nr < 0 || nr != n) && timeout_flag)
-			{
-			  nr = n;
-			  printf ("Timeout while writing\n");
-			  close (sockfd);
-			  continue;
-			}
-		      else
-			{
-			  sslcode = ERR_get_error ();
-			  err_sys ("SSL_write error on socket: %s",
-				   ERR_error_string (sslcode, NULL));
-			}
-		    }
-		  /* printf ("DEBUG: writing %s with SSL\n", sendline); */
+		  n = SSL_get_fd (sslh);
 		}
 #endif
 #ifdef GNUTLS
 	      else
 	      {
-		if ((rc =
-		     gnutls_record_send (session, sendline,
-					 strlen (sendline))) != n)
-		  {
-		    if ((nr < 0 || nr != n) && timeout_flag)
-		      {
-			nr = n;
-			printf ("Timeout while writing\n");
-			close (sockfd);
-			continue;
-		      }
-		    else
-		      {
-			err_sys ("gnutls_record_send error %d on socket: %s",
-				 rc, gnutls_strerror (rc));
-		      }
-		  }
-		/* printf ("DEBUG: writing %s with TLS\n", sendline); */
+		n = sockfd;
 	      }
 #endif
-	      /* Write something to the server */
-	      if (writen (sockfd, sendline, n) != n)
+	      FD_SET (n, &mask);
+	      if (select (n + 1, &mask, 0, 0, NULL) > 0)
 		{
-		  if ((nr < 0 || nr != n) && timeout_flag)
+		  (void) gettimeofday (&recvtv, (struct timezone *) NULL);
+		  temp = recvtv;
+		  tvsub (&temp, &sendtv);
+		  if (verbose)
+		    printf ("Application Latency: %d.%06d seconds\n",
+			    (int) temp.tv_sec, (int) temp.tv_usec);
+		}
+
+	    }
+
+	  if ((port_to_use == USE_ECHO) || (port_to_use == USE_CHARGEN) ||
+	      (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
+	      (port_to_use == USE_SMTP))
+	    {
+	      if (!udp)
+		{
+		  if (!http && !smtp && !discard)
 		    {
-		      nr = n;
-		      printf ("Timeout while writing\n");
-		      close (sockfd);
-		      continue;
+		      /* Read from the server */
+		      nr = readline (files, recvline, n, stop_at_newlines);
 		    }
-		  else
-		    err_sys ("writen error on socket");
-		}
-	    }
-	  else
-	    {
-#ifdef ICP
-	      if (icp)
-		{
-		  if (sendto (sockfd, sendline, length, 0,
-			      res->ai_addr, res->ai_addrlen) != length)
-		    err_sys ("sendto error on socket");
-		}
-	      else
-#endif
-		/*
-		 * if (sendto(sockfd, sendline, n, 0,
-		 * &serv_addr, sizeof(serv_addr)) != n)
-		 * err_sys("sendto error on socket");
-		 */
-	      if (send (sockfd, sendline, n, 0) != n)
-		err_sys ("send error on socket");
-	    }
-	  if (verbose)
-	    {
-	      (void) gettimeofday (&sendtv, (struct timezone *) NULL);
-#ifdef ICP
-	      if (icp)
-		printf ("Sent (%d bytes)...\n", length);
-	      else
-#endif
-		printf ("Sent (%d bytes)...\n", n);
-
-#ifdef FLUSH_OUTPUT
-	      if (fflush ((FILE *) NULL) != 0)
-		{
-		  err_sys ("I cannot flush");
-		}
-#endif
-	    }
-	}
-
-      if (tcp && !discard)
-	{
-	  fd_set mask;
-	  int n = 0;
-
-	  FD_ZERO (&mask);
-
-	  if (!(http && ssl))
-	    n = fileno (files);
-#ifdef OPENSSL
-	  else
-	    {
-	      n = SSL_get_fd (sslh);
-	    }
-#endif
-#ifdef GNUTLS
-	  else
-	  {
-	    n = sockfd;
-	  }
-#endif
-	  FD_SET (n, &mask);
-	  if (select (n + 1, &mask, 0, 0, NULL) > 0)
-	    {
-	      (void) gettimeofday (&recvtv, (struct timezone *) NULL);
-	      temp = recvtv;
-	      tvsub (&temp, &sendtv);
-	      if (verbose)
-		printf ("Application Latency: %d.%06d seconds\n",
-			(int) temp.tv_sec, (int) temp.tv_usec);
-	    }
-
-	}
-
-      if ((port_to_use == USE_ECHO) || (port_to_use == USE_CHARGEN) ||
-	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
-	  (port_to_use == USE_SMTP))
-	{
-	  if (!udp)
-	    {
-	      if (!http && !smtp && !discard)
-		{
-		  /* Read from the server */
-		  nr = readline (files, recvline, n, stop_at_newlines);
-		}
-	      else if (discard)
-		{
-		  /* No reply, no read */
-		}
+		  else if (discard)
+		    {
+		      /* No reply, no read */
+		    }
 #ifdef HTTP
-	      else if (http)
-		{
-		  if (!ssl)
-		    channel.fs = files;
+		  else if (http)
+		    {
+		      if (!ssl)
+			channel.fs = files;
 #ifdef OPENSSL
-		  else
-		    channel.ssl = sslh;
+		      else
+			channel.ssl = sslh;
 #endif
 #ifdef GNUTLS
-		  else
-		  channel.tls = session;
+		      else
+		      channel.tls = session;
 #endif
-		  nr = read_from_server (channel, ssl);
-		}
+		      nr = read_from_server (channel, ssl);
+		    }
 #endif
 #ifdef SMTP
-	      else if (smtp)
-		{
-		  nr = smtp_read_response_from_server (files);
-		}
+		  else if (smtp)
+		    {
+		      nr = smtp_read_response_from_server (files);
+		    }
 #endif
 
-	    }
-	  else
-	    {
-#ifdef USE_SIGACTION
-	      mysigaction.sa_handler = to_alarm;
-	      sigemptyset (&mysigaction.sa_mask);
-#ifdef SA_INTERRUPT
-	      mysigaction.sa_flags = SA_INTERRUPT;
-#else
-	      mysigaction.sa_flags = (int) 0;
-#endif
-	      if ((sigaction (SIGALRM, &mysigaction, NULL)) < 0)
-		err_sys ("Cannot set signal handler");
-#else
-	      signal (SIGALRM, to_alarm);
-#endif
-	      timeout_flag = 0;	/* for signal handler */
-	      alarm (timeout);
-#ifdef ICP
-	      if (icp)
-		{
-		  nr = recv_icp (sockfd, recvline, retcode);
-		  if (verbose)
-		    {
-		      printf ("%s\n", retcode);
-		    }
 		}
 	      else
 		{
+#ifdef USE_SIGACTION
+		  mysigaction.sa_handler = to_alarm;
+		  sigemptyset (&mysigaction.sa_mask);
+#ifdef SA_INTERRUPT
+		  mysigaction.sa_flags = SA_INTERRUPT;
+#else
+		  mysigaction.sa_flags = (int) 0;
 #endif
-		  nr = recv (sockfd, recvline, n, 0);
-		  /*
-		   * nr = recvfrom(sockfd, recvline, n, 0,
-		   * (struct sockaddr *) 0, (int *) 0);
-		   * recvfrom fails on SunOS on connected
-		   * sockets.
-		   */
-		  /*
-		   * Todo: in UDP, we should loop to read: we
-		   * can have several reads necessary.
-		   */
-		  alarm (0);
-		  if ((nr < 0) && (errno == EINTR) && (timeout_flag))
+		  if ((sigaction (SIGALRM, &mysigaction, NULL)) < 0)
+		    err_sys ("Cannot set signal handler");
+#else
+		  signal (SIGALRM, to_alarm);
+#endif
+		  timeout_flag = 0;	/* for signal handler */
+		  alarm (timeout);
+#ifdef ICP
+		  if (icp)
 		    {
+		      nr = recv_icp (sockfd, recvline, retcode);
+		      if (verbose)
+			{
+			  printf ("%s\n", retcode);
+			}
+		    }
+		  else
+		    {
+#endif
+		      nr = recv (sockfd, recvline, n, 0);
+		      /*
+		       * nr = recvfrom(sockfd, recvline, n, 0,
+		       * (struct sockaddr *) 0, (int *) 0);
+		       * recvfrom fails on SunOS on connected
+		       * sockets.
+		       */
+		      /*
+		       * Todo: in UDP, we should loop to read: we
+		       * can have several reads necessary.
+		       */
+		      alarm (0);
+		      if ((nr < 0) && (errno == EINTR) && (timeout_flag))
+			{
+			  nr = n;
+			  printf ("Timeout\n");
+#ifdef FLUSH_OUTPUT
+			  if (fflush ((FILE *) NULL) != 0)
+			    {
+			      err_sys ("I cannot flush");
+			    }
+#endif
+			}
+#ifdef ICP
+		    }
+#endif
+		}
+	      if (!http && !icp && !smtp && !discard)
+		{
+		  if ((nr < 0 || nr != n) && timeout_flag)
+		    /* if ((nr < 0 || nr != n) && (errno == EINTR) && timeout_flag) */
+		    {
+		      printf ("Timeout while reading (%d byte(s) read)\n",
+			      (nr == -1) ? 0 : nr);
 		      nr = n;
-		      printf ("Timeout\n");
 #ifdef FLUSH_OUTPUT
 		      if (fflush ((FILE *) NULL) != 0)
 			{
 			  err_sys ("I cannot flush");
 			}
 #endif
+		      close (sockfd);
+		      continue;
 		    }
-#ifdef ICP
+		  if (nr < 0 || nr != n)
+		    err_sys
+		      ("readline error: %d bytes read, %d bytes requested",
+		       nr, n);
 		}
-#endif
-	    }
-	  if (!http && !icp && !smtp && !discard)
-	    {
-	      if ((nr < 0 || nr != n) && timeout_flag)
-		/* if ((nr < 0 || nr != n) && (errno == EINTR) && timeout_flag) */
+	      else
+		/* This is probably HTTP */
 		{
-		  printf ("Timeout while reading (%d byte(s) read)\n",
-			  (nr == -1) ? 0 : nr);
-		  nr = n;
-#ifdef FLUSH_OUTPUT
-		  if (fflush ((FILE *) NULL) != 0)
+		  if ((nr < 0) && (errno == EINTR) && (timeout_flag))
 		    {
-		      err_sys ("I cannot flush");
-		    }
-#endif
-		  close (sockfd);
-		  continue;
-		}
-	      if (nr < 0 || nr != n)
-		err_sys ("readline error: %d bytes read, %d bytes requested",
-			 nr, n);
-	    }
-	  else
-	    /* This is probably HTTP */
-	    {
-	      if ((nr < 0) && (errno == EINTR) && (timeout_flag))
-		{
-		  printf ("Timeout while reading (%d byte(s) read)\n",
-			  (nr == -1) ? 0 : nr);
+		      printf ("Timeout while reading (%d byte(s) read)\n",
+			      (nr == -1) ? 0 : nr);
 #ifdef FLUSH_OUTPUT
-		  if (fflush ((FILE *) NULL) != 0)
-		    {
-		      err_sys ("I cannot flush");
-		    }
+		      if (fflush ((FILE *) NULL) != 0)
+			{
+			  err_sys ("I cannot flush");
+			}
 #endif
-		  close (sockfd);
-		  continue;
+		      close (sockfd);
+		      continue;
+		    }
+		  if (nr < 0)
+		    {
+		      err_ret ("Error reading HTTP reply");
+		    }
 		}
-	      if (nr < 0)
-		{
-		  err_ret ("Error reading HTTP reply");
-		}
+	      if (verbose)
+		printf ("%d bytes read from server.\n", nr);
 	    }
-	  if (verbose)
-	    printf ("%d bytes read from server.\n", nr);
-	}
-      /* That's all, folks */
+	}			/* That's all, folks */
       if (tcp)
 	alarm (0);
       if (http)
@@ -1218,40 +1266,43 @@ main (argc, argv)
 	  tvadd (&total, &temp);
 
 	  /* Check */
-	  if (port_to_use == USE_ECHO)
+	  if (!plugin)
 	    {
-	      if (strcmp (sendline, recvline) != 0)
+	      if (port_to_use == USE_ECHO)
 		{
-		  printf (" I wrote:\n%s\n", sendline);
-		  printf (" and I got back:\n%s\n", recvline);
-		  err_quit ("Strange server");
-		}
-	      if (verbose)
-		{
-		  printf ("Checked\n");
-#ifdef FLUSH_OUTPUT
-		  if (fflush ((FILE *) NULL) != 0)
+		  if (strcmp (sendline, recvline) != 0)
 		    {
-		      err_sys ("I cannot flush");
+		      printf (" I wrote:\n%s\n", sendline);
+		      printf (" and I got back:\n%s\n", recvline);
+		      err_quit ("Strange server");
 		    }
+		  if (verbose)
+		    {
+		      printf ("Checked\n");
+#ifdef FLUSH_OUTPUT
+		      if (fflush ((FILE *) NULL) != 0)
+			{
+			  err_sys ("I cannot flush");
+			}
 #endif
+		    }
 		}
-	    }
-	  if (port_to_use == USE_CHARGEN)
-	    {
-	      sendline = CHARGENERATED;
-	      recvline[strlen (sendline)] = 0;
-	      if (strcmp (sendline, recvline) != 0)
+	      if (port_to_use == USE_CHARGEN)
 		{
-		  /* TODO: it does not work if the size is lower than the
-		     length of CHARGENERATED */
-		  printf (" I got back:\n%s\n", recvline);
-		  printf (" instead of the most common:\n%s\n", sendline);
-		  err_ret ("Strange server");
-		}
-	      if (verbose)
-		{
-		  printf ("Checked\n");
+		  sendline = CHARGENERATED;
+		  recvline[strlen (sendline)] = 0;
+		  if (strcmp (sendline, recvline) != 0)
+		    {
+		      /* TODO: it does not work if the size is lower than the
+		         length of CHARGENERATED */
+		      printf (" I got back:\n%s\n", recvline);
+		      printf (" instead of the most common:\n%s\n", sendline);
+		      err_ret ("Strange server");
+		    }
+		  if (verbose)
+		    {
+		      printf ("Checked\n");
+		    }
 		}
 	    }
 	  tvsub (&newtv, &oldtv);
@@ -1288,6 +1339,7 @@ main (argc, argv)
 #endif
 	}
     }				/* End of main loop */
+
   printstats ();
   if (successes >= 1)
     exit (0);
@@ -1300,8 +1352,8 @@ main (argc, argv)
       gnutls_global_deinit ();
     }
 #endif
-}
 
+}
 
 void
 printstats ()

@@ -7,6 +7,10 @@ man_MANS = echoping.1
 echoping_SOURCES = echoping.c error.c readline.c writen.c util.c http.c icp.c HTParse.c echoping.h icp.h HTParse.h smtp.c
 echoping_LDADD = 
 DOCS=DETAILS
+SUBDIRS=plugins
+
+# Export global symbols to plugins
+AM_CFLAGS=-rdynamic
 
 TESTS=test-echoping-local test-echoping-remote 
 MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echoping-tos test-echoping-ipv6 test-echoping-idn
@@ -61,7 +65,7 @@ upload-force: dist
 	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
 
 realclean: clean
-	rm -f *~
+	rm -rf *~ autom4te.cache
 
 EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
 

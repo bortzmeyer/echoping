@@ -1,0 +1,26 @@
+CCFLAGS=-DHAVE_CONFIG_H -Wall -O0 -g 
+CCDYNAMICFLAGS=${CCFLAGS} -fPIC 
+LDFLAGS=
+LDDYNAMICFLAGS=${LDFLAGS} -shared
+
+PLUGINS=random.so whois.so
+
+all: $(PLUGINS)
+
+%.o: %.c
+	${CC} ${CCDYNAMICFLAGS} -c -o $@ $<
+
+%.so: %.o
+	${CC} ${LDDYNAMICFLAGS} -o $@ $<
+
+clean: 
+	-rm -f *.o *.so program
+
+distclean: clean
+	-rm -f *~
+
+.SECONDARY: ${OBJECTS}
+
+# $Id$
+
+
