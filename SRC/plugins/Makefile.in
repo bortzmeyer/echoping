@@ -1,9 +1,9 @@
 CCFLAGS=-DHAVE_CONFIG_H -Wall -O0 -g 
 CCDYNAMICFLAGS=${CCFLAGS} -fPIC 
 LDFLAGS=
-LDDYNAMICFLAGS=${LDFLAGS} -shared -lpq # TODO: add the flags only when necessary
+LDDYNAMICFLAGS=${LDFLAGS} -shared -lpq -lresolv # TODO: add the flags only when necessary
 
-PLUGINS=random.so whois.so postgres
+PLUGINS=random.so whois.so postgres dns.so
 
 all: $(PLUGINS)
 
