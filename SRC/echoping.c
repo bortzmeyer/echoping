@@ -505,8 +505,18 @@ main (argc, argv)
 	}
       else
 	{
-	  /* TODO: we should be able to create a ICP hostid for IPv6 addresses... */
+
+	  /* TODO: we should be able to create a ICP hostid for IPv6 addresses... 
+	     See the Squid IPv6 patch at 
+	     http://devel.squid-cache.org/projects.html#ipv6, for instance the 
+	     following code. */
 	  sendline = make_icp_sendline (url, (void *) NULL, opcode, &length);
+	  /*
+	     -    headerp->shostid = theOutICPAddr.s_addr;
+	     +    ** FIXME ** we should get more unique data from IPv6 address 
+	     +xmemcpy (&headerp->shostid, &theOutICPAddr,
+	     sizeof (headerp->shostid));
+	   */
 	}
     }
   else
@@ -1048,7 +1058,7 @@ main (argc, argv)
 	      recvline[strlen (sendline)] = 0;
 	      if (strcmp (sendline, recvline) != 0)
 		{
-		  /* Todo: it does not work if the size is lower than the
+		  /* TODO: it does not work if the size is lower than the
 		     length of CHARGENERATED */
 		  printf (" I got back:\n%s\n", recvline);
 		  printf (" instead of the most common:\n%s\n", sendline);
