@@ -1,5 +1,7 @@
 /* Most of it stolen from Pierre Beyssac's bing */
 
+/* $Id */
+
 #include "echoping.h"
 
 #define STATES 32
@@ -20,13 +22,13 @@ random_string (unsigned length)
   /* Initialize random generator */
   (void) initstate (seed, state, STATES);
 
-  for (i = 0; i < (length - 1); i++)
+  for (i = 0; i < length; i++)
     {
       number = (random () % 94) + 33;
       /* printf ("Number for %d is %d\n", i, number); */
       result[i] = (char) number;
     }
-  result[length - 1] = '\0';
+  result[length] = '\0';
 
   /* printf ("Result is %s\n", result); */
 

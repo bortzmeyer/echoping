@@ -55,7 +55,7 @@ find_server_and_port (char *server, short *port, char *default_port)
 }
 
 int
-read_from_server (int fd)
+read_from_server (FILE *fs)
 {
   int nr;
   int total = 0;
@@ -64,7 +64,7 @@ read_from_server (int fd)
   short body = FALSE;
   while (!body)
     {
-      nr = readline (fd, big_recvline, MAXTOREAD, TRUE);
+      nr = readline (fs, big_recvline, MAXTOREAD, TRUE);
       /* HTTP replies should be separated by CR-LF. Unfortunately, some
          servers send only CR :-( */
       body = ((nr == 2) || (nr == 1));	/* Empty line CR-LF seen */
@@ -87,7 +87,7 @@ read_from_server (int fd)
       first_line = FALSE;
     }
   /* Read the body */
-  nr = readline (fd, big_recvline, MAXTOREAD, FALSE);
+  nr = readline (fs, big_recvline, MAXTOREAD, FALSE);
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
     return -1;
   if (nr < 2)			/* Hmm, if the body is empty, we'll

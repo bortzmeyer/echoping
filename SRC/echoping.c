@@ -49,6 +49,7 @@ main (argc, argv)
   signed char ch;
 
   int sockfd;
+  FILE *fs;
   struct hostent *hostptr;
   struct sockaddr_in serv_addr;
   struct sockaddr_in udp_cli_addr;	/* client's Internet socket
@@ -378,7 +379,7 @@ main (argc, argv)
 #endif
   if (!fill_requested)
     {
-      sendline = random_string (size);
+      sendline = random_string (size); 
     }
   else
     {
@@ -386,7 +387,7 @@ main (argc, argv)
       for (i = 0; i < size; i++)
 	sendline[i] = fill;
     }
-  n = strlen (sendline) + 1;
+  n = strlen (sendline);
 
   for (i = 1; i <= number; i++)
     {
@@ -572,15 +573,17 @@ main (argc, argv)
 	{
 	  if (!udp)
 	    {
+	      if ((fs = fdopen (sockfd, "r")) == NULL) 
+		err_sys ("Cannot fdopen");
 	      if (!http)
 		{
 		  /* Read from the server */
-		  nr = readline (sockfd, recvline, n, stop_at_newlines);
+		  nr = readline (fs, recvline, n, stop_at_newlines);
 		}
 #ifdef HTTP
 	      else
 		{
-		  nr = read_from_server (sockfd);
+		  nr = read_from_server (fs);
 		}
 #endif
 	    }
@@ -673,7 +676,7 @@ main (argc, argv)
 		  continue;
 		}
 	      if (nr < 0) {
-		err_ret ("Error reading HTTP header");
+		err_ret ("Error reading HTTP reply");
 	      }
 	    }
 	  if (verbose)
