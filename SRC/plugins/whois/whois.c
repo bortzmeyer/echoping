@@ -10,6 +10,7 @@
 #define MAX_REQUEST 256
 
 struct addrinfo whois_server;
+char *hostname;
 const char *request = NULL;
 int dump = FALSE;
 int n;
@@ -25,6 +26,7 @@ whois_usage (const char *msg)
       printf ("Error: %s\n", msg);
     }
   poptPrintUsage (whois_poptcon, stdout, 0);
+  fprintf (stderr, "  request\n");
   exit (1);
 }
 
@@ -33,11 +35,9 @@ init (const int argc, const char **argv, echoping_options global_options)
 {
   int value;
   char *msg = malloc (256);
+  char *rest;
   /* popt variables */
   struct poptOption options[] = {
-    {"request", 'r', POPT_ARG_STRING, &request, 'r',
-     "Request/query (a domain name or something else, depending on the server) to send to the whois server",
-     "request"},
     {"dump", 'd', POPT_ARG_NONE, &dump, 'd',
      "Dumps the reply from the whois server",
      ""},
@@ -45,22 +45,13 @@ init (const int argc, const char **argv, echoping_options global_options)
   };
   if (global_options.udp)
     err_quit ("UDP is incompatible with this whois plugin");
-  /* Will probably be cached before because /etc/services have no entry for UDP port 43 */
+  /* Will probably be catched before because /etc/services have no entry for UDP port 43 */
   whois_poptcon = poptGetContext (NULL, argc,
-				  argv, options, POPT_CONTEXT_KEEP_FIRST);
+				  argv, options, POPT_CONTEXT_POSIXMEHARDER);
   while ((value = poptGetNextOpt (whois_poptcon)) > 0)
     {
-      if (value < -1)
-	{
-	  sprintf (msg, "%s: %s",
-		   poptBadOption (whois_poptcon, POPT_BADOPTION_NOALIAS),
-		   poptStrerror (value));
-	  whois_usage (msg);
-	}
       switch ((char) value)
 	{
-	case 'r':
-	  break;
 	case 'd':
 	  break;
 	default:
@@ -68,9 +59,19 @@ init (const int argc, const char **argv, echoping_options global_options)
 	  whois_usage (msg);
 	}
     }
+  if (value < -1)
+    {
+      sprintf (msg, "%s: %s",
+	       poptBadOption (whois_poptcon, POPT_BADOPTION_NOALIAS),
+	       poptStrerror (value));
+      whois_usage (msg);
+    }
+  request = (char *) poptGetArg (whois_poptcon);
   if (request == NULL)
     whois_usage ("Mandatory request missing");
-
+  rest = (char *) poptGetArg (whois_poptcon);
+  if (rest != NULL && strcmp (rest, ""))
+    whois_usage ("Extraneous arguments ignored");
   return "nicname";
 }
 
@@ -99,7 +100,7 @@ execute ()
   if (writen (sockfd, complete_request, n) != n)
     err_sys ("writen error on socket");
   /* Read from the server */
-  while ((nr = readline (files, recvline, n, 0)) > 0)
+  while ((nr = readline (files, recvline, MAX_LINE, 0)) > 0)
     if (dump)
       printf ("%s", recvline);
   if (dump)
