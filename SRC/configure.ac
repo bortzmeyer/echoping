@@ -11,7 +11,7 @@ dnl User options
 dnl http://sources.redhat.com/ml/automake-prs/2001-q3/msg00033.html
 max_iterations_specified=0
 AC_ARG_ENABLE(max-iterations,
-[--enable-max-iterations=MAX   limit the number of iterations (-n option) to MAX],
+[  --enable-max-iterations=MAX   limit the number of iterations (-n option) to MAX],
 [if test "$enableval" != "no"; then
    max_iterations_specified=1
 fi])
@@ -22,7 +22,7 @@ else
 fi
 max_line_specified=0
 AC_ARG_ENABLE(max-request-size,
-[--enable-max-request-size=MAX   limit the size of a request to MAX],
+[  --enable-max-request-size=MAX   limit the size of a request to MAX],
 [if test "$enableval" != "no"; then
    max_line_specified=1
 fi])
@@ -32,7 +32,7 @@ else
    AC_DEFINE_UNQUOTED(MAX_LINE, $enableval, Maximum size of a request)
 fi
 AC_ARG_ENABLE(http,
- [--enable-http   HTTP (Web's main protocol) support],dnl
+ [  --enable-http   HTTP (Web's main protocol) support],dnl
  [if test "$enableval" = "yes"; then
  AC_DEFINE(HTTP,,[HTTP support])
  HTTP=1
@@ -41,13 +41,13 @@ AC_ARG_ENABLE(http,
  [AC_DEFINE(HTTP,,[HTTP support])
   HTTP=1])
 AC_ARG_ENABLE(icp,
- [--enable-icp   ICP (for testing Web proxies/caches) support],dnl
+ [  --enable-icp   ICP (for testing Web proxies/caches) support],dnl
  [if test "$enableval" = "yes"; then
  AC_DEFINE(ICP,,[ICP support])
  ICP=1
  fi])
 AC_ARG_ENABLE(smtp,
- [--enable-smtp   SMTP (Mail's main protocol) support],dnl
+ [  --enable-smtp   SMTP (Mail's main protocol) support],dnl
  [if test "$enableval" = "yes"; then
  AC_DEFINE(SMTP,,[SMTP support])
  SMTP=1
@@ -59,7 +59,7 @@ dnl IDN
 dnl Default: enable it	
 LIBIDN=1
 AC_ARG_WITH(libidn,
- [--with-libidn[=DIR]   Internationalized Domain Names support (needs GNU libidn)],dnl
+ [  --with-libidn[=DIR]   Internationalized Domain Names support (needs GNU libidn)],dnl
  [if test "$withval" != "no"; then
    if test "$withval" != "yes"; then
 	IDNROOT=$withval
@@ -74,7 +74,7 @@ if test "$LIBIDN" = "1"; then
 AC_DEFINE(LIBIDN,,[Internationalized Domain Names support])
 fi
 AC_ARG_WITH(ssl,
- [--with-ssl[=DIR]   SSL crypt support (needs OpenSSL)],dnl
+ [  --with-ssl[=DIR]   SSL crypt support (needs OpenSSL)],dnl
  [if test "$withval" != "no"; then
    AC_DEFINE(OPENSSL,,[Crypto (SSL) support])
    OPENSSL=1
@@ -87,7 +87,7 @@ AC_ARG_WITH(ssl,
  dnl Default: disable it
 )
 AC_ARG_WITH(gnutls,
- [--with-gnutls[=DIR]   SSL/TLS crypt support (needs GNU TLS), the argument DIR should not be necessary],dnl
+ [  --with-gnutls[=DIR]   SSL/TLS crypt support (needs GNU TLS), the argument DIR should not be necessary],dnl
  [if test "$withval" != "no"; then
    AC_DEFINE(GNUTLS,,[Crypto (TLS) support])
    GNUTLS=1
@@ -102,7 +102,7 @@ AC_ARG_WITH(gnutls,
  dnl Default: disable it
 )
 AC_ARG_WITH(popt,
- [--with-popt[=DIR]  popt command-line parsing library],dnl
+ [  --with-popt[=DIR]  popt command-line parsing library],dnl
  [if test "$withval" != "no"; then
    if test "$withval" != "yes"; then
 	POPTROOT=$withval
@@ -195,7 +195,7 @@ AC_TRY_COMPILE(
  ac_have_ttcp=no)
 AC_MSG_RESULT($ac_have_ttcp)
 AC_ARG_ENABLE(ttcp,
- [--enable-ttcp   T/TCP (Transaction TCP) support],
+ [  --enable-ttcp   T/TCP (Transaction TCP) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_ttcp = "yes"; then
      AC_DEFINE(TTCP,,[Transaction TCP support])
@@ -222,7 +222,7 @@ AC_TRY_COMPILE(
  ac_have_tos="no")
 AC_MSG_RESULT($ac_have_tos)
 AC_ARG_ENABLE(tos,
- [--enable-tos   TOS (Type Of Service) support],
+ [  --enable-tos   TOS (Type Of Service) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_tos = "yes"; then
      AC_DEFINE(HAVE_TOS,,[Type Of Service support])
@@ -250,7 +250,7 @@ AC_TRY_COMPILE(
  ac_have_priority="no")
 AC_MSG_RESULT($ac_have_priority)
 AC_ARG_ENABLE(priority,
- [--enable-priority   PRIORITY (socket priority) support],
+ [  --enable-priority   PRIORITY (socket priority) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_priority = "yes"; then
      AC_DEFINE(HAVE_SOCKET_PRIORITY,,[Socket priority support])
