@@ -14,6 +14,14 @@ MORE_TESTS=test-echoping-crypto
 test: check
 tests: check
 
+upload: dist
+	@echo "Have you updated ChangeLog and tagged everything?"
+	@echo "If so, make upload-force"
+
+upload-force: dist
+	scp $(distdir).tar.gz  ftp.internatif.org:'~ftp/pub/unix/echoping'
+	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
+
 EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
 
 ## Otherwise, we depend on GNUmake, but for CVS users, not for regular

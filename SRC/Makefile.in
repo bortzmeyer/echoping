@@ -466,6 +466,14 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 test: check
 tests: check
 
+upload: dist
+	@echo "Have you updated ChangeLog and tagged everything?"
+	@echo "If so, make upload-force"
+
+upload-force: dist
+	scp $(distdir).tar.gz  ftp.internatif.org:'~ftp/pub/unix/echoping'
+	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
