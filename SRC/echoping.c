@@ -431,13 +431,12 @@ main (argc, argv)
       ext = strstr (plugin_name, ".so");
       if ((ext == NULL) || (strcmp (ext, ".so") != 0))
 	sprintf (plugin_name, "%s.so", plugin_name);
-      /* RTLD_NOW makes dlopen fail silently on NetBSD */
-      plugin = dlopen (plugin_name, RTLD_LAZY);
+      plugin = dlopen (plugin_name, RTLD_NOW);
       if (!plugin)
 	{			/* retries with the absolute name */
 	  complete_plugin_name = (char *) malloc (MAX_LINE);
 	  sprintf (complete_plugin_name, "%s/%s", PLUGINS_DIR, plugin_name);
-	  plugin = dlopen (complete_plugin_name, RTLD_LAZY);
+	  plugin = dlopen (complete_plugin_name, RTLD_NOW);
 	}
       if (!plugin)
 	{
@@ -446,10 +445,9 @@ main (argc, argv)
 	     plugin_name, PLUGINS_DIR, dlerror ());
 	}
       plugin_init = dlsym (plugin, "init");
-      dl_result = dlerror ();
-      if (dl_result)
+      if (! plugin_init)
 	{
-	  err_sys ("Cannot find init in %s: %s", plugin_name, dl_result);
+	  err_sys ("Cannot find init in %s: %s", plugin_name, dlerror());
 	}
       plugin_port_name = plugin_init (remaining, (const char **) leftover);
       if (plugin_port_name != NULL)
@@ -457,22 +455,19 @@ main (argc, argv)
       else
 	port_name = 0;
       plugin_start = dlsym (plugin, "start");
-      dl_result = dlerror ();
-      if (dl_result)
+      if (! plugin_start)
 	{
-	  err_sys ("Cannot find start in %s: %s", plugin_name, dl_result);
+	  err_sys ("Cannot find start in %s: %s", plugin_name, dlerror());
 	}
       plugin_execute = dlsym (plugin, "execute");
-      dl_result = dlerror ();
-      if (dl_result)
+      if (!plugin_execute)
 	{
-	  err_sys ("Cannot find execute in %s: %s", plugin_name, dl_result);
+	  err_sys ("Cannot find execute in %s: %s", plugin_name, dlerror());
 	}
       plugin_terminate = dlsym (plugin, "terminate");
-      dl_result = dlerror ();
-      if (dl_result)
+      if (! plugin_terminate)
 	{
-	  err_sys ("Cannot find terminate in %s: %s", plugin_name, dl_result);
+	  err_sys ("Cannot find terminate in %s: %s", plugin_name, dlerror());
 	}
     }
   if (!udp && !ttcp)
