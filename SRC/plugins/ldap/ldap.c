@@ -80,7 +80,7 @@ init (const int argc, const char **argv,
       else if (!strcmp (scope_string, "ONE"))
 	scope = LDAP_SCOPE_ONELEVEL;
       else
-	err_quit ("Invalid scope \"%s\"", scope);
+	err_quit ("Invalid scope \"%s\"", scope_string);
     }
   return "ldap";
 }
