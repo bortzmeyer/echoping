@@ -17,3 +17,8 @@
 
 /* ICP support */
 #undef ICP 
+
+#undef PACKAGE
+#undef VERSION
+
+/* $Id$ */

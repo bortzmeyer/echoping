@@ -33,13 +33,6 @@
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
-/* Name of package */
-#undef PACKAGE
-
-/* Version number of package */
-#undef VERSION
-
-
 /* Do we have POSIX signals? */
 #undef HAVE_SIGACTION
 
@@ -57,3 +50,8 @@
 
 /* ICP support */
 #undef ICP 
+
+#undef PACKAGE
+#undef VERSION
+
+/* $Id$ */
