@@ -1,3 +1,5 @@
+.\" $Id$
+
 .TH echoping 1 "November 22, 1996" "ECHOPING" "echoping"
 
 .SH NAME
@@ -20,7 +22,7 @@ echoping \- tests a remote host with TCP or UDP
 .B echoping
 is a small program to test (approximatively) performances 
 of a remote Internet host by sending it TCP "echo" packets. It can use other
-protocols as well (HTTP, UDP "echo", etc). 
+protocols as well (HTTP - which makes it a good tool to test Web servers, UDP "echo", etc). 
 .LP
 .B echoping 
 simply shows the elapsed time, including the time to set up the TCP 
@@ -91,7 +93,7 @@ If a Web page is empty,
 .B echoping
 will display meaningless messages.
 
-Timeouts on TCP connections are a bit experimental. 
+Timeouts on T/TCP connections are a bit experimental. 
 
 Since
 .B echoping
@@ -104,6 +106,6 @@ start to read right now.
 See the README for information about other network measurements programs.
 
 .SH AUTHOR
-Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
+Stephane Bortzmeyer <bortz@users.sourceforge.net>
 
 
