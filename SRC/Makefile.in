@@ -68,10 +68,11 @@ bin_PROGRAMS = echoping
 man_MANS = echoping.1
 echoping_SOURCES = echoping.c error.c readline.c writen.c util.c http.c icp.c HTParse.c echoping.h icp.h HTParse.h
 echoping_LDADD = 
+DOCS = DETAILS
 
 TESTS = test-echoping-local test-echoping-remote test-echoping-icp
 
-EXTRA_DIST = $(man_MANS) $(TESTS)
+EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
