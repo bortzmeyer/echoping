@@ -36,15 +36,6 @@ the others take a much longer time (one second). With '-w 1' (wait one second
 between tests, the default), everything works fine: it seems the sockets on 
 SunOS need time to recover :-)
 
-A graphical interface:
-
-If you have the Perl/Tk <http://pubweb.bnl.gov/~ptk/> package, you can
-use a (quite rough and completely unmaintained) windowing interface,
-"echoping.ptk". To use it, you should define FLUSH_OUTPUT at the
-beginning of echoping.c (this seems to work on only a few Unices,
-including DEC's OSF/1). This interface has not yet been updated for
-echoping 2's new features (like HTTP support).
-
 To measure performances on the Internet you can also see:
 
 Unix:
