@@ -770,6 +770,18 @@ main (argc, argv)
       meth = SSLv23_client_method ();
       if ((ctx = SSL_CTX_new (meth)) == NULL)
 	err_sys ("Cannot create a new SSL context");
+      /* Bug reported by Sebastian Siewior
+         <bigeasy@foo.fh-furtwangen.de>. It seems that OpenSSL crashes
+         on non blocking sockets when trying to close them (OpenSSL
+         will try write on a closed socket). */
+#ifdef USE_SIGACTION
+      mysigaction.sa_handler = SIG_IGN;
+      sigemptyset (&mysigaction.sa_mask);
+      if ((sigaction (SIGPIPE, &mysigaction, NULL)) < 0)
+	;			/* Ignore it */
+#else
+      signal (SIGPIPE, SIG_IGN);
+#endif
     }
 #endif
 #ifdef GNUTLS
