@@ -479,7 +479,7 @@ main (argc, argv)
   if (http)
     {
       sendline =
-	make_http_sendline (url, server, (int) ntohs (atoi(pbuf)), nocache);
+	make_http_sendline (url, server, res->ai_protocol, nocache);
     }
   else
 #endif
@@ -502,7 +502,8 @@ main (argc, argv)
 	}
       else
 	{
-	  sendline = make_icp_sendline (url, NULL, opcode, &length);
+	  /* TODO: echoping -v  -i http://www.pasteur.fr/ 192.134.7.250 segfaults */
+	  sendline = make_icp_sendline (url, (void *) NULL, opcode, &length);
 	}
     }
   else
@@ -762,6 +763,7 @@ main (argc, argv)
 				   ERR_error_string (sslcode, NULL));
 			}
 		    }
+		  /* printf ("DEBUG: writing %s with SSL\n", sendline); */
 		}
 #endif
 	      /* Write something to the server */
