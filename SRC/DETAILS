@@ -60,6 +60,8 @@ Unix:
 - spray is a tool which I dont't know very well. It is available on some 
   machines (Sun, OSF/1).
 I've also heard of but never tried:
+- the very good mon program <http://www.kernel.org/software/mon/> includes a 
+  up_rtt.monitor which has many similarities with echoping
 - NetPerf <http://www.netperf.org/netperf/NetperfPage.html>
 - a suite of Bandwidth Measuring programs from gnn@netcom.com 
   <ftp://ftp.netcom.com/~ftp/gnn/bwmeas-0.3.tar.Z>. These are several 
