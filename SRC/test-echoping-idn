@@ -12,3 +12,4 @@ echo "possible values."
 
 ./echoping -h / -v café.gennic.net
 ./echoping -h / -v www.trườngđạihọcbáchkhoahànội.edu.vn
+./echoping -h / -v www.müller.ch
