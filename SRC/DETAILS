@@ -7,7 +7,7 @@ you want to test in a more HTTPish way, use wget). Also, when
 connecting to a server which has both IPv4 and IPv6 addresses,
 echoping does not try every address in turn like most user-oriented
 programs do. If you want to test only the IPv4 address, use the
-address, not the host name.
+address, not the host name (or use the -4 option).
 
 echo service:
 

@@ -5,6 +5,8 @@ echoping \- tests a remote host with TCP or UDP
 
 .SH SYNOPSIS
 .B echoping
+.RI [-4] 
+.RI [-6] 
 .RI [-v] 
 .RI [-r] 
 .RI [-f fill] 
@@ -86,11 +88,15 @@ Force the proxy (if you use one) to ignore the cache
 .IP -a
 Force the proxy (if you use one) to revalidate data with the original server
 .IP -C
-Use the SSL (cryptography) protocol. For HTTP tests only.
+Use the SSL/TLS (cryptography) protocol. For HTTP tests only.
 .IP -S
 Use the SMTP protocol (instead of echo) for the given server.
 .IP -r
 Use T/TCP (if it has been compiled with it). See the INSTALL file for details.
+.IP -4
+Use only IPv4 (even if the target machine has an IPv6 address)
+.IP -6
+Use only IPv6 (even if the target machine has an IPv4 address)
 .IP -f\ character
 Fill the packet with this character (default is random filling)
 .IP -p\ n
