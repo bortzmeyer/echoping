@@ -336,7 +336,7 @@ main (argc, argv)
       exit (1);
     }
 #endif
-#if ! (OPENSSL || GNUTLS)
+#if ! (defined(OPENSSL) || defined(GNUTLS))
   if (ssl)
     {
       (void) fprintf (stderr,
