@@ -10,6 +10,11 @@ Just type "./configure", then "make", "make test" if you wish (some
 tests depend on local servers and/or Internet access, interpret with
 care) and then (as root if necessary), "make install".
 
+(The Makefile has the GNU syntax so, on BSD machines, you will need
+GNU make. Typically, you install the port "gmake" and run "gmake"
+instead of "make". Otherwise, you will have an error message like
+"Need an operator")
+
 There is also a 'make fulltest' if you want to test more things (which
 may not be available on your platform).
 
