@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# $Id$
+
+echo ""
+echo "Since this tests tries remote servers, a failure is not always "
+echo " echoping's fault: it may be a network problem. Also, it depends on"
+echo " a local proxy cache named 'cache'."
+
+if [ "x$PROXY_PORT" = "x" ]; then
+    PROXY_PORT=3128
+fi
+
+./echoping -h http://www.netaktiv.com/ cache:$PROXY_PORT
+
+./echoping -h http://www.freenix.org/ cache:$PROXY_PORT
+
+./echoping -a -h http://www.freenix.org/ cache:$PROXY_PORT
+
+./echoping -A -h http://www.freenix.org/ cache:$PROXY_PORT
+
+
+

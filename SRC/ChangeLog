@@ -1,8 +1,11 @@
-
-        * New -a and -A options to control the proxy/cache (disable caching)
+4.2.0 (2001-03-16)
+	
+        * New -a and -A options to control the proxy/cache (disable caching).
+	  Fixes bug/wish #232324
 	* Support for microsecond wait (uses usleep)
 	* New option (-p) to set socket priority (Linux only)
 	* New option (-P) to set IP Type of Service octet
+	* Bug fixes: #230384 (SSL records are different from text lines)
 
 4.1.0 (2001-02-14)
 

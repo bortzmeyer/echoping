@@ -8,11 +8,40 @@ echoping_SOURCES = echoping.c error.c readline.c writen.c util.c http.c icp.c HT
 echoping_LDADD = 
 DOCS=DETAILS
 
-TESTS=test-echoping-local test-echoping-remote test-echoping-icp
-MORE_TESTS=test-echoping-crypto 
+TESTS=test-echoping-local test-echoping-remote 
+MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echoping-tos
 
 test: check
 tests: check
+
+fulltest: test moretest
+
+moretests: moretest
+moretest: $(MORE_TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(MORE_TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 
 debug: 
 	$(MAKE) CFLAGS='-g -O0'

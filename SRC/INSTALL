@@ -6,6 +6,9 @@ Just type "./configure", then "make", "make test" if you wish (some
 tests depend on local servers and/or Internet access, interpret with
 care) and then (as root if necessary), "make install".
 
+There is also a 'make fulltest' if you want to test more things (which
+may not be available on your platform).
+
 "configure" has some options: 
 --disable-http (suppress the HTTP support)
 --disable-smtp (suppress the SMTP support)
@@ -18,12 +21,6 @@ care) and then (as root if necessary), "make install".
 
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
-
-If you get messages about va_start like: 
-error.c:29: macro `va_start' used with just one arg 
-it is a bug in echoping (triggered by C's inability to do modular
-programming). Email the author and, in the meantime, configure
---without-ssl.
 
 If 'echoping -h' replies with a "404" error while the file really exists,
 check first that you use the FQDN of the server on the command line
