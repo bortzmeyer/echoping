@@ -414,7 +414,7 @@ main (argc, argv)
     {
       (void) fprintf (stderr,
 		      "%s: %s and message size specification are incompatible.\n",
-		      http ? "HTTP" : "SMTP", progname);
+		      progname, http ? "HTTP" : "SMTP");
       exit (1);
     }
   if (ssl && !http)
@@ -777,6 +777,9 @@ main (argc, argv)
 
   for (i = 1; i <= number; i++)
     {
+      timeout_flag = 0;
+      if (timeout_requested)
+	alarm (timeout);
       if (i > 1)
 	{
 #ifdef HAVE_USLEEP
@@ -1065,13 +1068,15 @@ main (argc, argv)
 			{
 			  if ((nr < 0 || nr != n) && timeout_flag)
 			    {
+			      printf
+				("Timeout while writing (%d byte(s) written so far)\n",
+				 (nr == -1) ? 0 : nr);
 			      nr = n;
-			      printf ("Timeout while writing\n");
 			      close (sockfd);
 			      continue;
 			    }
 			  else
-			    err_sys ("writen error on socket");
+			    err_sys ("writen error on TCP socket %d", sockfd);
 			}
 		    }
 #ifdef OPENSSL
@@ -1118,19 +1123,6 @@ main (argc, argv)
 		      }
 		  }
 #endif
-		  /* Write something to the server */
-		  if (writen (sockfd, sendline, n) != n)
-		    {
-		      if ((nr < 0 || nr != n) && timeout_flag)
-			{
-			  nr = n;
-			  printf ("Timeout while writing\n");
-			  close (sockfd);
-			  continue;
-			}
-		      else
-			err_sys ("writen error on socket");
-		    }
 		}
 	      else
 		{
@@ -1259,7 +1251,6 @@ main (argc, argv)
 		  signal (SIGALRM, to_alarm);
 #endif
 		  timeout_flag = 0;	/* for signal handler */
-		  alarm (timeout);
 #ifdef ICP
 		  if (icp)
 		    {
@@ -1283,7 +1274,6 @@ main (argc, argv)
 		       * Todo: in UDP, we should loop to read: we
 		       * can have several reads necessary.
 		       */
-		      alarm (0);
 		      if ((nr < 0) && (errno == EINTR) && (timeout_flag))
 			{
 			  nr = n;
@@ -1324,10 +1314,12 @@ main (argc, argv)
 	      else
 		/* This is probably HTTP */
 		{
-		  if ((nr < 0) && (errno == EINTR) && (timeout_flag))
+		  /* printf ("DEBUG: received %d bytes (flag is %d, errno is %d)\n", nr, timeout_flag, errno); */
+		  if ((errno == EINTR) && timeout_flag)
 		    {
-		      printf ("Timeout while reading (%d byte(s) read)\n",
-			      (nr == -1) ? 0 : nr);
+		      printf
+			("Timeout while reading (%d byte(s) read so far)\n",
+			 (nr == -1) ? 0 : nr);
 #ifdef FLUSH_OUTPUT
 		      if (fflush ((FILE *) NULL) != 0)
 			{
@@ -1346,8 +1338,7 @@ main (argc, argv)
 		printf ("%d bytes read from server.\n", nr);
 	    }
 	}			/* That's all, folks */
-      if (tcp)
-	alarm (0);
+      alarm (0);
       if (http)
 	{
 #ifdef OPENSSL
@@ -1541,6 +1532,7 @@ printstats ()
 void
 to_alarm ()
 {
+  /* printf ("DEBUG: timeout handler called\n"); */
   timeout_flag = 1;		/* set flag for function above */
 }
 

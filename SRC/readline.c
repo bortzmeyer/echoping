@@ -26,6 +26,8 @@ readline (fs, ptr, maxlen, ln)
       rc = fgets (ptr, maxlen + 1, fs);
       if (rc == NULL)
 	{
+	  if (timeout_flag)
+	    return n;
 	  return (-1);
 	}
       n = strlen (rc);
@@ -36,10 +38,10 @@ readline (fs, ptr, maxlen, ln)
       while (n < maxlen)
 	{
 	  r = fread (ptr, 1, maxlen, fs);
+	  if (timeout_flag)
+	    return r;
 	  if (r == 0)
 	    {
-	      if (timeout_flag)
-		return n;
 	      if (n == 1)
 		return (0);	/* EOF, no data read */
 	      else

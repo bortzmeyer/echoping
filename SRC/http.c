@@ -60,7 +60,7 @@ read_from_server (CHANNEL fs, short ssl)
 #ifdef OPENSSL
   int sslcode;
 #endif
-  while (!body)
+  while (!body && !timeout_flag)
     {
       if (!ssl)
 	nr = readline (fs.fs, big_recvline, MAXTOREAD, TRUE);
@@ -90,7 +90,7 @@ read_from_server (CHANNEL fs, short ssl)
       /* HTTP replies should be separated by CR-LF. Unfortunately, some
          servers send only CR :-( */
       body = ((nr == 2) || (nr == 1));	/* Empty line CR-LF seen */
-      if ((nr < 1) && (errno == EINTR))	/* Probably a timeout */
+      if ((nr < 1) && (timeout_flag))	/* Probably a timeout */
 	return -1;
       if (nr < 1)
 	/* SourceForge bug #109385 */
@@ -120,7 +120,7 @@ read_from_server (CHANNEL fs, short ssl)
   nr = TLS_readline (fs.tls, big_recvline, MAXTOREAD, FALSE);
 #endif
   /* printf ("DEBUG: reading body \"%s\"\n (%d chars)\n", big_recvline, nr);  */
-  if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
+  if ((nr < 2) && (timeout_flag))	/* Probably a timeout */
     return -1;
   if (nr < 2)			/* Hmm, if the body is empty, we'll
 				   get a meaningless error message */
