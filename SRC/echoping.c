@@ -328,7 +328,7 @@ main (argc, argv)
       ptr = (struct in_addr *) malloc (sizeof (struct in_addr));
       ptr->s_addr = addr;
     }
-  if (!http)			/* Already find */
+  if (!http && !icp)			/* Already find */
     {
       if (!udp)
 	{
