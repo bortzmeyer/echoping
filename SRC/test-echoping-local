@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# $Id$
+
+echo ""
+echo "A message such as 'connection refused' is not always an error"
+echo " you may not have an appropriate server."
+
+echoping localhost
+echoping -d localhost
+echoping -c localhost
+#echoping -h / localhost

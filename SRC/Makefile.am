@@ -9,6 +9,11 @@ echoping_LDADD =
 
 EXTRA_DIST = $(man_MANS)
 
+TESTS=test-echoping-local test-echoping-remote test-echoping-icp
+
+test: check
+tests: check
+
 ## Otherwise, we depend on GNUmake, but for CVS users, not for regular
 ## tarball users
 ##AUTOMAKE_OPTIONS = no-dependencies

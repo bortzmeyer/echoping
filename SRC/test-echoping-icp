@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo ""
+echo "Since this tests tries remote servers, a failure is not always "
+echo " echoping's fault: it may be a network problem. Also, it depends on"
+echo " a local ICP cache name 'cache'."
+
+echoping -i http://www.pasteur.fr/ cache
+
+echoping -i http://www.freenix.org/ cache
+
+
