@@ -1,3 +1,9 @@
+4.1.0 (2001-02-14)
+
+	* Fix several SSL bugs (#132001, #130151)
+	* Now requires an ANSI C compiler
+	* Now uses only stdarg.h so should really compile everywhere
+
 4.0.2 (2001-01-26)
 
 	* Stupid bug introduced in 4.0.1 when compiling without SSL
