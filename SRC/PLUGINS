@@ -21,4 +21,6 @@ Start your plugin source code with:
 You can look at random.c, the simplest plugin, and whois.c, the
 simplest which still does something useful.
 
+TODO: documentation of the plugin. A man page echoping_PLUGINNAME?
+
 $Id$
