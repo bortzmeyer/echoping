@@ -190,20 +190,17 @@ main (argc, argv)
     {
       results[i].valid = 0;
     }
-  progname = (char *) argv[0]; 
+  progname = (char *) argv[0];
 
-  poptcon = poptGetContext (NULL, argc,
-					argv,
-					options,
-					0);
+  poptcon = poptGetContext (NULL, argc, argv, options, 0);
 
   while ((!module_find) && (result = poptGetNextOpt (poptcon)) != -1)
     {
       if (result < -1)
 	{
 	  printf ("%s: %s",
-		   poptBadOption (poptcon, POPT_BADOPTION_NOALIAS),
-		   poptStrerror (result));
+		  poptBadOption (poptcon, POPT_BADOPTION_NOALIAS),
+		  poptStrerror (result));
 	  usage ();
 	}
       remaining--;
@@ -431,19 +428,22 @@ main (argc, argv)
   leftover = (char **) &argv[argc - remaining];
   if (plugin_name)
     {
-      ext = strstr(plugin_name, ".so");
-      if ((ext == NULL) || (strcmp (ext, ".so") != 0)) 
+      ext = strstr (plugin_name, ".so");
+      if ((ext == NULL) || (strcmp (ext, ".so") != 0))
 	sprintf (plugin_name, "%s.so", plugin_name);
-      plugin = dlopen (plugin_name, RTLD_NOW);
-      if (!plugin) { /* retries with the absolute name */
-	complete_plugin_name = (char *) malloc(MAX_LINE);
-	sprintf (complete_plugin_name, "%s/%s", PLUGINS_DIR, plugin_name);
-	plugin = dlopen (complete_plugin_name, RTLD_NOW);
-      }
+      /* RTLD_NOW makes dlopen fail silently on NetBSD */
+      plugin = dlopen (plugin_name, RTLD_LAZY);
+      if (!plugin)
+	{			/* retries with the absolute name */
+	  complete_plugin_name = (char *) malloc (MAX_LINE);
+	  sprintf (complete_plugin_name, "%s/%s", PLUGINS_DIR, plugin_name);
+	  plugin = dlopen (complete_plugin_name, RTLD_LAZY);
+	}
       if (!plugin)
 	{
-	  err_sys ("Cannot load \"%s\" (I tried the short name, then the complete name in \"%s\"): %s", 
-		   plugin_name, PLUGINS_DIR, dlerror ());
+	  err_sys
+	    ("Cannot load \"%s\" (I tried the short name, then the complete name in \"%s\"): %s",
+	     plugin_name, PLUGINS_DIR, dlerror ());
 	}
       plugin_init = dlsym (plugin, "init");
       dl_result = dlerror ();
@@ -1386,7 +1386,7 @@ main (argc, argv)
 
   /* Clean */
   if (plugin)
-    plugin_terminate();
+    plugin_terminate ();
   /* It would be nice to clean here for OpenSSL */
 #ifdef GNUTLS
   if (ssl)
