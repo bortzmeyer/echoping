@@ -41,6 +41,7 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <openssl/rand.h>
 #endif /* OpenSSL */
 
 #ifndef FALSE

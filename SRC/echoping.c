@@ -63,7 +63,8 @@ main (argc, argv)
   int n, nr = 0;
   int rc;
 #ifdef OPENSSL
-  int sslcode;
+  int sslcode;	
+  char rand_file[MAXLINE];
 #endif
   char *sendline, recvline[MAXLINE + 1];
 #ifdef ICP
@@ -452,6 +453,11 @@ main (argc, argv)
     {
       SSL_load_error_strings ();
       SSLeay_add_ssl_algorithms ();
+      /* The following RAND_ calls are only for systems insecure
+         enough to fail to have /dev/urandom. Bug #132001 */
+      RAND_file_name (rand_file, sizeof( rand_file));
+      RAND_write_file (rand_file);
+      RAND_load_file (rand_file, 1024);
       meth = SSLv2_client_method ();
       if ((ctx = SSL_CTX_new (meth)) == NULL)
 	err_sys ("Cannot create a new SSL context");
