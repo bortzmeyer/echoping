@@ -1,7 +1,9 @@
-Check the TCP timeout with T/TCP
+Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
+machines exist.
 
-TCP timeout with long packets seem to confuse Cisco routers
+TCP timeout with long packets seem to confuse Cisco routers.
 
-ICP always replies even when timeouting?
+ICP always replies even when timeouting. Bug 108577
+
 
 $Id$
