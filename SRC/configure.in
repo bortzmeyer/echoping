@@ -39,9 +39,11 @@ AC_C_CONST
 AC_HEADER_TIME
 
 dnl Checks for library functions.
+CF_LIB_SOCKET
+CF_LIB_NSL
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(gettimeofday socket sigaction)
+AC_CHECK_FUNCS(gettimeofday socket gethostbyname sigaction, , AC_MSG_ERROR(Missing mandatory function))
 
 dnl T/TCP
 AC_MSG_CHECKING([T/TCP])

@@ -1,7 +1,8 @@
 Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
 machines exist.
 
-TCP timeout with long packets seem to confuse Cisco routers.
+TCP timeout with long packets seem to confuse Cisco routers. Does
+someone can reproduce it and perform tests? It seems to work now.
 
 
 
