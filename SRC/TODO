@@ -32,5 +32,10 @@ echoping.c:540: warning: passing arg 5 of `sendto' from incompatible pointer typ
                     err_sys ("sendto error on socket");
                 }
 
+2) Alpha/Linux
+
+icp.c: In function `make_icp_sendline':
+icp.c:42: warning: cast from pointer to integer of different size
+
 $Id$
 

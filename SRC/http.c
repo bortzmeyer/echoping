@@ -25,7 +25,7 @@ make_http_sendline (char *url, char *host, int port)
   sprintf (sendline,
 	   "GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n\r\n",
 	   url, VERSION, hostname);
-  free (hostname); 
+  free (hostname);
 #endif
   return sendline;
 }
@@ -46,7 +46,30 @@ find_server_and_port (char *server, short *port, char *default_port)
     }
   if (*port == 0)
     {
-      if ((sp = getservbyname (default_port, "tcp")) == NULL)
+      if (strcmp (default_port, DEFAULT_HTTP_TCP_PORT) == 0)
+	{
+	  if ((sp = getservbyname ("http", "tcp")) == NULL)
+	    {
+	      if ((sp = getservbyname ("www", "tcp")) == NULL)
+		{
+		  *port = htons (80);
+		  return;
+		}
+	    }
+	  *port = sp->s_port;
+	  return;
+	}
+      else if (strcmp (default_port, DEFAULT_HTTPS_TCP_PORT) == 0)
+	{
+	  if ((sp = getservbyname ("https", "tcp")) == NULL)
+	    {
+	      *port = htons (443);
+	      return;
+	    }
+	  *port = sp->s_port;
+	  return;
+	}
+      else if ((sp = getservbyname (default_port, "tcp")) == NULL)
 	{
 	  err_quit ("tcp_open: unknown service: %s/tcp", default_port);
 	}
@@ -66,17 +89,17 @@ read_from_server (CHANNEL fs, short ssl)
   short body = FALSE;
   while (!body)
     {
-      if (! ssl) 
+      if (!ssl)
 	nr = readline (fs.fs, big_recvline, MAXTOREAD, TRUE);
 #ifdef OPENSSL
       else
 	nr = SSL_readline (fs.ssl, big_recvline, MAXTOREAD, TRUE);
 #endif
-      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr);*/
+      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr); */
       /* HTTP replies should be separated by CR-LF. Unfortunately, some
          servers send only CR :-( */
       body = ((nr == 2) || (nr == 1));	/* Empty line CR-LF seen */
-      if ((nr < 1) && (errno == EINTR))		/* Probably a timeout */
+      if ((nr < 1) && (errno == EINTR))	/* Probably a timeout */
 	return -1;
       if (nr < 1)
 	/* SourceForge bug #109385 */
@@ -86,7 +109,7 @@ read_from_server (CHANNEL fs, short ssl)
          nr--; */
       if (first_line)
 	{
-	  reply_code = big_recvline[9];		/* 9 because "HTTP/1.x 200..." */
+	  reply_code = big_recvline[9];	/* 9 because "HTTP/1.x 200..." */
 	  if (reply_code != '2')	/* Status codes beginning with 3 are not errors
 					   but should never appear in reply to echoping's requests */
 	    err_quit ("HTTP error \"%s\"", big_recvline);
@@ -95,7 +118,7 @@ read_from_server (CHANNEL fs, short ssl)
       first_line = FALSE;
     }
   /* Read the body */
-  if (! ssl) 
+  if (!ssl)
     nr = readline (fs, big_recvline, MAXTOREAD, FALSE);
 #ifdef OPENSSL
   else
@@ -104,7 +127,7 @@ read_from_server (CHANNEL fs, short ssl)
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
     return -1;
   if (nr < 2)			/* Hmm, if the body is empty, we'll
-                                   get a meaningless error message */
+				   get a meaningless error message */
     err_sys ("Reading HTTP body");
   total = total + nr;
   return total;			/* How to do if we want only the body's size? */

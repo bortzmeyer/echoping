@@ -67,7 +67,7 @@
 /* SSL (crypto) */
 #undef OPENSSL
 
-/* Port name for HTTP */
+/* Port name for HTTP. Unused. */
 #undef HTTP_TCP_PORT
 
 /* Port name for ICP */

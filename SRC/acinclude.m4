@@ -1,3 +1,5 @@
+dnl $Id$
+
 dnl Macros beginning with CF_ stolen from Lynx
 dnl Thanks to "T.E.Dickey" <dickey@clark.net>
 
@@ -132,7 +134,7 @@ dnl instance.
 AC_DEFUN([CF_CHECK_SERVICES],
 [
 AC_MSG_CHECKING(what is the name of the HTTP port in your services database)
-dnl BUG: We should test it is really port 80 and not any mention of "http"
+dnl BUG: We should test it is really the good port and not any mention of "http"
 if grep http /etc/services > /dev/null; then
     AC_DEFINE(HTTP_TCP_PORT,"http")
     AC_MSG_RESULT(http)

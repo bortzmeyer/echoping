@@ -93,7 +93,8 @@ struct timeval max_timeval;
 #define	ECHO_TCP_PORT	"echo"
 #define	DISCARD_TCP_PORT	"discard"
 #define	CHARACTER_GENERATOR_TCP_PORT	"chargen"
-/* #define	HTTP_TCP_PORT	"http" */ /* In config.h */
+#define DEFAULT_HTTP_TCP_PORT "HTTP"
+#define DEFAULT_HTTPS_TCP_PORT "HTTPS"
 /* #define ICP_UDP_PORT	"icp" */ /* In config.h */
 
 #define	USE_ECHO	1

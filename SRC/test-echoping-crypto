@@ -6,8 +6,8 @@ echo ""
 echo "Since this tests tries remote servers, a failure is not always "
 echo " echoping's fault: it may be a network problem."
 
-./echoping -C -h / www.gandi.net:443
+./echoping -C -h / www.gandi.net
 
-./echoping -C -h / www.ras.eu.org:443
+./echoping -C -h / www.modssl.org
 
 

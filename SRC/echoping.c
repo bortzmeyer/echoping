@@ -158,7 +158,7 @@ main (argc, argv)
 	  url = optarg;
 	  break;
 	case 'h':
-	  port_name = HTTP_TCP_PORT;
+	  port_name = DEFAULT_HTTP_TCP_PORT;
 	  port_to_use = USE_HTTP;
 	  http = 1;
 	  url = optarg;
@@ -301,11 +301,21 @@ main (argc, argv)
 		      http ? "HTTP" : "SMTP", progname);
       exit (1);
     }
+  if (ssl && !http)
+    {
+      (void) fprintf (stderr,
+		      "%s: SSL is only supported for HTTP requests.\n", progname);
+      exit (1);
+    }
   if (udp && ttcp)
     {
       (void) fprintf (stderr,
 		      "%s: UDP and T/TCP are incompatible.\n", progname);
       exit (1);
+    }
+  if (ssl && http)
+    {
+      port_name = DEFAULT_HTTPS_TCP_PORT;
     }
   if (!udp && !ttcp)
     {
@@ -434,9 +444,9 @@ main (argc, argv)
 
 #ifdef OPENSSL
   if (ssl) {
-    SSLeay_add_ssl_algorithms();
-    meth = SSLv2_client_method();
     SSL_load_error_strings();
+    SSLeay_add_ssl_algorithms(); 
+    meth = SSLv2_client_method();
     if ((ctx = SSL_CTX_new (meth)) == NULL)
       err_sys ("Cannot create a new SSL context");
     if ((sslh = SSL_new (ctx)) == NULL)
