@@ -796,6 +796,11 @@ if test -n "$ac_init_help"; then
 
   cat <<\_ACEOF
 
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+--with-popt=DIR  popt command-line parsing library
+
 Some influential environment variables:
   CC          C compiler command
   CFLAGS      C compiler flags
@@ -2273,6 +2278,23 @@ test -z "$INSTALL_SCRIPT" && INSTALL_SCRIPT='${INSTALL}'
 
 test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
+
+
+# Check whether --with-popt or --without-popt was given.
+if test "${with_popt+set}" = set; then
+  withval="$with_popt"
+   if test "$withval" != "no"; then
+   if test "$withval" != "yes"; then
+        POPTROOT=$withval
+        LDFLAGS="${LDFLAGS} -L$POPTROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$POPTROOT/include"
+   fi
+  else
+        { { echo "$as_me:$LINENO: error: The popt command-line parsing library is mandatory for this plugin" >&5
+echo "$as_me: error: The popt command-line parsing library is mandatory for this plugin" >&2;}
+   { (exit 1); exit 1; }; }
+ fi
+fi;
 
 DNS_BUILD=1
 
