@@ -1,6 +1,5 @@
 /*
  * PostgreSQL plugin. 
- * TODO: loops with and without opening the connection each time?
  * $Id$
  */
 
@@ -19,6 +18,7 @@
 
 const char *request = NULL;
 int readall = FALSE;
+int connect_each_time = FALSE;
 poptContext postgresql_poptcon;
 PGconn *conn;
 PGresult *res;
@@ -44,7 +44,6 @@ init (const int argc, const char **argv,
   int value;
   char *msg = malloc (256);
   char *rest;
-  char *hostname;
   /* popt variables */
   struct poptOption options[] = {
     {"conninfo", 'c', POPT_ARG_STRING, &conninfo, 0,
@@ -52,6 +51,9 @@ init (const int argc, const char **argv,
      ""},
     {"readall", 'a', POPT_ARG_NONE, &readall, 0,
      "Read all the data sent by the Postgresql server",
+     ""},
+    {"connect-each-time", 'e', POPT_ARG_NONE, &connect_each_time, 0,
+     "(Re)Connect to the Postgresql server at each iteration",
      ""},
     POPT_AUTOHELP POPT_TABLEEND
   };
@@ -71,7 +73,6 @@ init (const int argc, const char **argv,
 	       poptStrerror (value));
       postgresql_usage (msg);
     }
-  /* hostname = poptGetArg (postgresql_poptcon);    /* Not used */
   request = poptGetArg (postgresql_poptcon);
   if (request == NULL)
     request = "SELECT now()";
@@ -86,14 +87,17 @@ init (const int argc, const char **argv,
 void
 start_raw ()
 {
-  conn = PQconnectdb (conninfo);
-  if (conn == NULL)
+  if (!connect_each_time)
     {
-      err_quit ("Cannot create connection\n");
-    }
-  if (PQstatus (conn) == CONNECTION_BAD)
-    {
-      err_quit ("Connection failed: %s\n", PQerrorMessage (conn));
+      conn = PQconnectdb (conninfo);
+      if (conn == NULL)
+	{
+	  err_quit ("Cannot create connection\n");
+	}
+      if (PQstatus (conn) == CONNECTION_BAD)
+	{
+	  err_quit ("Connection failed: %s\n", PQerrorMessage (conn));
+	}
     }
 }
 
@@ -101,30 +105,56 @@ int
 execute ()
 {
   unsigned int row, column;
+  char *result;
+  if (connect_each_time)
+    {
+      conn = PQconnectdb (conninfo);
+      if (conn == NULL)
+	{
+	  err_ret ("Cannot create connection\n");
+	  return -1;
+	}
+      if (PQstatus (conn) == CONNECTION_BAD)
+	{
+	  err_ret ("Connection failed: %s\n", PQerrorMessage (conn));
+	  return -1;
+	}
+    }
   res = PQexec (conn, request);
   if (PQresultStatus (res) != PGRES_TUPLES_OK)
     {
-      printf ("Cannot run \"%s\": %s\n", request, PQresultErrorMessage (res));
+      err_ret ("Cannot run \"%s\": %s\n", request,
+	       PQresultErrorMessage (res));
       return -1;
     }
   if (global_options.verbose)
     printf ("%d tuples returned\n", PQntuples (res));
   if (readall)
     {
-      for (row = 0; row++; row < PQntuples (res))
+      for (row = 0; row < PQntuples (res); row++)
 	{
-	  for (column = 0; column++; column < PQnfields (res))
+	  for (column = 0; column < PQnfields (res); column++)
 	    {
-	      PQgetvalue (res, row, column);
-	      /* TODO: test the return code */
+	      result = PQgetvalue (res, row, column);
+	      if (result == NULL)
+		{
+		  err_ret ("Cannot retrieve value [%d,%d]\n", row, column);
+		  return -1;
+		}
+	      /* else {
+	         printf ("DEBUG: [%d,%d] %s\n", row, column, result);
+	         } */
 	    }
 	}
     }
+  if (connect_each_time)
+    PQfinish (conn);
   return 0;
 }
 
 void
 terminate ()
 {
-  PQfinish (conn);
+  if (!connect_each_time)
+    PQfinish (conn);
 }
