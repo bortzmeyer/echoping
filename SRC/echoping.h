@@ -122,6 +122,8 @@ unsigned short timeout_flag;
 struct echoping_struct
 {
   unsigned short udp; /* Use the UDP protocol (TCP is the default) */
+  unsigned short only_ipv4;
+  unsigned short only_ipv6;
   unsigned short verbose;
 };
 typedef struct echoping_struct echoping_options;

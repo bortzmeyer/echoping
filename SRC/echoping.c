@@ -462,6 +462,14 @@ main (argc, argv)
 	}
       global_options.udp = udp;
       global_options.verbose = verbose;
+      if (family == AF_INET)
+	global_options.only_ipv4 = 1;
+      else
+	global_options.only_ipv4 = 0;
+      if (family == AF_INET6)
+	global_options.only_ipv6 = 1;
+      else
+	global_options.only_ipv6 = 0;
       plugin_port_name =
 	plugin_init (remaining, (const char **) leftover, global_options);
       if (plugin_port_name != NULL)
