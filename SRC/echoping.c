@@ -538,7 +538,8 @@ main (argc, argv)
 #ifdef HTTP
   if (http)
     {
-      sendline = make_http_sendline (url, server, res->ai_protocol, nocache);
+      sendline = make_http_sendline (url, server, atoi(pbuf), nocache);
+      /* printf ("DEBUG: sending %s\n", sendline); */
     }
   else
 #endif
