@@ -6,7 +6,11 @@
 remote host by sending it TCP "echo" (or other protocol) packets.
 
 <P>To install it, see the INSTALL file. Or type "make" if you're in a
-hurry :-) <A HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you wish.
+hurry :-) <A
+HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
+wish. (Or you may prefer access the latest developments <A
+HREF="http://sourceforge.net/cvs/?group_id=4581">via CVS</A>: the
+module is named "SRC".)
 
 <P>To use it, simply:
 
@@ -31,6 +35,8 @@ test hosts which aren't yours.
 <LI>can repeat the test and display various measures about it,
 <LI>can use T/TCP on systems which support it.
 </UL>
+
+<P><A HREF="http://sourceforge.net/bugs/admin/?group_id=4581">Known bugs</A>
 
 <P>Examples of output:
 
