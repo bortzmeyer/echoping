@@ -5,4 +5,6 @@ postgresql_la_LDFLAGS = -module
 man_MANS = echoping_postgresql.1
 endif
 
+EXTRA_DIST = $(man_MANS)
+
 # $Id$
