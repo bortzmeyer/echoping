@@ -33,7 +33,7 @@ may not be available on your platform).
          <http://www.kohala.com/start/ttcp.html>)
 
 There is no option to disable IPv6. echoping now uses the new (RFC
-2133) socket interface, with getnameinfo/getaddrinfo. If your system
+2553) socket interface, with getnameinfo/getaddrinfo. If your system
 does not support it (Mac OS X <= 10.1), you have no other choices than
 using echoping 4.
 
