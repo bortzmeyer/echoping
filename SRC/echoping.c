@@ -146,7 +146,8 @@ main (argc, argv)
   /* popt variables */
   const struct poptOption options[] = {
     {"verbose", 'v', POPT_ARG_NONE, &verbose, 'v'},
-    {"dump-configuration", 'V', POPT_ARG_NONE, &dump_config, 'V', "Displays echoping compiled-in configuration"},
+    {"dump-configuration", 'V', POPT_ARG_NONE, &dump_config, 'V',
+     "Displays echoping compiled-in configuration"},
     {"help", '?', POPT_ARG_NONE, NULL, '?'},
     {"size", 's', POPT_ARG_INT, &size, 's'},
     {"number", 'n', POPT_ARG_INT, &number, 'n', "Number of iterations"},
@@ -611,11 +612,12 @@ main (argc, argv)
 		{
 		  *p = 0;
 		  text_port = p + 1;
-		  strncpy (port_name, text_port, NI_MAXSERV);
+		  if (strcmp (text_port, ""))	/* See bug #850672 */
+		    strncpy (port_name, text_port, NI_MAXSERV);
 		}
 	    }
 	}
-      if (text_port == NULL)
+      if (text_port == NULL || !strcmp (text_port, ""))
 	{
 	  error = getaddrinfo (server, port_name, &hints, &res);
 	  if (error)
