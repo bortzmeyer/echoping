@@ -78,18 +78,6 @@ fi
 CF_CHECK_EXTERN_DATA($1,int)
 ])dnl
 
-dnl ---------------------------------------------------------------------------
-dnl Check for declaration of sys_nerr and sys_errlist in one of stdio.h and
-dnl errno.h.  Declaration of sys_errlist on BSD4.4 interferes with our
-dnl declaration.  Reported by Keith Bostic.
-AC_DEFUN([CF_SYS_ERRLIST],
-[
-for cf_name in sys_nerr sys_errlist
-do
-    CF_CHECK_ERRNO($cf_name)
-done
-])dnl
-
 dnl Useful macros to check libraries which are not implicit 
 dnl in Solaris, for instance.
 AC_DEFUN([CF_LIB_NSL],

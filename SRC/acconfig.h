@@ -15,12 +15,6 @@
 /* Do we have socket priority? */
 #undef HAVE_SOCKET_PRIORITY
 
-/* Is sys_errlist declared? */
-#undef DECL_SYS_ERRLIST
-
-/* Is sys_nerr declared? */
-#undef DECL_SYS_NERR
-
 /* HTTP support */
 #undef HTTP 
 

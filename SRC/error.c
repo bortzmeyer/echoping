@@ -110,15 +110,11 @@ sys_err_str ()
 
   if (errno != 0)
     {
-      if (errno > 0 && errno < sys_nerr)
-	sprintf (msgstr, "(%s)", sys_errlist[errno]);
-      else
-	sprintf (msgstr, "(errno = %d)", errno);
+      sprintf (msgstr, "(%s)", strerror(errno));
     }
   else
     {
       msgstr[0] = '\0';
-    }
-
+	}
   return (msgstr);
 }

@@ -71,7 +71,6 @@ dnl Checks for libraries.
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(sys/time.h unistd.h)
-CF_SYS_ERRLIST
 
 case $host_os in
 osf*)
@@ -104,7 +103,7 @@ AC_CHECK_FUNCS(getaddrinfo getnameinfo inet_ntop, ,
 		[AC_MSG_ERROR([Missing mandatory function - echoping now uses the new network functions (RFC 2133) which are mandatory for IPv6])]
          	)])
 		
-AC_CHECK_FUNCS(gettimeofday socket sigaction, , AC_MSG_ERROR(Missing mandatory function))
+AC_CHECK_FUNCS(gettimeofday socket sigaction strerror, , AC_MSG_ERROR(Missing mandatory function))
 AC_CHECK_FUNCS(usleep)
 
 if test "$OPENSSL" = "1" && test "$GNUTLS" = "1"; then

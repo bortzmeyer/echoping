@@ -36,6 +36,9 @@
 /* Define if you have the socket function.  */
 #undef HAVE_SOCKET
 
+/* Define if you have the strerror function.  */
+#undef HAVE_STRERROR
+
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
 
@@ -66,12 +69,6 @@
 
 /* Do we have socket priority? */
 #undef HAVE_SOCKET_PRIORITY
-
-/* Is sys_errlist declared? */
-#undef DECL_SYS_ERRLIST
-
-/* Is sys_nerr declared? */
-#undef DECL_SYS_NERR
 
 /* HTTP support */
 #undef HTTP 

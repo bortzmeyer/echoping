@@ -73,9 +73,6 @@
 
 /* These entities should be in errno.h but some systems do not define
    them. */
-#ifdef DECL_SYS_ERRLIST
-extern char *sys_errlist[];
-#endif
 #ifdef DECL_SYS_NERR
 extern int sys_nerr;
 #endif
