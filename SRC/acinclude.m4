@@ -132,11 +132,12 @@ dnl instance.
 AC_DEFUN([CF_CHECK_SERVICES],
 [
 AC_MSG_CHECKING(what is the name of the HTTP port in your services database)
-dnl We should test it is really port 80 and not any mention of "http"
+dnl BUG: We should test it is really port 80 and not any mention of "http"
 if grep http /etc/services > /dev/null; then
     AC_DEFINE(HTTP_TCP_PORT,"http")
     AC_MSG_RESULT(http)
 else
+    dnl BUG: Trap on Solaris with a port whose name begins with "www"...
     if grep www /etc/services > /dev/null; then
 	AC_DEFINE(HTTP_TCP_PORT,"www")
         AC_MSG_RESULT(www)	
@@ -155,22 +156,34 @@ else
 fi
 ])
 
-AC_DEFUN([CF_CHECK_HTTP_SERVICE],
+dnl experimental
+AC_DEFUN([CF_CHECK_TCP_SERVICE],
 [
-AC_MSG_CHECKING(what is the name of the HTTP port in your services database)
 AC_TRY_RUN([
+#include        <stdio.h>
+#include        <stdlib.h>
+#include        <sys/types.h>
+#include        <netdb.h>
+#include        <sys/socket.h>
+#include        <netinet/in.h>
+#include        <arpa/inet.h>
+#include        <unistd.h>
 int 
 main (argc, argv)
      int argc;
      char *argv[];
 {
   struct servent *sp;
-  if ((sp = getservbyname ("http", "tcp")) == 0)
+  if ((sp = getservbyname ("$1", "tcp")) == 0)
 	exit (1);
   else
 	exit (0);
 } 
 ],
-[AC_DEFINE(HTTP_TCP_PORT,"http")
-AC_MSG_RESULT(http)]
-,)])
+ac_last_port=$1
+,
+ac_last_port=
+)])
+
+
+

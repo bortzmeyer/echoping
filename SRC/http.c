@@ -23,10 +23,7 @@ make_http_sendline (char *url, char *host, int port)
   sprintf (sendline,
 	   "GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n\r\n",
 	   url, VERSION, hostname);
-#ifndef linux
-  /* Bug in free(3)? */
-  free (hostname);
-#endif
+  /* free (hostname); */ /* At least on AI/X, it segfaults for an unknown reason */
 #endif
   return sendline;
 }

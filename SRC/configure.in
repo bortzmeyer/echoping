@@ -73,7 +73,9 @@ AC_ARG_ENABLE(ttcp,
  fi)
 
 if test "$HTTP" = "1"; then
-CF_CHECK_HTTP_SERVICE
+CF_CHECK_SERVICES
 fi
 
 AC_OUTPUT(Makefile)
+
+

@@ -13,12 +13,14 @@ Just type "./configure", then "make", and then (as root if necessary),
          <http://www.kohala.com/start/ttcp.html>)
 
 
-If 'echoping -h' fails with "tcp_open: unknown service: http/tcp", add
-"http" to the services database (typically /etc/services or a NIS map).
-Its value is 80. Or, change HTTP_TCP_PORT in echoping.h from "http" to "www"
-or whatever is defined on your system (at least AIX or Solaris have the 
-problem). A workaround is to specify the port on the command line:
-echoping -h / www.mydomain.org:80
+If 'echoping -h' fails with "tcp_open: unknown service:
+undefined:use_:80/tcp",it means configure was not able to find a port
+name for the HTTP protocol. Complain to your vendor and add by hand
+"http" to the services database (typically /etc/services or a NIS
+map).  Its value is 80. Or, hack (warning: it's a hack) config.h to
+change HTTP_TCP_PORT from "undefined:use_:80" to "www" or whatever is
+defined on your system. A good workaround is to specify the port on
+the command line: echoping -h / www.mydomain.org:80
 
 If 'echoping -h' replies with a "404" error while the file really exists,
 check first that you use the FQDN of the server on the command line

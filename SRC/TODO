@@ -4,6 +4,7 @@ machines exist.
 TCP timeout with long packets seem to confuse Cisco routers. Does
 someone can reproduce it and perform tests? It seems to work now.
 
+Better detection of the name of the HTTP port.
 
 
 $Id$
