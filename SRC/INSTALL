@@ -33,9 +33,10 @@ may not be available on your platform).
          <http://www.kohala.com/start/ttcp.html>)
 
 There is no option to disable IPv6. echoping now uses the new (RFC
-2553) socket interface, with getnameinfo/getaddrinfo. If your system
-does not support it (Mac OS X <= 10.1), you have no other choices than
-using echoping 4.
+3493, but first specified in RFC 2133 in september 1997) socket
+interface, with getnameinfo/getaddrinfo. If your system does not
+support it (Mac OS X <= 10.1), you have no other choices than using
+echoping 4.
 
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
