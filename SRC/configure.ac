@@ -170,7 +170,7 @@ AC_CHECK_FUNCS(gettimeofday socket sigaction strerror, , AC_MSG_ERROR(Missing ma
 AC_CHECK_FUNCS(poptGetContext, , 
    [AC_CHECK_LIB(popt,poptGetContext, ,
       [AC_MSG_ERROR([Missing popt library, get it from ftp://ftp.rpm.org/pub/rpm/dist/rpm-x.y.z])])])
-AC_CHECK_FUNCS(usleep)
+AC_CHECK_FUNCS(usleep) dnl TODO: use the Autoconf macro http://www.gnu.org/software/ac-archive/htmldoc/etr_short_sleep.html
 AC_CHECK_FUNCS(dlopen, , 
    [AC_CHECK_LIB(dl,dlopen, ,
        [AC_MSG_ERROR([echoping requires dlopen (dynamic loading of libraries) for plugins])])])
