@@ -74,7 +74,7 @@ read_from_server (CHANNEL fs, short ssl)
 	}
       }
 #endif
-      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr); */
+      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr);  */
       /* HTTP replies should be separated by CR-LF. Unfortunately, some
          servers send only CR :-( */
       body = ((nr == 2) || (nr == 1));	/* Empty line CR-LF seen */
