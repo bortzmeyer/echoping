@@ -68,7 +68,7 @@ CF_LIB_NSL
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(gettimeofday socket gethostbyname sigaction, , AC_MSG_ERROR(Missing mandatory function))
-AC_CHECK_FUNCS(usleep)
+AC_CHECK_FUNCS(usleep getaddrinfo)
 
 if test "$OPENSSL" = "1"; then
 CF_LIB_OPENSSL
