@@ -1,14 +1,16 @@
 echoping appears to compile and run at least on Linux, FreeBSD,
-NetBSD, MacOS X, Solaris (gcc only), HP/UX and Tru64. On Mac OS X,
-you'll probably need a version >= 10.2. Some versions of RedHat 7 ship
-with a completely broken C compiler (echoping displays negative
-times).
+NetBSD, MacOS X, Solaris (gcc only) and Tru64. On Mac OS X, you'll
+probably need a version >= 10.2. Some versions of RedHat 7 ship with a
+completely broken C compiler (echoping displays negative times).
 
 You do not have to be root to install it.
 
-Just type "./configure --config-cache", then "make", "make test" if
-you wish (some tests depend on local servers and/or Internet access,
-interpret with care) and then (as root if necessary), "make install".
+Just type "./configure", then "make", "make test" if you wish (some
+tests depend on local servers and/or Internet access, interpret with
+care) and then (as root if necessary), "make install". Since
+echoping's configure script is quite slow, it is highly recommended to
+use --config-cache or to have a config.site where it is the default
+(see autoconf documentation).
 
 There is also a 'make fulltest' if you want to test more things (which
 may not be available on your platform).
@@ -56,6 +58,8 @@ check first that you use the FQDN of the server on the command line
 (this is a consequence of the HTTP 1.1 protocol, not a bug in echoping
 and this will show only if the HTTP server uses "virtual hosting").
 
+************* Bug reports ***********************
+
 To report a bug, email Stephane Bortzmeyer
 <bortz@users.sourceforge.net> (if you have an account at SourceForge,
 you can use their bug reporting tool, too). If the problem is at the
@@ -71,6 +75,22 @@ where
 list
 print the-variables-displayed
 
+********** System-specific notes **************
+
+HP-UX: echoping probably cannot run because it depends on a feature
+called "back-linking" (the main program must be able to export its
+symbols to the plugins, and not only the other way around). HP-UX is
+apparently the only Unix without it (see libtool documentation). No
+solution yet.
+
+FreeBSD: popt is a port, so "pkg_add -r popt" will work (or
+"portinstall popt").
+
+NetBSD: popt is a port, so "pkg_add popt" will work.
+
+Debian: echoping is a Debian package so you typically do not need to
+compile it. If you want to do it, do not forget to install the
+development versions of the libraries ("apt-get install libpopt-dev").
 
 $Id$
 
