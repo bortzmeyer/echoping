@@ -50,7 +50,7 @@ main (argc, argv)
   int result;
 
   int sockfd;
-  struct addrinfo hints, *res;
+  struct addrinfo hints, hints_numeric, *res;
   int error;
   char hbuf[NI_MAXHOST], pbuf[NI_MAXSERV];
 #ifdef NI_WITHSCOPEID
@@ -526,18 +526,26 @@ main (argc, argv)
 #endif
 
 #ifdef LIBIDN
-  if ((result =
-       idna_to_ascii_8z (utf8_server, &ace_server, IDNA_USE_STD3_ASCII_RULES
-				)) != IDNA_SUCCESS)
+  /* Check if it is an address or a name (libidn will have trouble with IPv6 addresses otherwise) */
+  memset (&hints_numeric, 0, sizeof (hints_numeric));
+  hints_numeric.ai_family = family;
+  hints_numeric.ai_flags = AI_NUMERICHOST;
+  error = getaddrinfo (server, port_name, &hints_numeric, NULL);
+  if (error && error == EAI_NONAME)	/* A name, not an address */
     {
-      err_quit ("IDN error for host: %s %d", server, result);
-    }
-  if (strcmp (utf8_server, ace_server))
-    {
-      if (verbose)
-	printf ("ACE name of the server: %s\n", ace_server);
-      server = ace_server;
-    }
+      if ((result =
+	   idna_to_ascii_8z (utf8_server, &ace_server,
+			     IDNA_USE_STD3_ASCII_RULES)) != IDNA_SUCCESS)
+	{
+	  err_quit ("IDN error for host: %s %d", server, result);
+	}
+      if (strcmp (utf8_server, ace_server))
+	{
+	  if (verbose)
+	    printf ("ACE name of the server: %s\n", ace_server);
+	  server = ace_server;
+	}
+    }				/* Else it is an address, do not IDNize it */
 #endif
   error = getaddrinfo (server, port_name, &hints, &res);
   if (error)
