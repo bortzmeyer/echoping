@@ -68,9 +68,14 @@ APIs) or --with-gnutls
 
 To report a bug, email Stephane Bortzmeyer
 <bortz@users.sourceforge.net> (if you have an account at SourceForge,
-you can use their bug reporting tool, too). If the problem is at the
-"./configure" step, do not forget to send configure's output *and* the
-config.log.
+you can use their bug reporting tool, too, at
+http://sourceforge.net/tracker/?group_id=4581&atid=104581).
+
+If the problem is at the "./configure" step, do not forget to send
+configure's output *and* the config.log.
+
+If the problem is at run-time, please send the output of "echoping -V"
+(capital V).
 
 If echoping segfaults, please send me debugging info. To do so:
 make clean

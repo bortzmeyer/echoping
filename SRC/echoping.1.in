@@ -8,6 +8,7 @@ echoping \- tests a remote host with TCP or UDP
 .RI [-4] 
 .RI [-6] 
 .RI [-v] 
+.RI [-V] 
 .RI [-r] 
 .RI [-f fill] 
 .RI [-t timeout] 
@@ -54,6 +55,8 @@ an IDN (Unicode domain name).
 .SH OPTIONS
 .IP -v
 Verbose
+.IP -V
+Displays the compiled-in configuration of echoping. Useful for bug reports.
 .IP -s\ nnn
 Size of the data to send. Large values can produce strange results with
 some echo servers.

@@ -463,7 +463,7 @@ ac_includes_default="\
 #endif"
 
 ac_subdirs_all="$ac_subdirs_all plugins"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB STRIP ac_ct_STRIP CPP CXX CXXFLAGS ac_ct_CXX CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE plugins_dir subdirs LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB STRIP ac_ct_STRIP CPP CXX CXXFLAGS ac_ct_CXX CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE plugins_dir subdirs hostname compil_options compil_date LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -22132,7 +22132,135 @@ echo $plugins_dir > plugins/dir
 
 subdirs="$subdirs plugins"
 
-                    ac_config_files="$ac_config_files Makefile echoping.1"
+
+compil_options=""
+echo ""
+echo "Configuration of echoping:"
+
+
+echo $ECHO_N HTTP ": "
+compil_options="$compil_options\nHTTP:"
+if  eval 'test "$HTTP" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N ICP ": "
+compil_options="$compil_options\nICP:"
+if  eval 'test "$ICP" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N OPENSSL ": "
+compil_options="$compil_options\nOPENSSL:"
+if  eval 'test "$OPENSSL" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N GNUTLS ": "
+compil_options="$compil_options\nGNUTLS:"
+if  eval 'test "$GNUTLS" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N SMTP ": "
+compil_options="$compil_options\nSMTP:"
+if  eval 'test "$SMTP" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N LIBIDN ": "
+compil_options="$compil_options\nLIBIDN:"
+if  eval 'test "$LIBIDN" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N TTCP ": "
+compil_options="$compil_options\nTTCP:"
+if  eval 'test "$TTCP" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N TOS ": "
+compil_options="$compil_options\nTOS:"
+if  eval 'test "$TOS" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+echo $ECHO_N PRIORITY ": "
+compil_options="$compil_options\nPRIORITY:"
+if  eval 'test "$PRIORITY" = "1"' > /dev/null; then
+	echo "$as_me:$LINENO: result: enabled" >&5
+echo "${ECHO_T}enabled" >&6
+	compil_options="$compil_options enabled"
+else
+	echo "$as_me:$LINENO: result: disabled" >&5
+echo "${ECHO_T}disabled" >&6
+	compil_options="$compil_options disabled "
+fi
+
+
+compil_date=`date +%Y-%m-%d`
+hostname=$ac_hostname
+
+
+
+                              ac_config_files="$ac_config_files Makefile echoping.1 compilation.h"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -22691,6 +22819,7 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "echoping.1" ) CONFIG_FILES="$CONFIG_FILES echoping.1" ;;
+  "compilation.h" ) CONFIG_FILES="$CONFIG_FILES compilation.h" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
@@ -22843,6 +22972,9 @@ s,@am__fastdepCXX_TRUE@,$am__fastdepCXX_TRUE,;t t
 s,@am__fastdepCXX_FALSE@,$am__fastdepCXX_FALSE,;t t
 s,@plugins_dir@,$plugins_dir,;t t
 s,@subdirs@,$subdirs,;t t
+s,@hostname@,$hostname,;t t
+s,@compil_options@,$compil_options,;t t
+s,@compil_date@,$compil_date,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
@@ -23742,100 +23874,6 @@ echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
 
     cd "$ac_popdir"
   done
-fi
-
-
-echo ""
-echo "Configuration of echoping:"
-
-
-echo $ECHO_N HTTP ": "
-if  eval 'test "$HTTP" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N ICP ": "
-if  eval 'test "$ICP" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N OPENSSL ": "
-if  eval 'test "$OPENSSL" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N GNUTLS ": "
-if  eval 'test "$GNUTLS" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N SMTP ": "
-if  eval 'test "$SMTP" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N LIBIDN ": "
-if  eval 'test "$LIBIDN" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N TTCP ": "
-if  eval 'test "$TTCP" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N TOS ": "
-if  eval 'test "$TOS" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
-fi
-
-
-echo $ECHO_N PRIORITY ": "
-if  eval 'test "$PRIORITY" = "1"' > /dev/null; then
-	echo "$as_me:$LINENO: result: enabled" >&5
-echo "${ECHO_T}enabled" >&6
-else
-	echo "$as_me:$LINENO: result: disabled" >&5
-echo "${ECHO_T}disabled" >&6
 fi
 
 

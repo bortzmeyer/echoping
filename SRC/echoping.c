@@ -61,6 +61,7 @@ main (argc, argv)
   FILE *files = NULL;
   CHANNEL channel;
   int verbose = FALSE;
+  int dump_config = FALSE;
   int module_find = FALSE;
   int n, nr = 0;
 #ifdef OPENSSL
@@ -145,6 +146,7 @@ main (argc, argv)
   /* popt variables */
   const struct poptOption options[] = {
     {"verbose", 'v', POPT_ARG_NONE, &verbose, 'v'},
+    {"dump-configuration", 'V', POPT_ARG_NONE, &dump_config, 'V', "Displays echoping compiled-in configuration"},
     {"help", '?', POPT_ARG_NONE, NULL, '?'},
     {"size", 's', POPT_ARG_INT, &size, 's'},
     {"number", 'n', POPT_ARG_INT, &number, 'n', "Number of iterations"},
@@ -225,6 +227,9 @@ main (argc, argv)
 	  fprintf (stdout,
 		   "  (You can get a list of available plugins with \"ls %s\")\n",
 		   PLUGINS_DIR);
+	  exit (0);
+	case 'V':
+	  printf ("%s\n", COMPILATION_OPTIONS);
 	  exit (0);
 	case 'v':
 	  break;

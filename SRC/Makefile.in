@@ -41,10 +41,11 @@ POST_UNINSTALL = :
 host_triplet = @host@
 bin_PROGRAMS = echoping$(EXEEXT)
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
-	$(srcdir)/echoping.1.in $(top_srcdir)/configure AUTHORS \
-	COPYING ChangeLog INSTALL NEWS TODO config.guess config.sub \
-	depcomp install-sh ltmain.sh missing mkinstalldirs
+	$(srcdir)/Makefile.in $(srcdir)/compilation.h.in \
+	$(srcdir)/config.h.in $(srcdir)/echoping.1.in \
+	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
+	TODO config.guess config.sub depcomp install-sh ltmain.sh \
+	missing mkinstalldirs
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -55,7 +56,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno configure.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = echoping.1
+CONFIG_CLEAN_FILES = echoping.1 compilation.h
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
@@ -177,6 +178,8 @@ build_alias = @build_alias@
 build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
+compil_date = @compil_date@
+compil_options = @compil_options@
 datadir = @datadir@
 exec_prefix = @exec_prefix@
 host = @host@
@@ -184,6 +187,7 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+hostname = @hostname@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
@@ -266,6 +270,8 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 distclean-hdr:
 	-rm -f config.h stamp-h1
 echoping.1: $(top_builddir)/config.status $(srcdir)/echoping.1.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+compilation.h: $(top_builddir)/config.status $(srcdir)/compilation.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)

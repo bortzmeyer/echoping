@@ -303,15 +303,18 @@ AC_DEFINE_UNQUOTED(PLUGINS_DIR, "$plugins_dir", [Directory where the plugins wil
 AC_SUBST(plugins_dir)
 echo $plugins_dir > plugins/dir
 AC_CONFIG_SUBDIRS(plugins)
-AC_OUTPUT(Makefile echoping.1)
 
+compil_options=""
 AC_DEFUN([DISPLAY_SETTING],
 [
 echo $ECHO_N $1 ": "
+compil_options="$compil_options\n$1:"
 if [ eval 'test "$$1" = "1"' > /dev/null]; then
 	AC_MSG_RESULT( enabled)
+	compil_options="$compil_options enabled"	
 else 
 	AC_MSG_RESULT( disabled)
+	compil_options="$compil_options disabled "
 fi
 ])dnl
 echo ""
@@ -326,6 +329,13 @@ DISPLAY_SETTING(LIBIDN)
 DISPLAY_SETTING(TTCP)
 DISPLAY_SETTING(TOS)
 DISPLAY_SETTING(PRIORITY)
+
+compil_date=`date +%Y-%m-%d`
+hostname=$ac_hostname
+AC_SUBST(hostname)
+AC_SUBST(compil_options)
+AC_SUBST(compil_date)
+AC_OUTPUT(Makefile echoping.1 compilation.h)
 
 
 

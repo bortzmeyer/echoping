@@ -235,6 +235,8 @@ extern char *progname;
 
 extern boolean timeout_flag;
 
+#include "compilation.h"
+
 #ifndef HEADER_INCLUDED
 #define HEADER_INCLUDED
 #endif
