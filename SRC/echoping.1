@@ -51,11 +51,16 @@ Verbose
 Size of the data to send. Large values can produce strange results with
 some echo servers.
 .IP -n\ nnn
-Numbers of repeated tests. With this option, you have also the minimum, maximum, average and median
-time. The median is the value such that half of the measures are under it
-and the other half is above. When you measure highly variables values, like
-it is often the case on the whole Internet, median is better than average
-to avoid  "extreme" values.
+Numbers of repeated tests. With this option, you have also the
+minimum, maximum, average and median time, as well as the standard
+deviation. The median is the value such that half of the measures are
+under it and the other half is above. When you measure highly
+variables values, like it is often the case on the whole Internet,
+median is better than average to avoid "extreme" values. You can check
+the "value" of the average by looking at the standard deviation: very
+roughly, if the standard deviation is more than the half of the
+average, the average does not mean anything. (See a book about
+statistics for the details: the reality is far more complicated.)
 .IP -w\ nnn
 Number of seconds to wait between two tests (default is one). On
 systems which have usleep(), you can write it as a fractional number,

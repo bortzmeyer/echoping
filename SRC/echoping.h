@@ -34,6 +34,7 @@
 #include        <unistd.h>
 #include        <string.h>
 #include        <signal.h>
+#include        <math.h>
 
 #ifdef OPENSSL
 #include <openssl/crypto.h>
@@ -99,8 +100,13 @@ typedef union _CHANNEL
 #endif
 }
 CHANNEL;
-#endif
 
+struct result
+{
+  unsigned short valid;
+  struct timeval timevalue;
+};
+#endif
 
 struct timeval null_timeval;
 struct timeval max_timeval;
@@ -150,7 +156,10 @@ void tvadd ();
 void tvavg ();
 void tvmin ();
 void tvmax ();
+int tvcmp ();
+void tvstddev ();
 double tv2double ();
+struct timeval double2tv ();
 /* http.c */
 #ifdef HTTP
 char *make_http_sendline ();
@@ -164,7 +173,6 @@ int read_from_server (CHANNEL fs, short ssl);
 void *make_icp_sendline ();
 int recv_icp ();
 #ifndef HTTP
-void find_server_and_port ();
 int read_from_server ();
 #endif
 #endif

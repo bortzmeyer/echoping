@@ -43,6 +43,11 @@ moretest: $(MORE_TESTS)
 	echo "$$dashes"; \
 	test "$$failed" -eq 0
 
+internal_test: internal_tests
+internal_tests: internal_tests.o $(echoping_OBJECTS)
+	$(CC) $(LDFLAGS) -o $@ $< util.o 
+	./internal_tests
+
 debug: 
 	$(MAKE) CFLAGS='-g -O0'
 

@@ -38,7 +38,8 @@ make_icp_sendline (url, shost, opcode, length)
   headerp->reqnum = htonl (reqnum);
   headerp->flags = htonl (flags);
   headerp->pad = pad;
-  headerp->shostid = htonl (*shost);
+  if (shost)
+    headerp->shostid = htonl (*shost);
   /* urloffset = (char *) ((int) buf + sizeof(icp_common_t)); */
   urloffset = (char *) (buf + sizeof (icp_common_t));
   if (opcode == ICP_OP_QUERY)

@@ -25,15 +25,11 @@ unsigned short timeout_flag;
 
 int return_code = 0;
 unsigned int number = 1;
-struct timeval max, min, total, median, temp;
+struct timeval max, min, total, median, stddev, temp;
 unsigned int successes, attempts = 0;
 unsigned int size = DEFLINE;
 unsigned int j = 0;
-struct result
-{
-  unsigned short valid;
-  struct timeval timevalue;
-};
+int family = PF_UNSPEC;
 struct result results[MAXNUMBER];
 struct timeval good_results[MAXNUMBER];
 extern int tvcmp ();
@@ -49,17 +45,18 @@ main (argc, argv)
   signed char ch;
 
   int sockfd;
+  struct addrinfo hints, *res;
+  int error;
+  char hbuf[NI_MAXHOST], pbuf[NI_MAXSERV];
+#ifdef NI_WITHSCOPEID
+  const int niflags = NI_NUMERICHOST | NI_NUMERICSERV | NI_WITHSCOPEID;
+#else
+  const int niflags = NI_NUMERICHOST | NI_NUMERICSERV;
+#endif
+
   FILE *files = NULL;
   CHANNEL channel;
-  struct hostent *hostptr;
-  struct sockaddr_in serv_addr;
-  struct sockaddr_in udp_cli_addr;	/* client's Internet socket
-					 * addr */
-  struct servent *sp = NULL;
   int verbose = FALSE;
-  char *server_address;
-  u_int addr;
-  struct in_addr *ptr;
   int n, nr = 0;
   int rc;
 #ifdef OPENSSL
@@ -89,13 +86,11 @@ main (argc, argv)
   unsigned short timeout_requested = 0;
   unsigned short size_requested = 0;
   char *url = "";
-  short port = 0;
-  char *text_port = malloc (6);
 #if USE_SIGACTION
   struct sigaction mysigaction;
 #endif
 
-  char *port_name = ECHO_TCP_PORT;
+  char port_name[NI_MAXSERV];
   unsigned short port_to_use = USE_ECHO;
   unsigned short http = 0;
   unsigned short smtp = 0;
@@ -137,13 +132,16 @@ main (argc, argv)
   median = null_timeval;
   max = null_timeval;
   min = max_timeval;
+  stddev = null_timeval;
+
+  strcpy(port_name, ECHO_TCP_PORT);
 
   for (i = 0; i <= MAXNUMBER; i++)
     {
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA46")) != EOF)
     {
       switch (ch)
 	{
@@ -160,23 +158,23 @@ main (argc, argv)
 	  ssl = 1;
 	  break;
 	case 'd':
-	  port_name = DISCARD_TCP_PORT;
+	  strcpy(port_name, DISCARD_TCP_PORT);
 	  port_to_use = USE_DISCARD;
 	  break;
 	case 'c':
-	  port_name = CHARACTER_GENERATOR_TCP_PORT;
+	  strcpy(port_name, CHARACTER_GENERATOR_TCP_PORT);
 	  port_to_use = USE_CHARGEN;
 	  stop_at_newlines = 0;
 	  break;
 	case 'i':
-	  port_name = DEFAULT_ICP_UDP_PORT;
+	  strcpy(port_name, DEFAULT_ICP_UDP_PORT);
 	  port_to_use = USE_ICP;
 	  udp = 1;
 	  icp = 1;
 	  url = optarg;
 	  break;
 	case 'h':
-	  port_name = DEFAULT_HTTP_TCP_PORT;
+	  strcpy(port_name, DEFAULT_HTTP_TCP_PORT);
 	  port_to_use = USE_HTTP;
 	  http = 1;
 	  url = optarg;
@@ -192,7 +190,7 @@ main (argc, argv)
 	  fill_requested = 1;
 	  break;
 	case 'S':
-	  port_name = "smtp";
+	  strcpy(port_name, "smtp");
 	  port_to_use = USE_SMTP;
 	  smtp = 1;
 	  break;
@@ -280,6 +278,12 @@ main (argc, argv)
 			      "%s: illegal waiting time.\n", progname);
 	      exit (1);
 	    }
+	  break;
+	case '4':
+	  family = AF_INET;
+	  break;
+	case '6':
+	  family = AF_INET6;
 	  break;
 	default:
 	  usage ();
@@ -372,7 +376,7 @@ main (argc, argv)
     }
   if (ssl && http)
     {
-      port_name = DEFAULT_HTTPS_TCP_PORT;
+      strcpy(port_name, DEFAULT_HTTPS_TCP_PORT);
     }
 #ifndef USE_TOS
   if (tos_requested)
@@ -407,88 +411,75 @@ main (argc, argv)
       printf ("\nThis is %s, version %s.\n\n", progname, VERSION);
     }
   server = argv[0];
+  signal (SIGINT, interrupted);
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = family;
+  hints.ai_socktype = udp ? SOCK_DGRAM : SOCK_STREAM;
+
 #ifdef HTTP
   if (http || icp)
     {
-      if (icp)
+      char *text_port = NULL, *p;
+
+      for (p = server; *p; p++)
 	{
-	  find_server_and_port (server, &port, port_name);
-	  if (port == 0)
-	    port = 3130;
-	}
-      else
-	{
-	  find_server_and_port (server, &port, port_name);
-	  if (port == 0)
-	    port = 80;
+	  if (*p == ':')
+	    {
+	      *p = 0;
+	      text_port = p + 1;
+	      strncpy(port_name, text_port, NI_MAXSERV);
+	    }
 	}
 
-      sprintf (text_port, "(port %d)", ntohs (port));
+      if (text_port == NULL)
+        {
+           error = getaddrinfo(server, port_name, &hints, &res);
+	   if (error)
+	     {
+		if (error == EAI_SERVICE)
+	          {
+		    if (strcmp (port_name, DEFAULT_HTTP_TCP_PORT) == 0)
+		      {
+			strcpy(port_name, "80");
+		      }
+		    else if (strcmp (port_name, DEFAULT_HTTPS_TCP_PORT) == 0)
+		      {
+			strcpy(port_name, "443");
+		      }
+		    else if (strcmp (port_name, DEFAULT_ICP_UDP_PORT) == 0)
+		      {
+			strcpy(port_name, "3130");
+		      }
+		  }
+	     }
+	}
     }
 #endif
-  signal (SIGINT, interrupted);
-  if ((addr = inet_addr (server)) == INADDR_NONE)
+
+  error = getaddrinfo(server, port_name, &hints, &res);
+  if (error)
     {
-      if ((hostptr = gethostbyname (server)) == NULL)
-	{
-	  err_quit ("gethostbyname error for host: %s %s",
-		    server, sys_err_str ());
-	}
-      server_address = *(hostptr->h_addr_list);	/* First item of the
-						 * list */
-      /*
-       * addr = (u_long) *server_address; 
-       */
-      /* ptr.s_addr = addr; */
-      ptr = (struct in_addr *) server_address;	/* hostptr->h_addr_list
-						 * points actually to
-						 * u_longs, not strings */
-      addr = ptr->s_addr;
+      err_quit("getaddrinfo error for host: %s %s",
+	       server, gai_strerror(error));
     }
-  else
+
+  if (getnameinfo(res->ai_addr, res->ai_addrlen, hbuf, sizeof(hbuf),
+	      pbuf, sizeof(pbuf), niflags) != 0)
     {
-      ptr = (struct in_addr *) malloc (sizeof (struct in_addr));
-      ptr->s_addr = addr;
+      strcpy(hbuf, "?");
+      strcpy(pbuf, "?");
     }
-  if (!http && !icp)		/* Already find */
-    {
-      if (!udp)
-	{
-	  if ((sp = getservbyname (port_name, "tcp")) == NULL)
-	    {
-	      err_quit ("tcp_open: unknown service: %s/tcp", port_name);
-	    }
-	}
-      else
-	{
-	  if ((sp = getservbyname (port_name, "udp")) == NULL)
-	    {
-	      err_quit ("tcp_open: unknown service: %s/udp", port_name);
-	    }
-	}
-    }
+
   /*
    * Fill in the structure "serv_addr" with the address of the server
    * that we want to connect with.
    */
 
-  bzero ((char *) &serv_addr, sizeof (serv_addr));
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_addr.s_addr = addr;
-  if (!http && !icp)
-    {
-      serv_addr.sin_port = sp->s_port;
-    }
-  else
-    {
-      serv_addr.sin_port = port;
-    }
-
 #ifdef HTTP
   if (http)
     {
       sendline =
-	make_http_sendline (url, server, (int) ntohs (port), nocache);
+	make_http_sendline (url, server, (int) ntohs (atoi(pbuf)), nocache);
     }
   else
 #endif
@@ -504,7 +495,15 @@ main (argc, argv)
 #ifdef ICP
   if (icp)
     {
-      sendline = make_icp_sendline (url, &addr, opcode, &length);
+      if (res->ai_family == AF_INET)
+	{
+	  sendline = make_icp_sendline (url, &((struct sockaddr_in *)(res->ai_addrlen))->sin_addr,
+					opcode, &length);
+	}
+      else
+	{
+	  sendline = make_icp_sendline (url, NULL, opcode, &length);
+	}
     }
   else
 #endif
@@ -550,26 +549,25 @@ main (argc, argv)
 	if ((sslh = SSL_new (ctx)) == NULL)
 	  err_sys ("Cannot initialize SSL context");
 #endif
-      if (!udp)
+      /*
+       * Open a socket.
+       */
+      if ((sockfd = socket (res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
+	err_sys ("Can't open socket");
+      if (udp)
 	{
-	  /*
-	   * Open a TCP socket (an Internet stream socket).
-	   */
+	  struct addrinfo hints2, *res2;
 
-	  if ((sockfd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-	    err_sys ("Can't open stream socket");
-	}
-      else
-	{
-	  if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
-	    err_sys ("Can't open datagram socket");
-	  /* Bind socket for reply. Not necessary? */
-	  bzero ((char *) &udp_cli_addr, sizeof (udp_cli_addr));
-	  udp_cli_addr.sin_family = AF_INET;
-	  udp_cli_addr.sin_addr.s_addr = htonl (INADDR_ANY);
-	  udp_cli_addr.sin_port = htons (0);
-	  if (bind (sockfd, (struct sockaddr *) &udp_cli_addr,
-		    sizeof (udp_cli_addr)) < 0)
+	  memset(&hints2, 0, sizeof(hints2));
+	  hints2.ai_family = res->ai_family;
+	  hints2.ai_flags = AI_PASSIVE;
+	  hints2.ai_socktype = SOCK_DGRAM;
+	  error = getaddrinfo(NULL, "0", &hints2, &res2);
+	  if (error)
+	    {
+	      err_sys ("getaddrinfo error");
+	    }
+	  if (bind (sockfd, res2->ai_addr, res2->ai_addrlen) < 0)
 	    {
 	      err_sys ("bind error");
 	    }
@@ -613,20 +611,20 @@ main (argc, argv)
 	    {
 	      printf
 		("Trying to connect to internet address %s %s to transmit %u bytes...\n",
-		 inet_ntoa (*ptr), (port == 0 ? "" : text_port), n);
+		 hbuf, pbuf, n);
 	    }
 #ifdef ICP
 	  if (icp)
 	    {
 	      printf
 		("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
-		 length, inet_ntoa (*ptr));
+		 length, hbuf);
 	    }
 #endif
 	  else
 	    {
 	      printf ("Trying to send %u bytes to internet address %s...\n",
-		      size, inet_ntoa (*ptr));
+		      size, hbuf);
 	    }
 #ifdef FLUSH_OUTPUT
 	  if (fflush ((FILE *) NULL) != 0)
@@ -661,8 +659,7 @@ main (argc, argv)
 	   * Connect to the server.
 	   */
 
-	  if (connect (sockfd, (struct sockaddr *) &serv_addr,
-		       sizeof (serv_addr)) < 0)
+	  if (connect (sockfd, res->ai_addr, res->ai_addrlen) < 0)
 	    {
 	      if ((errno == EINTR) && (timeout_flag))
 		{
@@ -721,8 +718,7 @@ main (argc, argv)
 	  if (ttcp)
 	    {
 	      if (sendto (sockfd, sendline, n, MSG_EOF,
-			  (struct sockaddr *) &serv_addr,
-			  sizeof (serv_addr)) != n)
+		   res->ai_addr, res->ai_addrlen) != n)
 		err_sys ("sendto error on socket");
 	      if (verbose)
 		{
@@ -787,7 +783,7 @@ main (argc, argv)
 	      if (icp)
 		{
 		  if (sendto (sockfd, sendline, length, 0,
-			      &serv_addr, sizeof (serv_addr)) != length)
+			      res->ai_addr, res->ai_addrlen) != length)
 		    err_sys ("sendto error on socket");
 		}
 	      else
@@ -1070,6 +1066,9 @@ printstats ()
       /* The number of bytes/second, as printed above, is not really
          meaningful: size does not reflect the number of bytes exchanged.
          With echo, N = 2*size, with discard, N = size, with http, N = size + (response)... */
+      tvstddev (&stddev, successes, total, results);
+      printf ("Standard deviation: %d.%06d\n",
+	      (int) stddev.tv_sec, (int) stddev.tv_usec);
       for (i = 0; i < number; i++)
 	{
 	  if (results[i].valid)

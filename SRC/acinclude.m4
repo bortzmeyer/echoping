@@ -125,6 +125,18 @@ AC_TRY_LINK([#include <sys/types.h>
  [AC_MSG_RESULT(yes); LIBS="${LIBS} -lsocket"]) 
 ])
 ])
+AC_DEFUN([CF_LIB_MATH],
+[
+AC_CHECK_LIB(m,pow,
+[
+AC_MSG_CHECKING(if libmath is mandatory)
+AC_TRY_LINK([#include <math.h>
+             double a,b;  ], 
+ [pow(a,b)], dnl
+ [AC_MSG_RESULT(no)], dnl
+ [AC_MSG_RESULT(yes); LIBS="${LIBS} -lm"])
+]) 
+])
 
 
 dnl Check the port name for HTTP. Everyone should declare "http" but

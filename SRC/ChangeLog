@@ -1,3 +1,6 @@
+	* Now displays the standard deviation for repeated tests. Warning:
+	  this may break some scripts which parse the output of echoping.
+	
 4.2.0 (2001-03-16)
 	
         * New -a and -A options to control the proxy/cache (disable caching).

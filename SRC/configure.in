@@ -3,7 +3,7 @@ dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(echoping, 4.2.1-BETA)
+AM_INIT_AUTOMAKE(echoping, 5.0-BETA)
 AM_CONFIG_HEADER(config.h)
 
 dnl User options
@@ -73,11 +73,12 @@ AC_HEADER_TIME
 dnl Checks for library functions.
 CF_LIB_SOCKET
 CF_LIB_NSL
+CF_LIB_MATH
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(gettimeofday socket gethostbyname sigaction, , AC_MSG_ERROR(Missing mandatory function))
+AC_CHECK_FUNCS(getnameinfo getaddrinfo inet_ntop, , AC_MSG_ERROR(Missing mandatory function - echoping now uses the new network functions which are mandatory for IPv6))
+AC_CHECK_FUNCS(gettimeofday socket sigaction, , AC_MSG_ERROR(Missing mandatory function))
 AC_CHECK_FUNCS(usleep)
-AC_CHECK_FUNC_PROTO(getaddrinfo, netdb.h)
 
 if test "$OPENSSL" = "1"; then
 CF_LIB_OPENSSL

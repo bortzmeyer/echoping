@@ -1,4 +1,4 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4
+dnl aclocal.m4 generated automatically by aclocal 1.4-p4
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -136,6 +136,18 @@ AC_TRY_LINK([#include <sys/types.h>
  [AC_MSG_RESULT(no)], dnl
  [AC_MSG_RESULT(yes); LIBS="${LIBS} -lsocket"]) 
 ])
+])
+AC_DEFUN([CF_LIB_MATH],
+[
+AC_CHECK_LIB(m,pow,
+[
+AC_MSG_CHECKING(if libmath is mandatory)
+AC_TRY_LINK([#include <math.h>
+             double a,b;  ], 
+ [pow(a,b)], dnl
+ [AC_MSG_RESULT(no)], dnl
+ [AC_MSG_RESULT(yes); LIBS="${LIBS} -lm"])
+]) 
 ])
 
 

@@ -49,65 +49,6 @@ make_http_sendline (char *url, char *host, int port, int nocache)
   return sendline;
 }
 
-void
-find_server_and_port (char *server, short *port, char *default_port)
-{
-  char *text_port, *p;
-  struct servent *sp;
-  for (p = server; *p; p++)
-    {
-      if (*p == ':')
-	{
-	  *p = 0;
-	  text_port = p + 1;
-	  *port = atoi (text_port);
-	}
-    }
-  if (*port == 0)
-    {
-      if (strcmp (default_port, DEFAULT_HTTP_TCP_PORT) == 0)
-	{
-	  if ((sp = getservbyname ("http", "tcp")) == NULL)
-	    {
-	      if ((sp = getservbyname ("www", "tcp")) == NULL)
-		{
-		  *port = htons (80);
-		  return;
-		}
-	    }
-	  *port = sp->s_port;
-	  return;
-	}
-      else if (strcmp (default_port, DEFAULT_HTTPS_TCP_PORT) == 0)
-	{
-	  if ((sp = getservbyname ("https", "tcp")) == NULL)
-	    {
-	      *port = htons (443);
-	      return;
-	    }
-	  *port = sp->s_port;
-	  return;
-	}
-      else if (strcmp (default_port, DEFAULT_ICP_UDP_PORT) == 0)
-	{
-	  if ((sp = getservbyname ("icp", "udp")) == NULL)
-	    {
-	      *port = htons (3130);
-	      return;
-	    }
-	  *port = sp->s_port;
-	  return;
-	}
-      else if ((sp = getservbyname (default_port, "tcp")) == NULL)
-	{
-	  err_quit ("tcp_open: unknown service: %s/tcp", default_port);
-	}
-      *port = sp->s_port;
-    }
-  else
-    *port = htons (*port);
-}
-
 int
 read_from_server (CHANNEL fs, short ssl)
 {

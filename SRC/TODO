@@ -8,7 +8,7 @@ http://sourceforge.net/bugs/?group_id=4581&func=detailbug&bug_id=132001
 
 Wishes:
 
-Display other calculations such as standard deviation.
+Display other calculations such as kurtosis.
 
 Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
 machines exist.
@@ -49,4 +49,8 @@ echoping.c:540: warning: passing arg 5 of `sendto' from incompatible pointer typ
 
 
 $Id$
+
+
+
+
 

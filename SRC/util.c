@@ -82,6 +82,48 @@ tvavg (out, number)
   out->tv_usec = (long) (result - (out->tv_sec * 1000000));
 }
 
+/* tvstddev -- Computes the standard deviation of a set of results */
+void
+tvstddev (out, number, average, results)
+     struct timeval *out;
+     int number;
+     struct timeval average;
+     struct result *results;
+{
+  int i;
+  struct timeval result, avg, var = null_timeval;
+  struct timeval square, large, small;
+  *out = null_timeval;
+  for (i = 0; i < number; i++)
+    {
+      if (results[i].valid == 1)
+	{
+	  result = results[i].timevalue;
+	  /* printf ("value is %f (average is %f)\n", 
+	     tv2double (result), tv2double (average)); */
+	  avg = average;
+	  if (tvcmp (&result, &avg) == -1)
+	    {
+	      small = result;
+	      large = avg;
+	    }
+	  else
+	    {
+	      large = result;
+	      small = avg;
+	    }
+	  tvsub (&large, &small);
+	  /* printf ("abs offset is %f\n", tv2double (large)); */
+	  square = double2tv (pow (tv2double (large), 2));
+	  tvadd (&var, &square);
+	  /* printf ("variance is now %f\n", tv2double (var)); */
+	}
+    }
+  result = double2tv (sqrt (tv2double (var) / number));
+  out->tv_sec = result.tv_sec;
+  out->tv_usec = result.tv_usec;
+}
+
 /* tvcmp -- Compares two timeval structs */
 int
 tvcmp (left, right)
@@ -136,7 +178,18 @@ tv2double (tv)
      struct timeval tv;
 {
   double result;
-  result = (((((double) tv.tv_sec) * 1000000.0) + (double) tv.tv_usec) / 1000000.0);
+  result =
+    (((((double) tv.tv_sec) * 1000000.0) + (double) tv.tv_usec) / 1000000.0);
   /* printf ("Double is %9.3f\n", result); */
+  return result;
+}
+
+struct timeval
+double2tv (x)
+     double x;
+{
+  struct timeval result;
+  result.tv_sec = (int) (x);
+  result.tv_usec = (int) ((x - result.tv_sec) * 1000000);
   return result;
 }
