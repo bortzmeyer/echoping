@@ -13,6 +13,8 @@ echoping \- tests a remote host with TCP or UDP
 .RI [ -h\ URL ]
 .RI [ -i\ URL ]
 .RI [ -S ]
+.RI [ -p\ number ]
+.RI [ -P\ number ]
 .B hostname
 [:port]
 
@@ -72,18 +74,89 @@ Use the SMTP protocol (instead of echo) for the given server.
 Use T/TCP (if it has been compiled with it). See the INSTALL file for details.
 .IP -f\ character
 Fill the packet with this character (default is random filling)
-
+.IP -p\ n
+Send packets with the socket priority to the integer
+.IR n .
+The mapping of the socket priority into a network layer or a link
+layer priority depends upon the network protocol and link protocol
+in use.  For more details see
+.B SO_PRIORITY
+in
+.BR socket (7).
+.IP -P\ n
+Set the IP type of service octet in the transmitted packets to the
+least significant eight bits of the integer
+.IR n .
 .SH EXAMPLES
-.IP echoping\ \-v\ foobar.whoops.org
+.IP echoping\ \-v\ foobar.example.com
 Tests the remote machine with TCP echo (one test).
-.IP echoping\ \-n\ 5\ \-w\ 10\ foobar.whoops.org
+.IP echoping\ \-n\ 5\ \-w\ 10\ foobar.example.com
 Tests the remote machine with TCP echo (five tests, every ten seconds).
-.IP echoping\ \-h\ /\ foobar.whoops.org
+.IP echoping\ \-h\ /\ foobar.example.com
 Tests the remote Web server and asks its home page. Note you don't
 indicate the whole URL.
-.IP echoping\ \-h\ http://www.whoops.org/\ cache.whoops.org:3128
+.IP echoping\ \-h\ http://www.example.com/\ cache.example.com:3128
 Tests the remote Web proxy-cache and asks a Web page. Note that you must
 indicate the whole URL.
+.IP echoping\ -u\ \-P\ 0xa0\ foobar.example.com
+Sends several UDP Echo packets with an IP Precedence of 5.
+.SH IP TYPE OF SERVICE OCTET
+The IP packet header contains 8 bits named the "type of service octet".
+The value of the octet is set with the
+.B \-P
+option.  The effects of the octet are defined differently in RFC791
+.I "Internet Protocol"
+and RFC2474
+.IR "Definition of the Differentiated Services Field (DS Field) in the IPv4 and IPv6 Headers".
+
+RFC791 defines
+.I Precedence
+which has ascending priorities 0 through to 7, and the bits
+.IR Delay ,
+.IR Throughput ,
+.IR Reliability ,
+and
+.I Cost
+which indicates the application's preference for the properties of
+the packet's path through the network.
+.I Precedence
+is in the most significant three bits of the type of service octet,
+followed in decending significance order by the
+.IR D ,
+.IR T ,
+.I R
+and
+.I C
+bits.  The least significant bit must be zero.  Only one of the
+.IR D ,
+.IR T ,
+.I R
+or
+.I C
+bits may be set.
+
+RFC2474 defines the Distributed Services Code Point, or
+DSCP.
+This acts as a selector between 64 possible behaviours that the
+network can apply to the packet.  The
+.I DSCP
+is in the most significant six bits of the type of service octet.
+The remaining least significant two bits of the octet must be
+zero.
+
+The numeric arguments to
+.B -p
+and
+.B -P
+can be in decimal (such as 11), octal (such as 013) or hexadecimal
+(such as 0x0b).  So padding decimal arguments with leading zeros will
+change the value read.
+
+You may need to be superuser to set some 
+.B -p
+or
+.B -P
+values.
 
 .SH BUGS
 
@@ -95,5 +168,3 @@ See the README for information about other network measurements programs.
 
 .SH AUTHOR
 Stephane Bortzmeyer <bortz@users.sourceforge.net>
-
-

@@ -78,6 +78,10 @@ extern int sys_nerr;
 #ifdef HAVE_TTCP
 #define USE_TTCP 1
 #endif
+#ifdef HAVE_TOS
+#define USE_TOS 1
+#endif
+
 
 #ifndef HEADER_INCLUDED
 typedef union _CHANNEL
@@ -90,6 +94,7 @@ typedef union _CHANNEL
 CHANNEL;
 #endif
 
+
 struct timeval null_timeval;
 struct timeval max_timeval;
 
@@ -99,7 +104,6 @@ struct timeval max_timeval;
 #define DEFAULT_HTTP_TCP_PORT "HTTP"
 #define DEFAULT_HTTPS_TCP_PORT "HTTPS"
 #define DEFAULT_ICP_UDP_PORT "ICP"
-/* #define ICP_UDP_PORT	"icp" *//* In config.h */
 
 #define	USE_ECHO	1
 #define	USE_DISCARD	2

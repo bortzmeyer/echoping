@@ -1,3 +1,6 @@
+	* New option (-p) to set socket priority
+	* New option (-P) to set IP Type of Service octet
+
 4.1.0 (2001-02-14)
 
 	* Fix several SSL bugs (#132001, #130151)
@@ -54,4 +57,10 @@
    
 
 $Id$
+
+
+
+
+
+
 	

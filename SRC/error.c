@@ -24,7 +24,7 @@ err_ret (char *str, ...)
 {
   va_list args;
 
-  va_start (args, str);		
+  va_start (args, str);
   vfprintf (stderr, str, args);
   va_end (args);
 
@@ -70,7 +70,7 @@ err_quit (char *str, ...)
  */
 
 /* VARARGS1 */
-void 
+void
 err_sys (char *str, ...)
 {
   va_list args;
@@ -88,7 +88,7 @@ void
 usage ()
 {
   fprintf (stderr,
-	   "Usage: %s [-v] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-C] [-S] server-name[:port]\n",
+	   "Usage: %s [-v] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-p priority] [-P tos] [-C] [-S] server-name[:port]\n",
 	   progname);
   exit (1);
 }

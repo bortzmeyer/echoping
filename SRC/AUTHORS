@@ -17,6 +17,8 @@ Samuel Tardieu <sam@inf.enst.fr> for the SMTP code.
 Pierre-Yves Lochou <lochou@ilog.fr> for a lot of testing, debugging
 and porting.
 
+Glen Turner <glen.turner@aarnet.edu.au> for the Type Of Service code.
+
 The Pasteur Institute because the work was done when working on the
 French national Web cache project, while being an employee of the
 Institute.
@@ -25,4 +27,3 @@ Institute.
 
 
 $Id$
-

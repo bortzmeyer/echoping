@@ -5,7 +5,9 @@
  * the AUTHORS file for other contributors.
  * 
  * $Id$
- * */
+ * 
+ */
+
 
 char *progname;
 unsigned short timeout_flag;
@@ -61,7 +63,7 @@ main (argc, argv)
   int n, nr = 0;
   int rc;
 #ifdef OPENSSL
-  int sslcode;	
+  int sslcode;
   char rand_file[MAXLINE];
 #endif
   char *sendline, recvline[MAXLINE + 1];
@@ -111,6 +113,12 @@ main (argc, argv)
   SSL *sslh = NULL;
 #endif
 
+  int priority;
+  int priority_requested = 0;
+  int tos;
+  int tos_requested = 0;
+  char *arg_end;
+
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
   max_timeval.tv_sec = 1000000000;
@@ -128,7 +136,7 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SC")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:")) != EOF)
     {
       switch (ch)
 	{
@@ -174,6 +182,34 @@ main (argc, argv)
 	  port_name = "smtp";
 	  port_to_use = USE_SMTP;
 	  smtp = 1;
+	  break;
+	case 'p':
+	  priority = (int) strtol (optarg, &arg_end, 0);
+	  if (arg_end == optarg || arg_end == '\0')
+	    {
+	      (void) fprintf (stderr,
+			      "%s: socket priority (-p) should be numeric.\n",
+			      progname);
+	      exit (1);
+	    }
+	  else
+	    {
+	      priority_requested = 1;
+	    }
+	  break;
+	case 'P':
+	  tos = (int) strtol (optarg, &arg_end, 0);
+	  if (arg_end == optarg || arg_end == '\0')
+	    {
+	      (void) fprintf (stderr,
+			      "%s: IP type of service (-P) should be "
+			      "numeric.\n", progname);
+	      exit (1);
+	    }
+	  else
+	    {
+	      tos_requested = 1;
+	    }
 	  break;
 	case 's':
 	  size = atoi (optarg);
@@ -321,6 +357,15 @@ main (argc, argv)
     {
       port_name = DEFAULT_HTTPS_TCP_PORT;
     }
+#ifndef USE_TOS
+  if (priority_requested || tos_requested)
+    {
+      (void) fprintf (stderr,
+		      "%s: Not compiled with Type Of Service support.\n",
+		      progname);
+      exit (1);
+    }
+#endif
   if (!udp && !ttcp)
     {
       tcp = 1;
@@ -453,7 +498,7 @@ main (argc, argv)
       SSLeay_add_ssl_algorithms ();
       /* The following RAND_ calls are only for systems insecure
          enough to fail to have /dev/urandom. Bug #132001 */
-      RAND_file_name (rand_file, sizeof( rand_file));
+      RAND_file_name (rand_file, sizeof (rand_file));
       RAND_write_file (rand_file);
       RAND_load_file (rand_file, 1024);
       meth = SSLv2_client_method ();
@@ -500,6 +545,37 @@ main (argc, argv)
 	      err_sys ("bind error");
 	    }
 	}
+#ifdef USE_TOS
+      if (priority_requested)
+	{
+	  if (verbose)
+	    {
+	      printf ("Setting socket priority to %d (0x%02x)\n",
+		      priority, (unsigned int) priority);
+	    }
+	  if (setsockopt (sockfd,
+			  SOL_SOCKET,
+			  SO_PRIORITY,
+			  (void *) &priority, (socklen_t) sizeof (priority)))
+	    {
+	      err_sys ("Failed setting socket priority");
+	    }
+	}
+      if (tos_requested)
+	{
+	  if (verbose)
+	    {
+	      printf ("Setting IP type of service octet to %d (0x%02x)\n",
+		      tos, (unsigned int) tos);
+	    }
+	  if (setsockopt (sockfd,
+			  SOL_IP,
+			  IP_TOS, (void *) &tos, (socklen_t) sizeof (tos)))
+	    {
+	      err_sys ("Failed setting IP type of service octet");
+	    }
+	}
+#endif
       if (verbose)
 	{
 	  if (tcp)
@@ -661,6 +737,18 @@ main (argc, argv)
 		    }
 		}
 #endif
+	      /* Write something to the server */
+	      if (writen (sockfd, sendline, n) != n)
+		{
+		  if ((nr < 0 || nr != n) && timeout_flag)
+		    {
+		      nr = n;
+		      printf ("Timeout while writing\n");
+		      continue;
+		    }
+		  else
+		    err_sys ("writen error on socket");
+		}
 	    }
 	  else
 	    {
