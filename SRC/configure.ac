@@ -296,8 +296,10 @@ else
 	plugins_dir=`interpolate '$libdir/echoping'`
 fi
 AC_DEFINE_UNQUOTED(PLUGINS_DIR, "$plugins_dir", [Directory where the plugins will be installed])
+AC_SUBST(plugins_dir)
+echo $plugins_dir > plugins/dir
 AC_CONFIG_SUBDIRS(plugins)
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile echoping.1)
 
 AC_DEFUN([DISPLAY_SETTING],
 [

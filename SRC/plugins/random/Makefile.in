@@ -1,6 +1,6 @@
 PLUGIN=random.so
-
-include ../Makefile.plugins
+MANPAGE=echoping_random.1
+DISTFILES=random.c Makefile.in configure.ac configure config.h.in ${MANPAGE}
 
 ifeq (@RANDOM_BUILD@,1)
 all: ${PLUGIN}
@@ -9,9 +9,12 @@ all:
 	@echo "Not building the random plugin"
 endif
 
+include ../Makefile.plugins
+
 ifeq (@RANDOM_BUILD@,1)
 install: all prepare-install
 	${INSTALL} ${PLUGIN} ${DESTDIR}
+	${INSTALL} ${MANPAGE} ${MANDIR}/man1
 else
 install:
 	@echo "Not installing the random plugin"
@@ -19,7 +22,7 @@ endif
 
 distdir:	
 	test -d ../${top_distdir}/plugins/random || mkdir ../${top_distdir}/plugins/random
-	cp random.c Makefile.in configure.ac configure ../${top_distdir}/plugins/random
+	${INSTALL} ${DISTFILES} ../${top_distdir}/plugins/random
 
 # $Id$
 

@@ -1,4 +1,6 @@
 PLUGIN=whois.so
+MANPAGE=echoping_whois.1
+DISTFILES=whois.c Makefile.in configure.ac configure config.h.in ${MANPAGE}
 
 include ../Makefile.plugins
 
@@ -12,6 +14,7 @@ endif
 ifeq (@WHOIS_BUILD@,1)
 install: all prepare-install
 	${INSTALL} ${PLUGIN} ${DESTDIR}
+	${INSTALL} ${MANPAGE} ${MANDIR}/man1
 else
 install:
 	@echo "Not installing the whois plugin"
@@ -19,6 +22,7 @@ endif
 
 distdir:	
 	test -d ../${top_distdir}/plugins/whois || mkdir ../${top_distdir}/plugins/whois
+	${INSTALL} ${DISTFILES} ../${top_distdir}/plugins/whois
 
 # $Id$
 

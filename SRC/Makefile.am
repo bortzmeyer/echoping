@@ -64,7 +64,7 @@ upload-force: dist
 	rm -f upload.log
 	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
 
-realclean: clean
+realclean: distclean
 	rm -rf *~ autom4te.cache
 
 EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)

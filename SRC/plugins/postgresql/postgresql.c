@@ -1,6 +1,6 @@
 /*
  * PostgreSQL plugin. 
- *
+ * TODO: loops with and without opening the connection each time?
  * $Id$
  */
 
@@ -58,7 +58,7 @@ init (const int argc, const char **argv)
 	  postgresql_usage (msg);
 	}
     }
-  if (request == NULL)
+  if (request == NULL) /* TODO: a default like SELECT now()? */
     postgresql_usage ("Mandatory request missing");
   if (conninfo == NULL)
     postgresql_usage ("Mandatory connection information missing");

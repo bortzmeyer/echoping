@@ -1,4 +1,7 @@
 PLUGIN=dns.so
+LDFLAGS=-lresolv
+DISTFILES=dns.c Makefile.in configure.ac configure config.h.in
+
 include ../Makefile.plugins
 
 ifeq (@DNS_BUILD@,1)
@@ -18,6 +21,7 @@ endif
 
 distdir:	
 	test -d ../${top_distdir}/plugins/dns || mkdir ../${top_distdir}/plugins/dns
+	${INSTALL} ${DISTFILES} ../${top_distdir}/plugins/dns
 
 # $Id$
 

@@ -1,11 +1,14 @@
 CCFLAGS=-DHAVE_CONFIG_H -Wall -O0 -g 
 CCDYNAMICFLAGS=${CCFLAGS} -fPIC 
+ifeq ("${LDFLAGS}","")
 LDFLAGS=
+endif
 LDDYNAMICFLAGS=${LDFLAGS} -shared 
 # Autoconf variables
 prefix = @prefix@
 exec_prefix = @exec_prefix@
-DESTDIR=@libdir@/echoping
+DESTDIR=@plugins_dir@
+MANDIR=@mandir@
 INSTALL=@INSTALL@
 
 %.o: %.c
@@ -27,4 +30,7 @@ distclean: clean
 
 # $Id$
 
+## Local Variables: ##
+## mode:makefile ##
+## End: ##
 

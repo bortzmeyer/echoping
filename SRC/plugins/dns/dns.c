@@ -1,6 +1,7 @@
 /*
  * DNS plugin. 
- *
+ * TODO: return errors to echoping (name server not existing, for instance)
+ * TODO: allow options like TCP
  * $Id$
  */
 
@@ -125,7 +126,7 @@ start (struct addrinfo *res)
 		 sizeof (struct sockaddr));
   if (res_init () < 0)
     err_sys ("res_init");
-  _res.nsaddr_list[0] = name_server_sockaddr_in;	/* TODO: and IPv6? */
+  _res.nsaddr_list[0] = name_server_sockaddr_in;	/* TODO: and IPv6? Detect _resext with autoconf (*BSD) and use it */
   _res.nscount = 1;
   _res.options &= ~(RES_DNSRCH | RES_DEFNAMES | RES_NOALIASES);
 }

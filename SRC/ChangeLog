@@ -1,3 +1,11 @@
+6.0 (not yet released) 
+
+	* Plugins: several plugins (TODO: list) are now shipped with
+	echoping and you can write your own. All new protocols will now be
+	supported via plugins. Consequences:
+	   - you now need an Unix with a working dlopen(3)
+	   - echoping now requires the popt parsing library
+	
 5.2.0 (2004-02-29)
 
 	* IDN (Unicode domain names) support

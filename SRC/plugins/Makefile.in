@@ -1,4 +1,5 @@
 SUBDIRS=@subdirs@
+DISTFILES=configure configure.ac Makefile.plugins.in Makefile.in
 
 all:
 ifneq (${SUBDIRS},)
@@ -9,14 +10,38 @@ endif
 
 install:
 ifneq (${SUBDIRS},)
+	test -d @plugins_dir@ || mkdir @plugins_dir@
 	@for subdir in ${SUBDIRS}; do \
 		(cd $$subdir && ${MAKE} $@) \
 	done
 endif
 
-distdir:
+configure: configure.ac
+	autoconf
+
+distdir: configure
+	test -d ${top_distdir}/plugins || mkdir ${top_distdir}/plugins
+	cp ${DISTFILES} ${top_distdir}/plugins
+
 ifneq (${SUBDIRS},)
 	@for subdir in ${SUBDIRS}; do \
 		(cd $$subdir && ${MAKE} $@) \
 	done
 endif
+
+clean:
+ifneq (${SUBDIRS},)
+	@for subdir in ${SUBDIRS}; do \
+		(cd $$subdir && ${MAKE} $@) \
+	done
+endif
+
+distclean: clean
+ifneq (${SUBDIRS},)
+	@for subdir in ${SUBDIRS}; do \
+		(cd $$subdir && ${MAKE} $@) \
+	done
+endif
+	rm -f Makefile Makefile.plugins
+
+# TODO: distclean and clean
