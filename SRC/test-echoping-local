@@ -7,11 +7,12 @@ echo "A message such as 'connection refused' is not always an error"
 echo " you may not have an appropriate server."
 echo " UDP tests can also fail with a timeout if you do not have the server."
 
-# Funny Solaris: "localhost" resolves to an IPv6 address (::1)
-
-./echoping localhost
-./echoping -u localhost
-./echoping -d localhost
-./echoping -d -u localhost
-#./echoping -c localhost # chargen is too often unavailable
-./echoping -h / localhost
+# Some operating systems, like Solaris or Tru64, uses a file "ipnodes",
+# somewhere under /etc, in which "localhost" resolves to an IPv6
+# address (::1), even if the machine has no IPv6 at all. Hence the -4.
+./echoping -4 localhost
+./echoping -4 -u localhost
+./echoping -4 -d localhost
+./echoping -4 -d -u localhost
+#./echoping -4 -c localhost # chargen is too often unavailable
+./echoping -4 -h / localhost
