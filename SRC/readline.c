@@ -33,7 +33,7 @@ readline (fs, ptr, maxlen, ln)
     {
       while (n < maxlen)
 	{
-	  r = read (fileno(fs), ptr, maxlen);
+	  r = fread (ptr, 1, maxlen, fs);
 	  if (r == 0)
 	    {
 	      if (timeout_flag)
