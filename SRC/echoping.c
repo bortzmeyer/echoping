@@ -49,7 +49,8 @@ main (argc, argv)
   signed char ch;
 
   int sockfd;
-  FILE *fs;
+  FILE *files;
+  CHANNEL channel;
   struct hostent *hostptr;
   struct sockaddr_in serv_addr;
   struct sockaddr_in udp_cli_addr;	/* client's Internet socket
@@ -97,8 +98,15 @@ main (argc, argv)
 
   unsigned short ttcp = 0;
   unsigned short tcp = 0;
+  unsigned short ssl = 0;
 
   unsigned short stop_at_newlines = 1;
+
+#ifdef OPENSSL
+  SSL_METHOD *meth;
+  SSL_CTX* ctx = NULL;
+  SSL*     sslh;
+#endif
 
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
@@ -117,7 +125,7 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:S")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SC")) != EOF)
     {
       switch (ch)
 	{
@@ -129,6 +137,9 @@ main (argc, argv)
 	  break;
 	case 'u':
 	  udp = 1;
+	  break;
+	case 'C':
+	  ssl = 1;
 	  break;
 	case 'd':
 	  port_name = DISCARD_TCP_PORT;
@@ -250,6 +261,14 @@ main (argc, argv)
 		      "%s: not compiled with T/TCP support.\n", progname);
       exit (1);
     }
+#endif
+#ifndef OPENSSL
+  if (ssl)
+    {
+      (void) fprintf (stderr,
+		      "%s: not compiled with SSL support.\n", progname);
+      exit (1);
+    }  
 #endif
 #ifndef HTTP
   if (http)
@@ -413,6 +432,18 @@ main (argc, argv)
     }
   n = strlen (sendline);
 
+#ifdef OPENSSL
+  if (ssl) {
+    SSLeay_add_ssl_algorithms();
+    meth = SSLv2_client_method();
+    SSL_load_error_strings();
+    if ((ctx = SSL_CTX_new (meth)) == NULL)
+      err_sys ("Cannot create a new SSL context");
+    if ((sslh = SSL_new (ctx)) == NULL)
+      err_sys ("Cannot initialize SSL context");
+  }
+#endif
+
   for (i = 1; i <= number; i++)
     {
 
@@ -522,6 +553,25 @@ main (argc, argv)
 		}
 #endif
 	    }
+if (! udp && ! ssl)
+    if ((files = fdopen (sockfd, "r")) == NULL)
+      err_sys ("Cannot fdopen");
+#ifdef OPENSSL
+	  if (ssl) {
+	    SSL_set_fd (sslh, sockfd);  
+	    if (SSL_connect (sslh) == -1)
+	      if ((errno == EINTR) && (timeout_flag))
+		{
+		  printf ("Timeout while starting SSL\n");
+		  continue;
+		}
+	    if (verbose) 
+	      printf ("SSL connection using %s\n", 
+		      SSL_get_cipher (sslh));
+	    /* We could check the server's certificate or other funny
+	       things */
+	  }
+#endif
 	}
       /* Not T/TCP */
       else
@@ -548,18 +598,35 @@ main (argc, argv)
 #endif
 	  if (!udp)
 	    {
-	      /* Write something to the server */
-	      if (writen (sockfd, sendline, n) != n)
-		{
+	      if (! ssl) {
+		/* Write something to the server */
+		if (writen (sockfd, sendline, n) != n)
+		  {
+		    if ((nr < 0 || nr != n) && timeout_flag)
+		      {
+			nr = n;
+			printf ("Timeout while writing\n");
+			continue;
+		      }
+		    else
+		      err_sys ("writen error on socket");
+		  }
+	      }
+#ifdef OPENSSL
+	      else {
+		if (SSL_write (sslh, sendline, n) != n) {
 		  if ((nr < 0 || nr != n) && timeout_flag)
 		    {
 		      nr = n;
 		      printf ("Timeout while writing\n");
 		      continue;
 		    }
-		  else
-		    err_sys ("writen error on socket");
+		  else {
+		    err_sys ("SSL_write error on socket");
+		  }
 		}
+	      }
+#endif
 	    }
 	  else
 	    {
@@ -603,23 +670,27 @@ main (argc, argv)
 	{
 	  if (!udp)
 	    {
-	      if ((fs = fdopen (sockfd, "r")) == NULL)
-		err_sys ("Cannot fdopen");
 	      if (!http && !smtp)
 		{
 		  /* Read from the server */
-		  nr = readline (fs, recvline, n, stop_at_newlines);
+		  nr = readline (files, recvline, n, stop_at_newlines);
 		}
 #ifdef HTTP
 	      else if (http)
 		{
-		  nr = read_from_server (fs);
+		  if (! ssl) 
+		    channel.fs = files;
+#ifdef OPENSSL
+		    else
+		      channel.ssl = sslh;
+#endif
+		  nr = read_from_server (channel, ssl);
 		}
 #endif
 #ifdef SMTP
 	      else if (smtp)
 		{
-		  nr = smtp_read_response_from_server (fs);
+		  nr = smtp_read_response_from_server (files);
 		}
 #endif
 	    }

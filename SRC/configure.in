@@ -20,8 +20,6 @@ AC_ARG_ENABLE(icp,
  [if test "$enableval" = "yes"; then
  AC_DEFINE(ICP)
  fi])
-
-dnl User options
 AC_ARG_ENABLE(smtp,
  [--enable-smtp   SMTP (Mail's main protocol) support],dnl
  [if test "$enableval" = "yes"; then
@@ -31,6 +29,14 @@ AC_ARG_ENABLE(smtp,
  dnl Default: enable it
  [AC_DEFINE(SMTP)
   SMTP=1])
+AC_ARG_ENABLE(ssl,
+ [--enable-ssl   SSL crypt support (needs OpenSSL)],dnl
+ [if test "$enableval" = "yes"; then
+ AC_DEFINE(OPENSSL)
+ OPENSSL=1
+ fi],
+ dnl Default: disable it
+)
 
 dnl See T/TCP later 
 
@@ -58,6 +64,10 @@ CF_LIB_NSL
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS(gettimeofday socket gethostbyname sigaction, , AC_MSG_ERROR(Missing mandatory function))
+
+if test "$OPENSSL" = "1"; then
+CF_LIB_OPENSSL
+fi
 
 dnl T/TCP
 AC_MSG_CHECKING([T/TCP])

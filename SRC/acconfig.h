@@ -21,6 +21,9 @@
 /* ICP support */
 #undef ICP 
 
+/* SSL (crypto) */
+#undef OPENSSL
+
 /* Port name for HTTP */
 #undef HTTP_TCP_PORT
 

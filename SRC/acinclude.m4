@@ -156,6 +156,15 @@ else
 fi
 ])
 
+# Check OpenSSL
+AC_DEFUN([CF_LIB_OPENSSL],
+[
+AC_CHECK_LIB(ssl,SSL_CTX_new,
+[LIBS="${LIBS} -lssl -lcrypto"],
+[AC_ERROR([Get the OpenSSL library (http://www.openssl.org/)])], dnl
+-lcrypto
+)])
+
 dnl experimental
 AC_DEFUN([CF_CHECK_TCP_SERVICE],
 [

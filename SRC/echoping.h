@@ -35,6 +35,14 @@
 #include        <string.h>
 #include        <signal.h>
 
+#ifdef OPENSSL
+#include <openssl/crypto.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#endif
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -70,6 +78,15 @@ extern int sys_nerr;
 #define USE_TTCP 1
 #endif
 
+#ifndef HEADER_INCLUDED
+typedef union _CHANNEL {
+  FILE *fs;
+#ifdef OPENSSL
+  SSL* ssl;
+#endif
+} CHANNEL;
+#endif
+
 struct timeval null_timeval;
 struct timeval max_timeval;
 
@@ -102,6 +119,9 @@ char *sys_err_str ();
 int writen ();
 /* readline.c */
 int readline ();
+#ifdef OPENSSL
+int SSL_readline ();
+#endif
 /* util.c */
 char *random_string ();
 void tvsub ();
@@ -114,7 +134,8 @@ double tv2double ();
 #ifdef HTTP
 char *make_http_sendline ();
 void find_server_and_port ();
-int read_from_server ();
+/* This one has prototypes, for a very subtile compiler issue. */
+int read_from_server (CHANNEL fs, short ssl);
 #endif
 
 #ifdef ICP
@@ -134,3 +155,7 @@ int smtp_read_response_from_server ();
 extern char *progname;
 
 extern unsigned short timeout_flag;
+
+#ifndef HEADER_INCLUDED
+#define HEADER_INCLUDED
+#endif

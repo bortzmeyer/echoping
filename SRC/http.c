@@ -57,7 +57,7 @@ find_server_and_port (char *server, short *port, char *default_port)
 }
 
 int
-read_from_server (FILE *fs)
+read_from_server (CHANNEL fs, short ssl)
 {
   int nr;
   int total = 0;
@@ -66,7 +66,13 @@ read_from_server (FILE *fs)
   short body = FALSE;
   while (!body)
     {
-      nr = readline (fs, big_recvline, MAXTOREAD, TRUE);
+      if (! ssl) 
+	nr = readline (fs.fs, big_recvline, MAXTOREAD, TRUE);
+#ifdef OPENSSL
+      else
+	nr = SSL_readline (fs.ssl, big_recvline, MAXTOREAD, TRUE);
+#endif
+      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr);*/
       /* HTTP replies should be separated by CR-LF. Unfortunately, some
          servers send only CR :-( */
       body = ((nr == 2) || (nr == 1));	/* Empty line CR-LF seen */
@@ -89,7 +95,12 @@ read_from_server (FILE *fs)
       first_line = FALSE;
     }
   /* Read the body */
-  nr = readline (fs, big_recvline, MAXTOREAD, FALSE);
+  if (! ssl) 
+    nr = readline (fs, big_recvline, MAXTOREAD, FALSE);
+#ifdef OPENSSL
+  else
+    nr = SSL_readline (fs, big_recvline, MAXTOREAD, FALSE);
+#endif
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
     return -1;
   if (nr < 2)			/* Hmm, if the body is empty, we'll
