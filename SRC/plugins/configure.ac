@@ -2,8 +2,7 @@ dnl $Id$
 
 m4_include(../configure-common.ac)
 AM_INIT_AUTOMAKE(foreign)
-dnl TODO: writes a LDAP plugin
-dnl TODO: write a XML-RPC plugin for Adamsnames' interface
+dnl TODO: write a XML-RPC plugin for Adamsnames' interface. See a first version in contrib/
 AC_ARG_ENABLE(plugin,
 [  --enable-plugin=LIST  Build only the following plugins],
 [if test "$enableval" == "no"; then
@@ -17,7 +16,7 @@ else
 fi],
 plugins="random whois dns postgresql ldap")
 for plugin in $plugins; do
-  if test ! -d $plugin ; then
+  if test ! -d $srcdir/plugins/$plugin ; then
     AC_MSG_ERROR([No such plugin $plugin])
   fi
   eval ${plugin}_BUILD=1
