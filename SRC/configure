@@ -701,7 +701,7 @@ fi
 
 PACKAGE=echoping
 
-VERSION=4.0-BETA
+VERSION=4.0.0
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -846,7 +846,7 @@ EOF
    OPENSSL=1
    if test "$withval" != "yes"; then
 	SSLROOT=$withval
-	LIBS="${LIBS} -L$SSLROOT/lib"
+	LDFLAGS="${LDFLAGS} -L$SSLROOT/lib"
         CPPFLAGS="${CPPFLAGS} -I$SSLROOT/include"  
    fi
  fi
