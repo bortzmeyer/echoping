@@ -69,42 +69,47 @@ SSL_readline (sslh, ptr, maxlen, ln)
   if (ln)
     {
       /* Empty buffer */
-      if (buf_end == 0) {
-	rc = SSL_read (sslh, SSL_buffer, maxlen);
-	buf_end = rc;
-      }
+      if (buf_end == 0)
+	{
+	  rc = SSL_read (sslh, SSL_buffer, maxlen);
+	  buf_end = rc;
+	}
       /* No more data in the buffer */
-      else if (buf_ptr == buf_end) {
-	buf_ptr = 0;
-	rc = SSL_read (sslh, SSL_buffer, maxlen);
-	buf_end = rc;
-      }
-      for (oi=buf_ptr,i=buf_ptr; SSL_buffer[i] != '\n'; i++) {
-	*ptr++ = SSL_buffer[i];
-	buf_ptr++;
-      }
-      if (SSL_buffer[i] == '\n') 
+      else if (buf_ptr == buf_end)
+	{
+	  buf_ptr = 0;
+	  rc = SSL_read (sslh, SSL_buffer, maxlen);
+	  buf_end = rc;
+	}
+      for (oi = buf_ptr, i = buf_ptr; SSL_buffer[i] != '\n'; i++)
+	{
+	  *ptr++ = SSL_buffer[i];
+	  buf_ptr++;
+	}
+      if (SSL_buffer[i] == '\n')
 	buf_ptr++;
       *ptr = '\0';
-      return (i-oi);
+      return (i - oi);
     }
-  else {
-    /* Since OpenSSL reads at most 4096 characters, we should loop
-       here like we do in non-SSL readline */
-    if ((buf_end == 0) || (buf_ptr == buf_end)) {
-      rc = SSL_read (sslh, ptr, maxlen);
-      buf_end = 0;
-      buf_ptr = 0;
+  else
+    {
+      /* Since OpenSSL reads at most 4096 characters, we should loop
+         here like we do in non-SSSL readline */
+      if ((buf_end == 0) || (buf_ptr == buf_end))
+	{
+	  rc = SSL_read (sslh, ptr, maxlen);
+	  buf_end = 0;
+	  buf_ptr = 0;
+	}
+      else
+	{
+	  for (i = buf_ptr; i < maxlen && i <= buf_end; i++)
+	    {
+	      *ptr++ = SSL_buffer[i];
+	      rc++;
+	    }
+	}
+      return rc;
     }
-    else {
-      for (i=buf_ptr; i<maxlen && i<=buf_end; i++) {
-	*ptr++ = SSL_buffer[i];
-	rc++;
-      }
-    }
-    return rc;
-  }
 }
 #endif
-
-
