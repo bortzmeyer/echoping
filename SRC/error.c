@@ -1,5 +1,6 @@
 #include "echoping.h"
 
+/* $Id$ */
 
 /* Most of error-handling routines stolen from Stevens' books */
 
