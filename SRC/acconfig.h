@@ -24,6 +24,9 @@
 /* ICP support */
 #undef ICP 
 
+/* IDN (Unicode) */
+#undef IDN
+
 /* SSL (crypto) */
 #undef OPENSSL
 

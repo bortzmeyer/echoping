@@ -187,6 +187,14 @@ AC_CHECK_LIB(gnutls,gnutls_global_init,
 [AC_ERROR([Get the GNU TLS library (http://www.gnutls.org/)])], dnl
 )])
 
+# Check GNU libidn
+AC_DEFUN([CF_LIB_GNUIDN],
+[
+AC_CHECK_LIB(idn,idna_to_ascii_from_utf8,
+[LIBS="${LIBS} `pkg-config libidn --libs-only-L` `pkg-config libidn --libs-only-l`"],
+[AC_ERROR([Get the GNU IDN library (http://www.josefsson.org/libidn/)])], dnl
+)])
+
 dnl experimental
 AC_DEFUN([CF_CHECK_TCP_SERVICE],
 [

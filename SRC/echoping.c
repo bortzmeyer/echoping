@@ -425,6 +425,11 @@ main (argc, argv)
       printf ("\nThis is %s, version %s.\n\n", progname, VERSION);
     }
   server = argv[0];
+#ifdef IDN
+  locale_server = server;
+  utf8_server = stringprep_locale_to_utf8 (server);
+  server = utf8_server;
+#endif
   if (!http && !icp)
     {
       for (p = server; *p && (*p != ':'); p++)
@@ -516,6 +521,17 @@ main (argc, argv)
     }
 #endif
 
+#ifdef IDN
+  if ((result =
+       idna_to_ascii_from_utf8 (utf8_server, &ace_server, 0,
+				1)) != IDNA_SUCCESS)
+    {
+      err_quit ("IDN error for host: %s %d", server, result);
+    }
+  if (verbose)
+    printf ("ACE name of the server: %s\n", ace_server);
+  server = ace_server;
+#endif
   error = getaddrinfo (server, port_name, &hints, &res);
   if (error)
     {
