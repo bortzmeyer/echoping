@@ -10,7 +10,8 @@ hurry :-) <A
 HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
 wish. (Or you may prefer access the latest developments <A
 HREF="http://sourceforge.net/cvs/?group_id=4581">via CVS</A>: the
-module is named "SRC".)
+module is named "SRC".) You may be interested in <A HREF="http://sourceforge.net/project/?group_id=4581">SourceForge's page
+about echoping</A>, with the bug reports, etc.
 
 <P>To use it, simply:
 
@@ -20,7 +21,7 @@ module is named "SRC".)
 
 <P>or use the options before the machine name (see the man page).
 
-<P>See the DETAILS file for various traps when benchmarking networks,
+<P>See the <A HREF="details.html">DETAILS</A> file for various traps when benchmarking networks,
 specially with this program.
 
 <P>In any case, be polite: don't bother the remote host with many repeated 
