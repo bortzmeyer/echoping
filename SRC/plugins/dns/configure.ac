@@ -1,13 +1,8 @@
 dnl $Id$
 
 AC_INIT(dns.c)
-AM_INIT_AUTOMAKE(DNS plugin, 6.0-BETA)
+m4_include([../../configure-common.ac])
 AC_CONFIG_HEADERS(config.h)
-
-dnl Checks for programs.
-AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_LIBTOOL
 
 m4_include([../configure-plugins.ac])
 
@@ -28,6 +23,6 @@ dnl autoconf AC_CHECK_FUNCS does not allow headers to be easily included :-(
          	)])
 fi
 
-AC_SUBST(DNS_BUILD,$DNS_BUILD)
+AM_CONDITIONAL(DNSBUILD, test "$DNS_BUILD" = 1)
 AC_OUTPUT(Makefile)
 
