@@ -46,7 +46,9 @@ AC_CHECK_FUNCS(gettimeofday socket sigaction)
 dnl T/TCP
 AC_MSG_CHECKING([T/TCP])
 AC_TRY_COMPILE(
- [#include <sys/socket.h>],
+ [#include <sys/types.h>
+  #include <sys/socket.h>
+ ],
  [int foobar = MSG_EOF;],
  [AC_DEFINE(TTCP),ac_have_ttcp=yes],
  ac_have_ttcp=no)

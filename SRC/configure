@@ -1746,12 +1746,14 @@ echo "configure:1746: checking T/TCP" >&5
 cat > conftest.$ac_ext <<EOF
 #line 1748 "configure"
 #include "confdefs.h"
-#include <sys/socket.h>
+#include <sys/types.h>
+  #include <sys/socket.h>
+ 
 int main() {
 int foobar = MSG_EOF;
 ; return 0; }
 EOF
-if { (eval echo configure:1755: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:1757: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
 #define TTCP 1
