@@ -35,6 +35,9 @@
 #include        <math.h>
 #include        <dlfcn.h>
 
+/* popt library TODO: what if missing? */
+#include        <popt.h>
+
 #ifdef OPENSSL
 #include <openssl/crypto.h>
 #include <openssl/x509.h>

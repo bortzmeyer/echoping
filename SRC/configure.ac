@@ -150,6 +150,9 @@ AC_CHECK_FUNCS(getaddrinfo getnameinfo inet_ntop, ,
          	)])
 		
 AC_CHECK_FUNCS(gettimeofday socket sigaction strerror, , AC_MSG_ERROR(Missing mandatory function))
+AC_CHECK_FUNCS(poptGetContext, , 
+   [AC_CHECK_LIB(popt,poptGetContext, ,
+      [AC_MSG_ERROR([Missing popt library, get it from ftp://ftp.rpm.org/pub/rpm/dist/rpm-x.y.z])])])
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(dlopen, , 
    [AC_CHECK_LIB(dl,dlopen, ,

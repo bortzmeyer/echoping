@@ -41,12 +41,12 @@ extern int tvcmp ();
 int
 main (argc, argv)
      int argc;
-     char *argv[];
+     const char *argv[];
 {
-  extern char *optarg;
-  extern int optind;
 
   int result;
+  int remaining = argc;
+  char **leftover;
 
   int sockfd;
   struct addrinfo hints, hints_numeric, *res;
@@ -61,6 +61,7 @@ main (argc, argv)
   FILE *files = NULL;
   CHANNEL channel;
   int verbose = FALSE;
+  int module_find = FALSE;
   int n, nr = 0;
 #ifdef OPENSSL
   int sslcode;
@@ -80,6 +81,7 @@ main (argc, argv)
   unsigned int wait = 1;
 #endif
   unsigned char fill = ' ';
+  unsigned int fill_i;
   unsigned short fill_requested = 0;
   unsigned int i = 0;
   char *plugin_name = NULL;
@@ -101,6 +103,7 @@ main (argc, argv)
   unsigned short http = 0;
   unsigned short smtp = 0;
   unsigned short discard = 0;
+  unsigned short chargen = 0;
   unsigned short udp = 0;
   unsigned short icp = 0;
 
@@ -134,7 +137,37 @@ main (argc, argv)
   int priority_requested = 0;
   int tos;
   int tos_requested = 0;
-  char *arg_end, *p;
+  char *p;
+
+  /* popt variables */
+  const struct poptOption options[] = {
+    {"verbose", 'v', POPT_ARG_NONE, &verbose, 'v'},
+    {"size", 's', POPT_ARG_INT, &size, 's'},
+    {"number", 'n', POPT_ARG_INT, &number, 'n'},
+#ifdef HAVE_USLEEP
+    {"wait", 'w', POPT_ARG_FLOAT, &wait, 'w'},
+#else
+    {"wait", 'w', POPT_ARG_INT, &wait, 'w'},
+#endif
+    {"discard", 'd', POPT_ARG_NONE, &discard, 'd'},
+    {"chargen", 'c', POPT_ARG_NONE, &chargen, 'c'},
+    {"http", 'h', POPT_ARG_STRING, &url, 'h'},
+    {"icp", 'i', POPT_ARG_STRING, &url, 'i'},
+    {"ttcp", 'r', POPT_ARG_NONE, &ttcp, 'r'},
+    {"udp", 'u', POPT_ARG_NONE, &udp, 'u'},
+    {"timeout", 't', POPT_ARG_INT, &timeout, 't'},
+    {"fill", 'f', POPT_ARG_INT, &fill_i, 'f'},
+    {"smtp", 'S', POPT_ARG_NONE, &smtp, 'S'},
+    {"ssl", 'C', POPT_ARG_NONE, &ssl, 'C'},
+    {"priority", 'p', POPT_ARG_INT, &priority, 'p'},
+    {"type-of-service", 'P', POPT_ARG_INT, &tos, 'P'},
+    {"check-original", 'a', POPT_ARG_NONE, NULL, 'a'},
+    {"ignore-cache", 'A', POPT_ARG_NONE, NULL, 'A'},
+    {"ipv4", '4', POPT_ARG_NONE, NULL, '4'},
+    {"ipv6", '6', POPT_ARG_NONE, NULL, '6'},
+    {"module", 'm', POPT_ARG_STRING, &plugin_name, 'm'},
+    {NULL, 0, 0, NULL, 0, NULL, NULL}
+  };
 
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
@@ -154,28 +187,35 @@ main (argc, argv)
     {
       results[i].valid = 0;
     }
-  progname = argv[0];
-  while ((result =
-	  getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA46m:")) != -1)
+  progname = (char *) argv[0];
+  poptContext poptcon = poptGetContext (NULL, argc,
+					argv,
+					options,
+					0);
+
+  while ((!module_find) && (result = poptGetNextOpt (poptcon)) != -1)
     {
+      if (result < -1)
+	{
+	  err_ret ("%s: %s",
+		   poptBadOption (poptcon, POPT_BADOPTION_NOALIAS),
+		   poptStrerror (result));
+	  usage ();
+	}
+      remaining--;
       switch ((char) result)
 	{
 	case 'v':
-	  verbose = TRUE;
 	  break;
 	case 'r':
-	  ttcp = 1;
 	  break;
 	case 'u':
-	  udp = 1;
 	  break;
 	case 'C':
-	  ssl = 1;
 	  break;
 	case 'd':
 	  strcpy (port_name, DISCARD_TCP_PORT);
 	  port_to_use = USE_DISCARD;
-	  discard = 1;
 	  break;
 	case 'c':
 	  strcpy (port_name, CHARACTER_GENERATOR_TCP_PORT);
@@ -183,17 +223,17 @@ main (argc, argv)
 	  stop_at_newlines = 0;
 	  break;
 	case 'i':
+	  remaining--;
 	  strcpy (port_name, DEFAULT_ICP_UDP_PORT);
 	  port_to_use = USE_ICP;
 	  udp = 1;
 	  icp = 1;
-	  url = optarg;
 	  break;
 	case 'h':
+	  remaining--;
 	  strcpy (port_name, DEFAULT_HTTP_TCP_PORT);
 	  port_to_use = USE_HTTP;
 	  http = 1;
-	  url = optarg;
 	  break;
 	case 'a':
 	  nocache = 1;
@@ -202,44 +242,24 @@ main (argc, argv)
 	  nocache = 2;
 	  break;
 	case 'f':
-	  fill = *optarg;
+	  remaining--;
+	  fill = (char) fill_i;
 	  fill_requested = 1;
 	  break;
 	case 'S':
 	  strcpy (port_name, "smtp");
 	  port_to_use = USE_SMTP;
-	  smtp = 1;
 	  break;
 	case 'p':
-	  priority = (int) strtol (optarg, &arg_end, 0);
-	  if (arg_end == optarg || arg_end == '\0')
-	    {
-	      (void) fprintf (stderr,
-			      "%s: socket priority (-p) should be numeric.\n",
-			      progname);
-	      exit (1);
-	    }
-	  else
-	    {
-	      priority_requested = 1;
-	    }
+	  remaining--;
+	  priority_requested = 1;
 	  break;
 	case 'P':
-	  tos = (int) strtol (optarg, &arg_end, 0);
-	  if (arg_end == optarg || arg_end == '\0')
-	    {
-	      (void) fprintf (stderr,
-			      "%s: IP type of service (-P) should be "
-			      "numeric.\n", progname);
-	      exit (1);
-	    }
-	  else
-	    {
-	      tos_requested = 1;
-	    }
+	  remaining--;
+	  tos_requested = 1;
 	  break;
 	case 's':
-	  size = atoi (optarg);
+	  remaining--;
 	  if (size > MAX_LINE)
 	    {
 	      (void) fprintf (stderr,
@@ -255,7 +275,7 @@ main (argc, argv)
 	  size_requested = 1;
 	  break;
 	case 't':
-	  timeout = atoi (optarg);
+	  remaining--;
 	  timeout_requested = 1;
 	  if (size <= 0)
 	    {
@@ -264,7 +284,7 @@ main (argc, argv)
 	    }
 	  break;
 	case 'n':
-	  number = atoi (optarg);
+	  remaining--;
 	  if (number > MAX_ITERATIONS)
 	    {
 	      (void) fprintf (stderr,
@@ -281,11 +301,7 @@ main (argc, argv)
 	    }
 	  break;
 	case 'w':
-#ifdef HAVE_USLEEP
-	  wait = atof (optarg);
-#else
-	  wait = atoi (optarg);
-#endif
+	  remaining--;
 	  if (wait <= 0)
 	    /* atoi returns zero when there is an error. So we cannot use 
 	       '-w 0' to specify no waiting. */
@@ -302,7 +318,8 @@ main (argc, argv)
 	  family = AF_INET6;
 	  break;
 	case 'm':
-	  plugin_name = optarg;
+	  remaining--;
+	  module_find = TRUE;
 	  break;
 	default:
 	  usage ();
@@ -405,6 +422,8 @@ main (argc, argv)
       exit (1);
     }
 #endif
+  remaining--;			/* No argv[0] this time */
+  leftover = (char **) &argv[argc - remaining];
   if (plugin_name)
     {
       /* TODO: add '.so' to the plugin name if it's not already there */
@@ -419,7 +438,7 @@ main (argc, argv)
 	{
 	  err_sys ("Cannot find init in %s: %s", plugin_name, dl_result);
 	}
-      strcpy (port_name, plugin_init (argc, argv));
+      strcpy (port_name, plugin_init (remaining, (const char **) leftover));
       plugin_start = dlsym (plugin, "start");
       dl_result = dlerror ();
       if (dl_result)
@@ -437,9 +456,7 @@ main (argc, argv)
     {
       tcp = 1;
     }
-  argc -= optind;
-  argv += optind;
-  if (argc != 1)
+  if (remaining != 1)
     {
       usage ();
     }
@@ -447,7 +464,7 @@ main (argc, argv)
     {
       printf ("\nThis is %s, version %s.\n\n", progname, VERSION);
     }
-  server = argv[0];
+  server = leftover[0];
 #ifdef LIBIDN
   locale_server = server;
   utf8_server = stringprep_locale_to_utf8 (server);
@@ -588,16 +605,18 @@ main (argc, argv)
       strcpy (hbuf, "?");
       strcpy (pbuf, "?");
     }
-  if (verbose)
+  if (plugin)
     {
-      printf ("Running start() for the plugin %s...\n", plugin_name);
+      if (verbose)
+	{
+	  printf ("Running start() for the plugin %s...\n", plugin_name);
+	}
+      plugin_start (res);
     }
-  plugin_start (res);
 #ifdef HTTP
   if (http)
     {
       sendline = make_http_sendline (url, server, atoi (pbuf), nocache);
-      /* printf ("DEBUG: sending %s\n", sendline); */
     }
   else
 #endif
@@ -985,7 +1004,6 @@ main (argc, argv)
 				       ERR_error_string (sslcode, NULL));
 			    }
 			}
-		      /* printf ("DEBUG: writing %s with SSL\n", sendline); */
 		    }
 #endif
 #ifdef GNUTLS
@@ -1009,7 +1027,6 @@ main (argc, argv)
 			       rc, gnutls_strerror (rc));
 			  }
 		      }
-		    /* printf ("DEBUG: writing %s with TLS\n", sendline); */
 		  }
 #endif
 		  /* Write something to the server */

@@ -41,6 +41,15 @@ interface, with getnameinfo/getaddrinfo. If your system does not
 support it (Mac OS X <= 10.1), you have no other choices than using
 echoping 4.
 
+There is no option to disable the use of dlopen() or the popt
+library. dlopen() is necessary for the plugins (and, in the future,
+all protocol code will be in plugins). The popt library provides a
+better and easier parsing of options and, more important, is necessary
+for resuming parsing, something that the plugins rely heavily on.  If
+your system does not support dlopen() or if you do not want to install
+the popt library (which is free and runs on every Unix), you have no
+other choices than using echoping 5.
+
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
 
