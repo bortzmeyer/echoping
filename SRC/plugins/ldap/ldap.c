@@ -1,7 +1,6 @@
 /*
- * LDAP plugin. 
- * TODO: loops with and without opening the connection each time?
- * $Id$
+ * LDAP plugin. TODO: loops with and without opening the connection each
+ * time? $Id$
  */
 
 #define IN_PLUGIN
@@ -35,6 +34,7 @@ init (const int argc, const char **argv,
 {
   int value;
   char *msg = malloc (MAX_LINE);
+  char *rest, *port_text;
   char *scope_string = NULL;
   /* popt variables */
   struct poptOption options[] = {
@@ -66,6 +66,12 @@ init (const int argc, const char **argv,
   if (port == 0)
     port = LDAP_PORT;
   hostname = poptGetArg (ldap_poptcon);
+  rest = poptGetArg (ldap_poptcon);
+  if (rest != NULL)
+    {
+      fprintf (stderr, "%s: ", rest);
+      ldap_usage ("Additional arguments");
+    }
   if (base == NULL)
     base = "";
   if (request == NULL || !strcmp (request, ""))
@@ -82,17 +88,49 @@ init (const int argc, const char **argv,
       else
 	err_quit ("Invalid scope \"%s\"", scope_string);
     }
-  return "ldap";
+  if (port == LDAP_PORT)
+    {
+      return "ldap";
+    }
+  else
+    {
+      port_text = malloc (99);
+      sprintf (port_text, "%d", port);
+      return port_text;
+    }
 }
 
 void
 start ()
 {
   int result;
+  LDAPMessage *response;
+
   session = ldap_init (hostname, port);
   if (session == NULL)
     err_sys ("Cannot initialize LDAP");
   /* TODO: allow non-anonymous connections, with ldap_bind_simple_s */
+  /*
+   * Unfortunately, ldap_init does not connect to the LDAP server. So
+   * connection errors (e.g. firewall), will not be detected here and
+   * loop will go on.
+   * 
+   * To quote the man page: ldap_init() acts just like ldap_open(), but
+   * does not open a connection to the LDAP server.  The actual
+   * connection open will occur when the first operation is attempted.
+   * At this time, ldap_init() is preferred.  ldap_open() will be
+   * depreciated in a later release.
+   * 
+   * So, we perform a dummy search immediately.
+   */
+  result = ldap_search_s (session, base, LDAP_SCOPE_ONELEVEL, "(objectclass=*)", NULL,	/* Return all attributes */
+			  1, &response);
+  if (result != 0)
+    {
+      err_quit
+	("Cannot connect to %s (no LDAP server or wrong base, probably): %s",
+	 hostname, ldap_err2string (result));
+    }
 }
 
 int
@@ -101,19 +139,11 @@ execute ()
   int result;
   LDAPMessage *response;
   result = ldap_search_s (session, base, scope, request, NULL,	/* Return all attributes */
-			  0,	/* Return attribute types *and* values */
+			  0,	/* Return attribute types *and*
+				 * values */
 			  &response);
   if (result != 0)
     {
-/* 
-TODO: unfortunately, ldap_init does not connect to the LDAP server. So
-connection errors (e.g. firewall), will be detected only here and loop
-will go on. To quote the man page: ldap_init() acts just like
-ldap_open(), but does not open a connection to the LDAP server.  The
-actual connection open will occur when the first operation is
-attempted.  At this time, ldap_init() is preferred.  ldap_open() will
-be depreciated in a later release.  
-*/
       err_ret ("Cannot search \"%s\": %s", request, ldap_err2string (result));
       return -1;
     }
