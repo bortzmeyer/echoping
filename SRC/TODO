@@ -1,11 +1,7 @@
-A faire pour la version 2.1 :
+Check the TCP timeout with T/TCP
 
-TCP timeout et T/TCP
+TCP timeout with long packets seem to confuse Cisco routers
 
-TCP timeout et longs paquets (Cisco)
+ICP always replies even when timeouting?
 
-Tester sur plein (Linux, Irix, SunOS, FreeBSD)
-
-Bogue HTTP/1.0 si proxy
-
-Bogue ICP : répond toujours même si timeout, etc
+$Id$

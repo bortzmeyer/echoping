@@ -4,9 +4,12 @@
  * a null (the same as fgets(3)). We return the number of characters up to,
  * but not including, the null (the same as strlen(3)). If ln == 0, we treat
  * newline as an ordinary charracter. 
+ *
+ * Stolen from Stevens' book 
+ *
+ * $Id$
+ *
  */
-
-/* Stolen from Stevens' book */
 
 #include "echoping.h"
 
