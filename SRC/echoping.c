@@ -469,6 +469,12 @@ main (argc, argv)
 	}
       if (!plugin)
 	{
+#if DEBIAN
+	  /* A bit of help for the poor user */
+	  fprintf (stderr, "You may have to load the recommended packages "
+		   "to run this plugin.\n"
+		   "'dpkg -s echoping | grep Recommends' to know them.\n\n");
+#endif
 	  err_sys
 	    ("Cannot load \"%s\" (I tried the short name, then the complete name in \"%s\"): %s",
 	     plugin_name, PLUGINS_DIR, dlerror ());
