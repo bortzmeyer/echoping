@@ -1,3 +1,5 @@
+5.0.0 (2002-10-11)
+
 	* Now uses getnameinfo/getaddrinfo. Two consequences:
 	   - you can compile only on a recent Unix
 	   - you have IPv6 support
