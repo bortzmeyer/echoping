@@ -1,10 +1,12 @@
 #!/bin/sh
 
+# $Id$
+
 echo ""
 echo "Since this tests tries remote servers, a failure is not always "
 echo " echoping's fault: it may be a network problem."
 
-echoping -h / www.pasteur.fr
+./echoping -h / www.pasteur.fr
 
-echoping -h / www.freenix.org
+./echoping -h / www.freenix.org
 
