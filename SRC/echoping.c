@@ -151,7 +151,7 @@ main (argc, argv)
 	  stop_at_newlines = 0;
 	  break;
 	case 'i':
-	  port_name = ICP_UDP_PORT;
+	  port_name = DEFAULT_ICP_UDP_PORT;
 	  port_to_use = USE_ICP;
 	  udp = 1;
 	  icp = 1;

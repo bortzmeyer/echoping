@@ -95,9 +95,9 @@ AC_ARG_ENABLE(ttcp,
    AC_DEFINE(HAVE_TTCP)
  fi)
 
-if test "$ICP" = "1"; then
-CF_CHECK_SERVICES
-fi
+dnl if test "$ICP" = "1"; then
+dnl CF_CHECK_SERVICES
+dnl fi
 
 AC_OUTPUT(Makefile)
 

@@ -3,16 +3,19 @@ Stephane Bortzmeyer <bortz@users.sourceforge.net>
 
 With help from:
 
-Richard Stevens, author of the book "Unix network programming"
+W. Richard Stevens, author of the book "Unix network programming"
 for his book and his many examples (a lot of the code comes from
 him by copy-and-paste).
 
-Pierre Beyssac, author of the "bing" tool for examples of code
-and beta-testing.
+Pierre Beyssac <pb@fasterix.freenix.org> author of the "bing" tool for
+examples of code and beta-testing.
 
-Christian Grimm for the ICP code.
+Christian Grimm <grimm@rvs.uni-hannover.de> for the ICP code.
 
 Samuel Tardieu <sam@inf.enst.fr> for the SMTP code.
+
+Pierre-Yves Lochou <lochou@ilog.fr> for a lot of testing, debugging
+and porting.
 
 The Pasteur Institute because the work was done when working on the
 French national Web cache project, while being an employee of the

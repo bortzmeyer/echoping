@@ -71,8 +71,9 @@ echoping_LDADD =
 DOCS = DETAILS
 
 TESTS = test-echoping-local test-echoping-remote test-echoping-icp
+MORE_TESTS = test-echoping-crypto 
 
-EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS)
+EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h

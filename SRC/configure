@@ -2013,48 +2013,6 @@ EOF
 fi
 
 
-if test "$ICP" = "1"; then
-
-echo $ac_n "checking what is the name of the HTTP port in your services database""... $ac_c" 1>&6
-echo "configure:2020: checking what is the name of the HTTP port in your services database" >&5
-if grep http /etc/services > /dev/null; then
-    cat >> confdefs.h <<\EOF
-#define HTTP_TCP_PORT "http"
-EOF
-
-    echo "$ac_t""http" 1>&6
-else
-        if grep www /etc/services > /dev/null; then
-	cat >> confdefs.h <<\EOF
-#define HTTP_TCP_PORT "www"
-EOF
-
-        echo "$ac_t""www" 1>&6	
-    else
-	cat >> confdefs.h <<\EOF
-#define HTTP_TCP_PORT "undefined:use_:80"
-EOF
-
-	echo "$ac_t""undefined, you should add it in your database" 1>&6
-    fi
-fi
-echo $ac_n "checking what is the name of the ICP port in your services database""... $ac_c" 1>&6
-echo "configure:2043: checking what is the name of the ICP port in your services database" >&5
-if grep icp /etc/services > /dev/null; then
-    cat >> confdefs.h <<\EOF
-#define ICP_UDP_PORT "icp"
-EOF
-
-    echo "$ac_t""icp" 1>&6
-else
-    cat >> confdefs.h <<\EOF
-#define ICP_UDP_PORT "undefined:use_:3130"
-EOF
-
-    echo "$ac_t""undefined, you should add it in your database" 1>&6
-fi
-
-fi
 
 trap '' 1 2 15
 cat > confcache <<\EOF

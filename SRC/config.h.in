@@ -70,7 +70,7 @@
 /* Port name for HTTP. Unused. */
 #undef HTTP_TCP_PORT
 
-/* Port name for ICP */
+/* Port name for ICP. Unused. */
 #undef ICP_UDP_PORT
 
 #undef PACKAGE

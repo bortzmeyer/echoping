@@ -69,6 +69,16 @@ find_server_and_port (char *server, short *port, char *default_port)
 	  *port = sp->s_port;
 	  return;
 	}
+      else if (strcmp (default_port, DEFAULT_ICP_UDP_PORT) == 0)
+	{
+	  if ((sp = getservbyname ("icp", "udp")) == NULL)
+	    {
+	      *port = htons (3130);
+	      return;
+	    }
+	  *port = sp->s_port;
+	  return;
+	}
       else if ((sp = getservbyname (default_port, "tcp")) == NULL)
 	{
 	  err_quit ("tcp_open: unknown service: %s/tcp", default_port);
@@ -128,7 +138,7 @@ read_from_server (CHANNEL fs, short ssl)
     return -1;
   if (nr < 2)			/* Hmm, if the body is empty, we'll
 				   get a meaningless error message */
-    err_sys ("Reading HTTP body");
+    err_sys ("Error reading HTTP body");
   total = total + nr;
   return total;			/* How to do if we want only the body's size? */
 }
