@@ -4,6 +4,8 @@ AC_INIT(postgresql.c)
 m4_include([../../configure-common.ac])
 AC_CONFIG_HEADERS(config.h)
 
+m4_include([../configure-plugins.ac])
+
 PGSQL_BUILD=1
 AC_CHECK_FUNCS(poptGetContext,, 
    [AC_CHECK_LIB(popt,poptGetContext,,[AC_MSG_WARN([No popt development environment found, not building this plugin]) && PGSQL_BUILD=0])])
