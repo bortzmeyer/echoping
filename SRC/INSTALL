@@ -8,13 +8,9 @@ Just type "./configure", then "make", and then (as root if necessary),
 "configure" has some options: 
 --disable-http (suppress the HTTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
-
-
-Variables you may add in echoping.h:
-
-TTCP 
-T/TCP support if your system supports it (FreeBSD does). See 
-   <http://www.noao.edu/~rstevens/ttcp.html>
+--disable-ttcp  (suppress the T/TCP support which is enabled only if 
+         your system supports it - FreeBSD does. See 
+         <http://www.kohala.com/start/ttcp.html>)
 
 
 If 'echoping -h' fails with "tcp_open: unknown service: http/tcp", add

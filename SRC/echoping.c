@@ -232,7 +232,7 @@ main (argc, argv)
 	     "%s: Filling incompatible with HTTP connections.\n", progname);
       exit (1);
     }
-#ifndef TTCP
+#ifndef USE_TTCP
   if (ttcp)
     {
       (void) fprintf (stderr,
@@ -503,7 +503,7 @@ main (argc, argv)
       if ((port_to_use == USE_ECHO) || (port_to_use == USE_DISCARD) ||
 	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP))
 	{
-#ifdef TTCP
+#ifdef USE_TTCP
 	  if (ttcp)
 	    {
 	      if (sendto (sockfd, sendline, n, MSG_EOF,
