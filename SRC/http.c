@@ -19,13 +19,13 @@ make_http_sendline (char *url, char *host, int port)
   sprintf (sendline, "GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n\r\n",
 	   url, VERSION);
 #else
-  hostname = HTParse (url, "", PARSE_HOST);
+  strcpy (hostname, HTParse (url, "", PARSE_HOST));
   if (!strcmp (hostname, ""))
     sprintf (hostname, "%s:%d", host, sport);
   sprintf (sendline,
 	   "GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n\r\n",
 	   url, VERSION, hostname);
-  /* free (hostname); */ /* At least on AI/X, it segfaults for an unknown reason */
+  free (hostname); 
 #endif
   return sendline;
 }
