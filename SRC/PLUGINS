@@ -4,11 +4,15 @@ functions:
 char * init (const int argc, const char **argv)
   Accepts remaining arguments (you have to use popt to parse them, or
 do it by hand, getopt does not allow you to resume the parsing) and
-returns a string identifying the port name. If it makes no sens, you
+returns a string identifying the port name. If it makes no sense, you
 can safely return NULL.
 
 void start (struct addrinfo *res)
   Typically just stores the res structure for later use.
+
+TODO: two start() routines, one which takes a struct addrinfo and one
+which does not (PostgreSQL or MySQL does not use struct addrinfo but a
+string)?
 
 int execute ()
   Connects and do whatever the protocol requires. It is called once
