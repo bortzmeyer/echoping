@@ -25,6 +25,7 @@ Current features:
 - uses UDP instead of TCP for the protocols which accept it (like echo), 
 - can repeat the test and display various measures about it,
 - supports IPv6 as well as IPv4,
+- supports IDN (Unicode domain names),
 - can use T/TCP on systems which support it.
 
 Examples of output:
@@ -66,7 +67,7 @@ The distribution is from:
 ftp://ftp.internatif.org/pub/unix/echoping
 
 Stephane Bortzmeyer <bortz@users.sourceforge.net>. October 1995 for the
-first version. October 2002 for this one.
+first version. 
 
 --------------------- 
 If you want to help and/or motivate echoping and its developer, you

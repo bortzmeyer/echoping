@@ -49,7 +49,8 @@ and this will show only if the HTTP server uses "virtual hosting").
 To report a bug, email Stephane Bortzmeyer
 <bortz@users.sourceforge.net> (if you have an account at SourceForge,
 you can use their bug reporting tool, too). If the problem is at the
-"./configure" step, do not forget to send the config.log.
+"./configure" step, do not forget to send configure's output *and* the
+config.log.
 
 If echoping segfaults, please send me debugging info. To do so:
 make clean
@@ -57,6 +58,7 @@ make debug
 gdb ./echoping
 run the-options-that-exhibits-the-problem
 where
+list
 print the-variables-displayed
 
 

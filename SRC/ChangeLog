@@ -1,3 +1,7 @@
+5.2.0 (???)
+
+	* IDN (Unicode domain names) support
+	
 5.1.0 (2003-11-09)
 
 	* GNU TLS support (alternative to OpenSSL),
