@@ -1,10 +1,29 @@
+Actual bugs are registered at SourceForge:
+
+http://sourceforge.net/bugs/?group_id=4581
+
 Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
 machines exist.
 
 TCP timeout with long packets seem to confuse Cisco routers. Does
 someone can reproduce it and perform tests? It seems to work now.
 
-Better detection of the name of the HTTP port.
+Better detection of the name of the HTTP port. At run time?
+
+gcc's warnings:
+
+1) NetBSD
+
+gcc -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -Wall -c echoping.c
+echoping.c: In function `main':
+echoping.c:540: warning: passing arg 5 of `sendto' from incompatible pointer type
+
+              if (icp)
+                {
+                  if (sendto (sockfd, sendline, length, 0,
+                              &serv_addr, sizeof (serv_addr)) != length)
+                    err_sys ("sendto error on socket");
+                }
 
 
 $Id$
