@@ -271,8 +271,8 @@ fi
 
 interpolate() {  
   old=$1
+  AC_MSG_WARN(DEBUG-INTERPOLATE $old)
   eval new=$old
-  AC_MSG_WARN(DEBUG-INTERPOLATE $new)
   if test "$new" != "$old" ; then
 	interpolate $new
   else 
@@ -281,7 +281,20 @@ interpolate() {
 }
 dnl TODO: the following is broken because installation prefix can be changed at instal-time,
 dnl not compilation time.
-plugins_dir=`interpolate '$prefix/lib/echoping'`
+if test "x$libdir" = 'x${exec_prefix}/lib' ; then # Default value
+	if test "x$exec_prefix" = "xNONE" ; then # Default value
+		if test "x$prefix" = "xNONE" ; then # Default value
+  			plugins_dir=`interpolate '$ac_default_prefix/lib/echoping'`
+		else
+  			exec_prefix='${prefix}'	
+  			plugins_dir=`interpolate '$libdir/echoping'`
+		fi
+	else
+  		plugins_dir=`interpolate '$libdir/echoping'`
+	fi
+else
+	plugins_dir=`interpolate '$libdir/echoping'`
+fi
 AC_DEFINE_UNQUOTED(PLUGINS_DIR, "$plugins_dir", [Directory where the plugins will be installed])
 AC_CONFIG_SUBDIRS(plugins)
 AC_OUTPUT(Makefile)

@@ -84,7 +84,7 @@ main (argc, argv)
   unsigned int fill_i;
   unsigned short fill_requested = 0;
   unsigned int i = 0;
-  char *plugin_name = NULL;
+  char *plugin_name, *complete_plugin_name = NULL;
   char *ext;
   void *plugin;
   char *dl_result;
@@ -119,8 +119,6 @@ main (argc, argv)
   unsigned short ssl = 0;
 
   unsigned short stop_at_newlines = 1;
-
-  char *newenv, *curenv;
 
 #ifdef OPENSSL
   SSL_METHOD *meth;
@@ -436,17 +434,16 @@ main (argc, argv)
       ext = strstr(plugin_name, ".so");
       if ((ext == NULL) || (strcmp (ext, ".so") != 0)) 
 	sprintf (plugin_name, "%s.so", plugin_name);
-      curenv = getenv ("LD_LIBRARY_PATH");
-      if (! curenv)
-	newenv = PLUGINS_DIR;
-      else
-	sprintf (newenv, "%s:%s", curenv, PLUGINS_DIR);
-      if (setenv ("LD_LIBRARY_PATH", newenv, 1) == -1)
-	  err_sys ("Cannot change LD_LIBRARY_PATH");
       plugin = dlopen (plugin_name, RTLD_NOW);
+      if (!plugin) { /* retries with the absolute name */
+	complete_plugin_name = (char *) malloc(MAX_LINE);
+	sprintf (complete_plugin_name, "%s/%s", PLUGINS_DIR, plugin_name);
+	plugin = dlopen (complete_plugin_name, RTLD_NOW);
+      }
       if (!plugin)
 	{
-	  err_sys ("Cannot load \"%s\": %s", plugin_name, dlerror ());
+	  err_sys ("Cannot load \"%s\" (I tried the short name, then the complete name in \"%s\"): %s", 
+		   plugin_name, PLUGINS_DIR, dlerror ());
 	}
       plugin_init = dlsym (plugin, "init");
       dl_result = dlerror ();
