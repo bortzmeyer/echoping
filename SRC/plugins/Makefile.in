@@ -1,17 +1,22 @@
 CCFLAGS=-DHAVE_CONFIG_H -Wall -O0 -g 
 CCDYNAMICFLAGS=${CCFLAGS} -fPIC 
 LDFLAGS=
-LDDYNAMICFLAGS=${LDFLAGS} -shared
+LDDYNAMICFLAGS=${LDFLAGS} -shared -lpq # TODO: add the flags only when necessary
 
-PLUGINS=random.so whois.so
+PLUGINS=random.so whois.so postgres
 
 all: $(PLUGINS)
+
+postgres: postgresql.so
 
 %.o: %.c
 	${CC} ${CCDYNAMICFLAGS} -c -o $@ $<
 
 %.so: %.o
 	${CC} ${LDDYNAMICFLAGS} -o $@ $<
+
+test-postgresql: test-postgresql.o
+	${CC} -o $@ -l pq $<
 
 clean: 
 	-rm -f *.o *.so program

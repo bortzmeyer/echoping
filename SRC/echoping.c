@@ -460,6 +460,12 @@ main (argc, argv)
 	{
 	  err_sys ("Cannot find execute in %s: %s", plugin_name, dl_result);
 	}
+      plugin_terminate = dlsym (plugin, "terminate");
+      dl_result = dlerror ();
+      if (dl_result)
+	{
+	  err_sys ("Cannot find terminate in %s: %s", plugin_name, dl_result);
+	}
     }
   if (!udp && !ttcp)
     {
@@ -848,6 +854,7 @@ main (argc, argv)
       if (plugin)
 	{
 	  plugin_execute ();
+	  /* TODO: do something with the return code */
 	}
       else
 	{
@@ -1369,19 +1376,21 @@ main (argc, argv)
 	}
     }				/* End of main loop */
 
-  printstats ();
-  if (successes >= 1)
-    exit (0);
-  else
-    exit (1);
-  /* It would be nice to clean here (OpenSSL, etc) */
+  /* Clean */
+  if (plugin)
+    plugin_terminate();
+  /* It would be nice to clean here for OpenSSL */
 #ifdef GNUTLS
   if (ssl)
     {
       gnutls_global_deinit ();
     }
 #endif
-
+  printstats ();
+  if (successes >= 1)
+    exit (0);
+  else
+    exit (1);
 }
 
 void

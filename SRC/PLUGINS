@@ -10,8 +10,12 @@ can safely return NULL.
 void start (struct addrinfo *res)
   Typically just stores the res structure for later use.
 
-void execute ()
-  Connects and do whatever the protocol requires.
+int execute ()
+  Connects and do whatever the protocol requires. It is called once
+  per iteration. It returns >=0 if it succeeds and -1 if it failed.
+
+void terminate ()
+  Cleans everything. It is called after all iterations.
 
 Start your plugin source code with:
 

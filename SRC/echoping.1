@@ -28,6 +28,7 @@ echoping \- tests a remote host with TCP or UDP
 .RI [-m plugin] 
 .B hostname
 [:port]
+[plugin options...]
 
 .SH DESCRIPTION 
 .LP
@@ -126,7 +127,10 @@ or
 (depending on your Unix). /usr/include/netinet/ip.h may contain
 interesting constants for setting Type Of Service.
 .IP -m\ plugin
-Load the given plugin. Quite experimental.
+Load the given plugin. Quite experimental. The documentation for a
+plugin is in echoping_PLUGIN(1). The plugin-specific options appear
+.B after
+the hostname.
 .SH EXAMPLES
 .IP echoping\ \-v\ foobar.example.com
 Tests the remote machine with TCP echo (one test).
@@ -138,6 +142,9 @@ indicate the whole URL.
 .IP echoping\ \-h\ http://www.example.com/\ cache.example.com:3128
 Tests the remote Web proxy-cache and asks a Web page. Note that you must
 indicate the whole URL.
+.IP echoping\ -n\ 3\ -m\ whois\ foobar.example.com\ -r\ tao.example.org
+Loads the whois plugin and query the host foobar.example.com. "-r
+tao.example.org" are options specific to the whois plugin.
 .IP echoping\ -u\ \-P\ 0xa0\ foobar.example.com
 Sends several UDP Echo packets with an IP Precedence of 5.
 .SH IP TYPE OF SERVICE OCTET

@@ -77,7 +77,7 @@ start (struct addrinfo *res)
   whois_server = *res;
 }
 
-void
+int
 execute ()
 {
   int nr = 0;
@@ -102,4 +102,8 @@ execute ()
   if (dump)
     printf ("\n");
   close (sockfd);
+  return 1;
+}
+
+void terminate() {
 }

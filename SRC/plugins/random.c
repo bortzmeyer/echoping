@@ -22,8 +22,11 @@ void start ()
 {
 }
 
-void
+int
 execute ()
 {
   usleep (rand () % 1000000);
+  return 1;
 }
+
+void terminate() {}
