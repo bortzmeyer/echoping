@@ -101,6 +101,9 @@ main (argc, argv)
   unsigned short smtp = 0;
   unsigned short udp = 0;
   unsigned short icp = 0;
+
+  unsigned short nocache = 0;
+
 #ifdef ICP
   icp_opcode opcode = ICP_OP_QUERY;
 #endif
@@ -140,7 +143,7 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:SCp:P:aA")) != EOF)
     {
       switch (ch)
 	{
@@ -177,6 +180,12 @@ main (argc, argv)
 	  port_to_use = USE_HTTP;
 	  http = 1;
 	  url = optarg;
+	  break;
+	case 'a':
+	  nocache = 1;
+	  break;
+	case 'A':
+	  nocache = 2;
 	  break;
 	case 'f':
 	  fill = *optarg;
@@ -478,14 +487,17 @@ main (argc, argv)
 #ifdef HTTP
   if (http)
     {
-      sendline = make_http_sendline (url, server, (int) ntohs (port));
+      sendline =
+	make_http_sendline (url, server, (int) ntohs (port), nocache);
     }
   else
 #endif
 #ifdef SMTP
   if (smtp)
     {
-      sendline = "QUIT\r\n";
+      sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log
+				   a frightening NOQUEUE. Anyone knows
+				   better? */
     }
   else
 #endif

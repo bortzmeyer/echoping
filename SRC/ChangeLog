@@ -1,7 +1,8 @@
 
+        * New -a and -A options to control the proxy/cache (disable caching)
 	* Support for microsecond wait (uses usleep)
 	* New option (-p) to set socket priority (Linux only)
-	* New option (-P) to set IP Type of Service octet (Linux only)
+	* New option (-P) to set IP Type of Service octet
 
 4.1.0 (2001-02-14)
 

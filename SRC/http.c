@@ -9,22 +9,41 @@
 char big_recvline[MAXTOREAD];
 
 char *
-make_http_sendline (char *url, char *host, int port)
+make_http_sendline (char *url, char *host, int port, int nocache)
 {
   short sport = (short) port;
   int size = 200;		/* Enough? */
   char *sendline = (char *) malloc (size);
   char *hostname = (char *) malloc (size);
+  char *cache_directive = "";
 #ifdef HTTP10
-  sprintf (sendline, "GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n\r\n",
-	   url, VERSION);
+  if (nocache)
+    cache_directive = "Pragma: no-cache\r\n";	/* RFC 1945, "Hypertext
+						   Transfer Protocol --
+						   HTTP/1.0" */
+  sprintf (sendline,
+	   "GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n%s\r\n",
+	   url, VERSION, cache_directive);
 #else
+  if (nocache)
+    {
+      if (nocache == 1)
+	cache_directive = "Cache-control: max-age=0\r\n";	/* Simply force a
+								   recheck with the
+								   server */
+      else
+	cache_directive = "Cache-control: no-cache\r\n";	/* RFC 2616
+								   "Hypertext
+								   Transfer
+								   Protocol --
+								   HTTP/1.1" */
+    }
   strcpy (hostname, HTParse (url, "", PARSE_HOST));
   if (!strcmp (hostname, ""))
     sprintf (hostname, "%s:%d", host, sport);
   sprintf (sendline,
-	   "GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n\r\n",
-	   url, VERSION, hostname);
+	   "GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n%s\r\n",
+	   url, VERSION, hostname, cache_directive);
   free (hostname);
 #endif
   return sendline;

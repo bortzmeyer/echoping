@@ -112,6 +112,11 @@ struct timeval max_timeval;
 #define DEFAULT_HTTPS_TCP_PORT "HTTPS"
 #define DEFAULT_ICP_UDP_PORT "ICP"
 
+#ifdef HTTP
+/* Use the old HTTP 1.0 protocol? If yes, set HTTP10 to 1*/
+#undef HTTP10
+#endif
+
 #define	USE_ECHO	1
 #define	USE_DISCARD	2
 #define	USE_CHARGEN	3
