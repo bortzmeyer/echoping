@@ -38,7 +38,7 @@ AC_ARG_WITH(ssl,
    OPENSSL=1
    if test "$withval" != "yes"; then
 	SSLROOT=$withval
-	LIBS="${LIBS} -L$SSLROOT/lib"
+	LDFLAGS="${LDFLAGS} -L$SSLROOT/lib"
         CPPFLAGS="${CPPFLAGS} -I$SSLROOT/include"  
    fi
  fi],
