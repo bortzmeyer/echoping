@@ -5,8 +5,10 @@
 <P>"echoping" is a small program to test (approximatively) performances of a 
 remote host by sending it TCP "echo" (or other protocol) packets.
 
-<P>To install it, see the INSTALL file. Or type "make" if you're in a
-hurry :-) <A
+<P>To install it, see the INSTALL file. Or type "<code>./configure && make
+&& sudo make install</code>" if you're in a
+hurry :-) Several operating systems have echoping already packaged
+(Debian, FreeBSD, NetBSD). <A
 HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
 wish. (Or you may prefer access the latest developments <A
 HREF="http://sourceforge.net/cvs/?group_id=4581">via CVS</A>: the
@@ -32,7 +34,8 @@ test hosts which aren't yours.
 
 <UL>
 <LI>Supports IPv6 as well as IPv4,
-<LI>uses the protocols echo, discard, chargen or HTTP, 
+<LI>uses the protocols echo, discard, chargen or HTTP,
+<LI>can use cryptographic connections with HTTP,
 <LI>uses UDP instead of TCP for the protocols which accept it (like echo),
 <LI>can repeat the test and display various measures about it,
 <LI>can use T/TCP on systems which support it.
