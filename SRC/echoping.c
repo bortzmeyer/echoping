@@ -598,7 +598,14 @@ main (argc, argv)
 
   for (i = 1; i <= number; i++)
     {
-
+      if (i > 1)
+	{
+#ifdef HAVE_USLEEP
+	  usleep (wait * 1000000);
+#else
+	  sleep (wait);
+#endif
+	}
       attempts++;
 #ifdef OPENSSL
       if (ssl)
@@ -1139,11 +1146,6 @@ main (argc, argv)
 	      /* SSL_clear (sslh); No, we have to free. Bug #130151 */
 	      SSL_free (sslh);
 	    }
-#endif
-#ifdef HAVE_USLEEP
-	  usleep (wait * 1000000);
-#else
-	  sleep (wait);
 #endif
 	}
     }
