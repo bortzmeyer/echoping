@@ -4,7 +4,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
 AC_CANONICAL_HOST
 AC_PROG_CC(cc gcc)
-AM_INIT_AUTOMAKE(echoping, 5.2.0-BETA)
+AM_INIT_AUTOMAKE(echoping, 5.2.0)
 AM_CONFIG_HEADER(config.h)
 
 dnl User options
