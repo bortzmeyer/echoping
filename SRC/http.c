@@ -116,13 +116,22 @@ read_from_server (CHANNEL fs, short ssl)
   char reply_code;
   int first_line = TRUE;
   short body = FALSE;
+#ifdef OPENSSL
+  int sslcode;
+#endif
   while (!body)
     {
       if (!ssl)
 	nr = readline (fs.fs, big_recvline, MAXTOREAD, TRUE);
 #ifdef OPENSSL
-      else
+      else {
 	nr = SSL_readline (fs.ssl, big_recvline, MAXTOREAD, TRUE);
+	if (nr == -1) {
+	  sslcode = ERR_get_error ();
+	  err_ret ("SSL_readline error: %s",
+		   ERR_error_string (sslcode, NULL));
+	}
+      }
 #endif
       /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr); */
       /* HTTP replies should be separated by CR-LF. Unfortunately, some

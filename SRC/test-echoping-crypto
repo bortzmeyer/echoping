@@ -17,4 +17,9 @@ echo ""
 
 ./echoping -C -h / -n 2 www.creditmutuel.fr
 
+echo ""
+
+# bug #230384 
+./echoping -C -h / -n 2 www.ssl.de
+
 
