@@ -734,6 +734,7 @@ main (argc, argv)
 	      if ((errno == EINTR) && (timeout_flag))
 		{
 		  printf ("Timeout while connecting\n");
+		  close (sockfd);
 		  continue;
 #ifdef FLUSH_OUTPUT
 		  if (fflush ((FILE *) NULL) != 0)
@@ -782,6 +783,7 @@ main (argc, argv)
 		if ((errno == EINTR) && (timeout_flag))
 		  {
 		    printf ("Timeout while starting SSL\n");
+		    close (sockfd);
 		    continue;
 		  }
 	      if (verbose)
@@ -824,6 +826,7 @@ main (argc, argv)
 			{
 			  nr = n;
 			  printf ("Timeout while writing\n");
+			  close (sockfd);
 			  continue;
 			}
 		      else
@@ -839,6 +842,7 @@ main (argc, argv)
 			{
 			  nr = n;
 			  printf ("Timeout while writing\n");
+			  close (sockfd);
 			  continue;
 			}
 		      else
@@ -858,6 +862,7 @@ main (argc, argv)
 		    {
 		      nr = n;
 		      printf ("Timeout while writing\n");
+		      close (sockfd);
 		      continue;
 		    }
 		  else
@@ -1037,6 +1042,7 @@ main (argc, argv)
 		      err_sys ("I cannot flush");
 		    }
 #endif
+		  close (sockfd);
 		  continue;
 		}
 	      if (nr < 0 || nr != n)
@@ -1056,6 +1062,7 @@ main (argc, argv)
 		      err_sys ("I cannot flush");
 		    }
 #endif
+		  close (sockfd);
 		  continue;
 		}
 	      if (nr < 0)
@@ -1067,6 +1074,8 @@ main (argc, argv)
 	    printf ("%d bytes read from server.\n", nr);
 	}
       /* That's all, folks */
+      if (tcp)
+	alarm (0);
       if (http)
 	{
 #ifdef OPENSSL
@@ -1079,8 +1088,6 @@ main (argc, argv)
       close (sockfd);
 
       (void) gettimeofday (&newtv, (struct timezone *) NULL);
-      if (tcp)
-	alarm (0);
       temp = newtv;
       tvsub (&temp, &oldtv);
       if (!timeout_flag)
