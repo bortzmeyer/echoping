@@ -597,7 +597,7 @@ main (argc, argv)
 	      if ((sigaction (SIGALRM, &mysigaction, NULL)) < 0)
 		err_sys ("Cannot set signal handler");
 #else
-	      signal (SIGALRM, to_alarm);
+«	      signal (SIGALRM, to_alarm);
 #endif
 	      timeout_flag = 0;	/* for signal handler */
 	      alarm (timeout);
@@ -672,6 +672,9 @@ main (argc, argv)
 #endif
 		  continue;
 		}
+	      if (nr < 0) {
+		err_ret ("Error reading HTTP header");
+	      }
 	    }
 	  if (verbose)
 	    printf ("%d bytes read from server.\n", nr);

@@ -71,7 +71,9 @@ read_from_server (int fd)
       if ((nr < 1) && (errno == EINTR))		/* Probably a timeout */
 	return -1;
       if (nr < 1)
-	err_sys ("Error reading HTTP header");
+	/* SourceForge bug #109385 */
+	/* err_sys ("Error reading HTTP header"); */
+	return -1;
       /* if ((int) big_recvline[nr-1] == 10)
          nr--; */
       if (first_line)
@@ -88,7 +90,8 @@ read_from_server (int fd)
   nr = readline (fd, big_recvline, MAXTOREAD, FALSE);
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
     return -1;
-  if (nr < 2)			/* Hmm, if the body is empty, we'll get a meaningless error message */
+  if (nr < 2)			/* Hmm, if the body is empty, we'll
+                                   get a meaningless error message */
     err_sys ("Reading HTTP body");
   total = total + nr;
   return total;			/* How to do if we want only the body's size? */
