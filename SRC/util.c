@@ -1,6 +1,6 @@
 /* Most of it stolen from Pierre Beyssac's bing */
 
-/* $Id */
+/* $Id$ */
 
 #include "echoping.h"
 
