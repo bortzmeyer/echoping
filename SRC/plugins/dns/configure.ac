@@ -1,11 +1,13 @@
 dnl $Id$
 
 AC_INIT(dns.c)
+AM_INIT_AUTOMAKE(DNS plugin, 6.0-BETA)
 AC_CONFIG_HEADERS(config.h)
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 m4_include([../configure-plugins.ac])
 

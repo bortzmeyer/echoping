@@ -1,11 +1,13 @@
 dnl $Id$
 
 AC_INIT(random.c)
+AM_INIT_AUTOMAKE(example, 6.0-BETA)
 AC_CONFIG_HEADERS(config.h)
 
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 RANDOM_BUILD=1
 

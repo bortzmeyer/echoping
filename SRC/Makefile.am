@@ -9,9 +9,6 @@ echoping_LDADD =
 DOCS=DETAILS PLUGINS
 SUBDIRS=plugins
 
-# Export global symbols to plugins
-AM_CFLAGS=-rdynamic
-
 TESTS=test-echoping-local test-echoping-remote 
 MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echoping-tos test-echoping-ipv6 test-echoping-idn
 
