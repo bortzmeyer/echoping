@@ -1965,7 +1965,7 @@ fi
 
 fi
 
-for ac_func in getnameinfo inet_ntop
+for ac_func in getaddrinfo getnameinfo inet_ntop
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
 echo "configure:1972: checking for $ac_func" >&5
@@ -2017,104 +2017,42 @@ EOF
  
 else
   echo "$ac_t""no" 1>&6
-{ echo "configure: error: Missing mandatory function - echoping now uses the new network functions which are mandatory for IPv6" 1>&2; exit 1; }
-fi
-done
-
-# Tru64 UNIX has getaddrinfo() but has it renamed in libc as
-# something else so we must include <netdb.h> to get the
-# redefinition. (Stolen from rsync)
-for ac_func in getaddrinfo
-do
-echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:2031: checking for $ac_func" >&5
-if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 2036 "configure"
-#include "confdefs.h"
-/* System header to define __stub macros and hopefully few prototypes,
-    which can conflict with char $ac_func(); below.  */
-#include <assert.h>
-/* Override any gcc2 internal prototype to avoid an error.  */
-/* We use char because int might match the return type of a gcc2
-    builtin and then its argument prototype would still apply.  */
-char $ac_func();
-
-int main() {
-
-/* The GNU C library defines this for functions which it implements
-    to always fail with ENOSYS.  Some functions are actually named
-    something starting with __ and the normal name is an alias.  */
-#if defined (__stub_$ac_func) || defined (__stub___$ac_func)
-choke me
-#else
-$ac_func();
-#endif
-
-; return 0; }
-EOF
-if { (eval echo configure:2059: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
-  rm -rf conftest*
-  eval "ac_cv_func_$ac_func=yes"
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_func_$ac_func=no"
-fi
-rm -f conftest*
-fi
-
-if eval "test \"`echo '$ac_cv_func_'$ac_func`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-    ac_tr_func=HAVE_`echo $ac_func | tr 'abcdefghijklmnopqrstuvwxyz' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_func 1
-EOF
- 
-else
-  echo "$ac_t""no" 1>&6
-echo $ac_n "checking for getaddrinfo by including <netdb.h>""... $ac_c" 1>&6
-echo "configure:2081: checking for getaddrinfo by including <netdb.h>" >&5
+echo $ac_n "checking $ac_func again by including <netdb.h>""... $ac_c" 1>&6
+echo "configure:2022: checking $ac_func again by including <netdb.h>" >&5
 	cat > conftest.$ac_ext <<EOF
-#line 2083 "configure"
+#line 2024 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 	#include <sys/socket.h>
 	#include <netdb.h>
 int main() {
-getaddrinfo(NULL, NULL, NULL, NULL);
+$ac_func(NULL, NULL, NULL, NULL);
 ; return 0; }
 EOF
-if { (eval echo configure:2092: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2033: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   echo "$ac_t""yes" 1>&6
-		cat >> confdefs.h <<\EOF
-#define HAVE_GETADDRINFO 1
-EOF
-
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
   rm -rf conftest*
-  echo "$ac_t""no" 1>&6
-		
+  { echo "configure: error: Missing mandatory function - echoping now uses the new network functions (RFC 2133) which are mandatory for IPv6" 1>&2; exit 1; }
+         	
 fi
 rm -f conftest*
 fi
 done
 
+		
 for ac_func in gettimeofday socket sigaction
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:2113: checking for $ac_func" >&5
+echo "configure:2051: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2118 "configure"
+#line 2056 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -2137,7 +2075,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:2141: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2079: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -2165,12 +2103,12 @@ done
 for ac_func in usleep
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:2169: checking for $ac_func" >&5
+echo "configure:2107: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2174 "configure"
+#line 2112 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -2193,7 +2131,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:2197: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2135: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -2221,7 +2159,7 @@ done
 if test "$OPENSSL" = "1"; then
 
 echo $ac_n "checking for SSL_CTX_new in -lssl""... $ac_c" 1>&6
-echo "configure:2225: checking for SSL_CTX_new in -lssl" >&5
+echo "configure:2163: checking for SSL_CTX_new in -lssl" >&5
 ac_lib_var=`echo ssl'_'SSL_CTX_new | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -2230,7 +2168,7 @@ else
 LIBS="-lssl -lcrypto
  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 2234 "configure"
+#line 2172 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -2241,7 +2179,7 @@ int main() {
 SSL_CTX_new()
 ; return 0; }
 EOF
-if { (eval echo configure:2245: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2183: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -2265,9 +2203,9 @@ fi
 fi
 
 echo $ac_n "checking T/TCP""... $ac_c" 1>&6
-echo "configure:2269: checking T/TCP" >&5
+echo "configure:2207: checking T/TCP" >&5
 cat > conftest.$ac_ext <<EOF
-#line 2271 "configure"
+#line 2209 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
   #include <sys/socket.h>
@@ -2276,7 +2214,7 @@ int main() {
 int foobar = MSG_EOF;
 ; return 0; }
 EOF
-if { (eval echo configure:2280: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2218: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
 #define TTCP 1
@@ -2317,9 +2255,9 @@ fi
 
 
 echo $ac_n "checking Type Of Service""... $ac_c" 1>&6
-echo "configure:2321: checking Type Of Service" >&5
+echo "configure:2259: checking Type Of Service" >&5
 cat > conftest.$ac_ext <<EOF
-#line 2323 "configure"
+#line 2261 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
   #include <netinet/in.h>
@@ -2328,7 +2266,7 @@ int main() {
 int foobar = IP_TOS;
 ; return 0; }
 EOF
-if { (eval echo configure:2332: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2270: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
 #define HAVE_TOS 1
@@ -2369,9 +2307,9 @@ fi
 
 
 echo $ac_n "checking Socket priority""... $ac_c" 1>&6
-echo "configure:2373: checking Socket priority" >&5
+echo "configure:2311: checking Socket priority" >&5
 cat > conftest.$ac_ext <<EOF
-#line 2375 "configure"
+#line 2313 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
   #include <sys/socket.h>
@@ -2380,7 +2318,7 @@ int main() {
 int foobar = SO_PRIORITY;
 ; return 0; }
 EOF
-if { (eval echo configure:2384: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2322: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
 #define HAVE_SOCKET_PRIORITY 1
@@ -2802,7 +2740,7 @@ echo "Configuration of echoping:"
 
 
 echo $ac_n "checking HTTP""... $ac_c" 1>&6
-echo "configure:2806: checking HTTP" >&5
+echo "configure:2744: checking HTTP" >&5
 if  eval 'test "$HTTP" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 
@@ -2811,7 +2749,7 @@ fi
 
 
 echo $ac_n "checking ICP""... $ac_c" 1>&6
-echo "configure:2815: checking ICP" >&5
+echo "configure:2753: checking ICP" >&5
 if  eval 'test "$ICP" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 
@@ -2820,7 +2758,7 @@ fi
 
 
 echo $ac_n "checking OPENSSL""... $ac_c" 1>&6
-echo "configure:2824: checking OPENSSL" >&5
+echo "configure:2762: checking OPENSSL" >&5
 if  eval 'test "$OPENSSL" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 
@@ -2829,7 +2767,7 @@ fi
 
 
 echo $ac_n "checking SMTP""... $ac_c" 1>&6
-echo "configure:2833: checking SMTP" >&5
+echo "configure:2771: checking SMTP" >&5
 if  eval 'test "$SMTP" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 
@@ -2838,7 +2776,7 @@ fi
 
 
 echo $ac_n "checking TTCP""... $ac_c" 1>&6
-echo "configure:2842: checking TTCP" >&5
+echo "configure:2780: checking TTCP" >&5
 if  eval 'test "$TTCP" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 
@@ -2847,7 +2785,7 @@ fi
 
 
 echo $ac_n "checking TOS""... $ac_c" 1>&6
-echo "configure:2851: checking TOS" >&5
+echo "configure:2789: checking TOS" >&5
 if  eval 'test "$TOS" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 
@@ -2856,7 +2794,7 @@ fi
 
 
 echo $ac_n "checking PRIORITY""... $ac_c" 1>&6
-echo "configure:2860: checking PRIORITY" >&5
+echo "configure:2798: checking PRIORITY" >&5
 if  eval 'test "$PRIORITY" = "1"' > /dev/null; then
 	echo "$ac_t""enabled" 1>&6
 else 

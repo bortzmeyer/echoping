@@ -76,20 +76,19 @@ CF_LIB_NSL
 CF_LIB_MATH
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(getnameinfo inet_ntop, , AC_MSG_ERROR(Missing mandatory function - echoping now uses the new network functions which are mandatory for IPv6))
-# Tru64 UNIX has getaddrinfo() but has it renamed in libc as
-# something else so we must include <netdb.h> to get the
-# redefinition. (Stolen from rsync)
-AC_CHECK_FUNCS(getaddrinfo, ,
-	[AC_MSG_CHECKING([for getaddrinfo by including <netdb.h>])
+dnl Some Unices like Tru64 or Mac OS X has getaddrinfo() or
+dnl getnameinfo() but has it renamed in libc as something else so we
+dnl must include <netdb.h> to get the redefinition. (Stolen from rsync)
+dnl autoconf AC_CHECK_FUNCS does not allow headers to be easily included :-(
+AC_CHECK_FUNCS(getaddrinfo getnameinfo inet_ntop, ,
+	[AC_MSG_CHECKING([$ac_func again by including <netdb.h>])
 	AC_TRY_LINK([#include <sys/types.h>
 	#include <sys/socket.h>
-	#include <netdb.h>],[getaddrinfo(NULL, NULL, NULL, NULL);],
-		[AC_MSG_RESULT([yes])
-		AC_DEFINE(HAVE_GETADDRINFO, 1,
-			[Define if you have the `getaddrinfo' function.])],
-		[AC_MSG_RESULT([no])
-		])])
+	#include <netdb.h>],[$ac_func(NULL, NULL, NULL, NULL);],
+		[AC_MSG_RESULT([yes])],
+		[AC_MSG_ERROR([Missing mandatory function - echoping now uses the new network functions (RFC 2133) which are mandatory for IPv6])]
+         	)])
+		
 AC_CHECK_FUNCS(gettimeofday socket sigaction, , AC_MSG_ERROR(Missing mandatory function))
 AC_CHECK_FUNCS(usleep)
 
