@@ -12,4 +12,4 @@ echo " echoping's fault: it may be a network problem."
 
 ./echoping -h / www.freenix.org
 
-./echoping -S mail.hotmail.com
+./echoping -S mx3.hotmail.com
