@@ -134,7 +134,7 @@ main (argc, argv)
   min = max_timeval;
   stddev = null_timeval;
 
-  strcpy(port_name, ECHO_TCP_PORT);
+  strcpy (port_name, ECHO_TCP_PORT);
 
   for (i = 0; i <= MAXNUMBER; i++)
     {
@@ -158,23 +158,23 @@ main (argc, argv)
 	  ssl = 1;
 	  break;
 	case 'd':
-	  strcpy(port_name, DISCARD_TCP_PORT);
+	  strcpy (port_name, DISCARD_TCP_PORT);
 	  port_to_use = USE_DISCARD;
 	  break;
 	case 'c':
-	  strcpy(port_name, CHARACTER_GENERATOR_TCP_PORT);
+	  strcpy (port_name, CHARACTER_GENERATOR_TCP_PORT);
 	  port_to_use = USE_CHARGEN;
 	  stop_at_newlines = 0;
 	  break;
 	case 'i':
-	  strcpy(port_name, DEFAULT_ICP_UDP_PORT);
+	  strcpy (port_name, DEFAULT_ICP_UDP_PORT);
 	  port_to_use = USE_ICP;
 	  udp = 1;
 	  icp = 1;
 	  url = optarg;
 	  break;
 	case 'h':
-	  strcpy(port_name, DEFAULT_HTTP_TCP_PORT);
+	  strcpy (port_name, DEFAULT_HTTP_TCP_PORT);
 	  port_to_use = USE_HTTP;
 	  http = 1;
 	  url = optarg;
@@ -190,7 +190,7 @@ main (argc, argv)
 	  fill_requested = 1;
 	  break;
 	case 'S':
-	  strcpy(port_name, "smtp");
+	  strcpy (port_name, "smtp");
 	  port_to_use = USE_SMTP;
 	  smtp = 1;
 	  break;
@@ -376,7 +376,7 @@ main (argc, argv)
     }
   if (ssl && http)
     {
-      strcpy(port_name, DEFAULT_HTTPS_TCP_PORT);
+      strcpy (port_name, DEFAULT_HTTPS_TCP_PORT);
     }
 #ifndef USE_TOS
   if (tos_requested)
@@ -412,7 +412,7 @@ main (argc, argv)
     }
   server = argv[0];
   signal (SIGINT, interrupted);
-  memset(&hints, 0, sizeof(hints));
+  memset (&hints, 0, sizeof (hints));
   hints.ai_family = family;
   hints.ai_socktype = udp ? SOCK_DGRAM : SOCK_STREAM;
 
@@ -427,47 +427,47 @@ main (argc, argv)
 	    {
 	      *p = 0;
 	      text_port = p + 1;
-	      strncpy(port_name, text_port, NI_MAXSERV);
+	      strncpy (port_name, text_port, NI_MAXSERV);
 	    }
 	}
 
       if (text_port == NULL)
-        {
-           error = getaddrinfo(server, port_name, &hints, &res);
-	   if (error)
-	     {
-		if (error == EAI_SERVICE)
-	          {
-		    if (strcmp (port_name, DEFAULT_HTTP_TCP_PORT) == 0)
-		      {
-			strcpy(port_name, "80");
-		      }
-		    else if (strcmp (port_name, DEFAULT_HTTPS_TCP_PORT) == 0)
-		      {
-			strcpy(port_name, "443");
-		      }
-		    else if (strcmp (port_name, DEFAULT_ICP_UDP_PORT) == 0)
-		      {
-			strcpy(port_name, "3130");
-		      }
-		  }
-	     }
+	{
+	  error = getaddrinfo (server, port_name, &hints, &res);
+	  if (error)
+	    {
+	      if (error == EAI_SERVICE)
+		{
+		  if (strcmp (port_name, DEFAULT_HTTP_TCP_PORT) == 0)
+		    {
+		      strcpy (port_name, "80");
+		    }
+		  else if (strcmp (port_name, DEFAULT_HTTPS_TCP_PORT) == 0)
+		    {
+		      strcpy (port_name, "443");
+		    }
+		  else if (strcmp (port_name, DEFAULT_ICP_UDP_PORT) == 0)
+		    {
+		      strcpy (port_name, "3130");
+		    }
+		}
+	    }
 	}
     }
 #endif
 
-  error = getaddrinfo(server, port_name, &hints, &res);
+  error = getaddrinfo (server, port_name, &hints, &res);
   if (error)
     {
-      err_quit("getaddrinfo error for host: %s %s",
-	       server, gai_strerror(error));
+      err_quit ("getaddrinfo error for host: %s %s",
+		server, gai_strerror (error));
     }
 
-  if (getnameinfo(res->ai_addr, res->ai_addrlen, hbuf, sizeof(hbuf),
-	      pbuf, sizeof(pbuf), niflags) != 0)
+  if (getnameinfo (res->ai_addr, res->ai_addrlen, hbuf, sizeof (hbuf),
+		   pbuf, sizeof (pbuf), niflags) != 0)
     {
-      strcpy(hbuf, "?");
-      strcpy(pbuf, "?");
+      strcpy (hbuf, "?");
+      strcpy (pbuf, "?");
     }
 
   /*
@@ -478,8 +478,7 @@ main (argc, argv)
 #ifdef HTTP
   if (http)
     {
-      sendline =
-	make_http_sendline (url, server, res->ai_protocol, nocache);
+      sendline = make_http_sendline (url, server, res->ai_protocol, nocache);
     }
   else
 #endif
@@ -497,8 +496,10 @@ main (argc, argv)
     {
       if (res->ai_family == AF_INET)
 	{
-	  sendline = make_icp_sendline (url, &((struct sockaddr_in *)(res->ai_addrlen))->sin_addr,
-					opcode, &length);
+	  sendline =
+	    make_icp_sendline (url,
+			       &((struct sockaddr_in *) (res->ai_addrlen))->
+			       sin_addr, opcode, &length);
 	}
       else
 	{
@@ -553,17 +554,18 @@ main (argc, argv)
       /*
        * Open a socket.
        */
-      if ((sockfd = socket (res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
+      if ((sockfd =
+	   socket (res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
 	err_sys ("Can't open socket");
       if (udp)
 	{
 	  struct addrinfo hints2, *res2;
 
-	  memset(&hints2, 0, sizeof(hints2));
+	  memset (&hints2, 0, sizeof (hints2));
 	  hints2.ai_family = res->ai_family;
 	  hints2.ai_flags = AI_PASSIVE;
 	  hints2.ai_socktype = SOCK_DGRAM;
-	  error = getaddrinfo(NULL, "0", &hints2, &res2);
+	  error = getaddrinfo (NULL, "0", &hints2, &res2);
 	  if (error)
 	    {
 	      err_sys ("getaddrinfo error");
@@ -719,7 +721,7 @@ main (argc, argv)
 	  if (ttcp)
 	    {
 	      if (sendto (sockfd, sendline, n, MSG_EOF,
-		   res->ai_addr, res->ai_addrlen) != n)
+			  res->ai_addr, res->ai_addrlen) != n)
 		err_sys ("sendto error on socket");
 	      if (verbose)
 		{
