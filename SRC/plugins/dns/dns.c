@@ -59,13 +59,12 @@ nsError (error, domain)
 void
 dns_usage (const char *msg)
 {
-  if (msg)
-    {
-      fprintf (stderr, "Error: %s\n", msg);
-    }
-  poptPrintUsage (dns_poptcon, stderr, 0);
-  fprintf (stderr, "  request\n");
-  exit (1);
+	if (msg) {
+		fprintf(stderr, "Error: %s\n", msg);
+	}
+	poptPrintUsage(dns_poptcon, stderr, 0);
+	fprintf(stderr, "  request\n");
+	exit(1);
 }
 
 char *
@@ -111,7 +110,7 @@ init (const int argc, const char **argv)
     }
   else
     {
-      upper_type_name = to_upper (type_name);
+      upper_type_name = (char *) to_upper (type_name);
       /*
        * TODO: a better algorithm. Use dns_rdatatype_fromtext in
        * BIND ?
@@ -181,8 +180,8 @@ start (struct addrinfo *res)
   else if (name_server_sockaddr.sa_family == AF_INET6)
     {
 #ifdef HAVE_RES_EXT
-      (void) memcpy (_res_ext.nsaddr_list, &name_server_sockaddr_in6,
-		     sizeof (struct sockaddr_in6));
+		/* TODO: completely broken, dioes not work. Check in Stevens */
+		(void)memcpy(_res_ext.nsaddr_list, &name_server_sockaddr_in6, sizeof(struct sockaddr_in6));
 #endif
     }
   _res.nscount = 1;
