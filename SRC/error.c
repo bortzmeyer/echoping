@@ -26,9 +26,9 @@ err_ret (va_alist)
   va_list args;
   char *fmt;
 
-  va_start (args); /* TODO: use stdarg, otherwise, on *some*
-  platforms: "macro `va_start' used with just one arg" because OpenSSL
-  includes stdarg. */
+  va_start (args);		/* TODO: use stdarg, otherwise, on *some*
+				   platforms: "macro `va_start' used with just one arg" because OpenSSL
+				   includes stdarg. */
   fmt = va_arg (args, char *);
   vfprintf (stderr, fmt, args);
   va_end (args);
@@ -98,7 +98,9 @@ err_sys (va_alist)
 void
 usage ()
 {
-  fprintf (stderr, "Usage: %s [-v] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-S] server-name[:port]\n", progname);
+  fprintf (stderr,
+	   "Usage: %s [-v] [-t timeout] [-c] [-d] [-u] [-s size] [-n number] [-w delay] [-h url] [-S] server-name[:port]\n",
+	   progname);
   exit (1);
 }
 
