@@ -1,7 +1,8 @@
-echoping now uses a numbering scheme analog to the
-Linux kernel one's. Even versions like 2.2 are stable (or supposed to),
-odd versions like 2.1 are unstable, beta.
+3.0.0
 
+	* Autoconf/automake support
+	* Fix a bug in ICP timeout
+	  
 2.2.1 : 
         Portability fixes
 

@@ -93,7 +93,12 @@ recv_icp (sockfd, buf, retcode)
 
   nr = recvfrom (sockfd, buf, DEFLINE, 0,
 		 (struct sockaddr *) 0, (int *) 0);
-  /* BUG: we should test the return code, see if there was a timeout, etc */
+  if (nr < 0) {      
+    if (timeout_flag)
+      err_quit ("Timeout while reading");
+    else
+      err_sys ("No reply from ICP proxy server"); 
+  }
   opcode = headerp->opcode;
   length = ntohs (headerp->length);
   sprintf (retcode, "ICP reply: \42%s\42", icp_op_code[opcode]);

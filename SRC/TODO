@@ -3,7 +3,6 @@ machines exist.
 
 TCP timeout with long packets seem to confuse Cisco routers.
 
-ICP always replies even when timeouting. Bug 108577
 
 
 $Id$
