@@ -25,6 +25,7 @@ echoping_ldap \- echoping plugin which connects to a LDAP server
 .B hostname
 .RI [-b base]
 .RI [-r request]
+.RI [-s scope]
 .RI [-p port]
 .SH DESCRIPTION
 .PP
@@ -39,6 +40,9 @@ The request to the LDAP server, in LDAP filter language. By default (objectclass
 .TP
 .B \-b base
 Base of the search, for instance "dc=current,dc=bugs,dc=debian,dc=org"
+.TP
+.B \-s scope
+Scope of the search, "sub", "one" or "base"
 .TP
 .B \-p port
 TCP port to use
