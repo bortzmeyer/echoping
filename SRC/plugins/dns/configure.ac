@@ -15,11 +15,13 @@ dnl Some Unices has res_init but has it renamed in libc as something else so we
 dnl must include <resolv.h> to get the redefinition. (Stolen from rsync)
 dnl autoconf AC_CHECK_FUNCS does not allow headers to be easily included :-(
 	[AC_MSG_CHECKING([$ac_func again by including <resolv.h>])
-	 LIBS=-lresolv AC_TRY_LINK([#include <resolv.h>
+	 AC_TRY_LINK([#include <resolv.h>
                      ],
 		[$ac_func();],
 		[AC_MSG_RESULT([yes])],
-		[AC_MSG_WARN([No DNS resolver development environment found, not building this plugin]) && DNS_BUILD=0]
+                [AC_MSG_CHECKING([$ac_func again by using -lresolv]) 
+                 LIBS=-lresolv AC_CHECK_FUNCS($ac_func,,
+		[AC_MSG_WARN([No DNS resolver development environment found, not building this plugin]) && DNS_BUILD=0])]
          	)])
 fi
 
