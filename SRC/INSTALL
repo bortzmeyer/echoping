@@ -16,12 +16,6 @@ TTCP
 T/TCP support if your system supports it (FreeBSD does). See 
    <http://www.noao.edu/~rstevens/ttcp.html>
 
-USE_SIGACTION
-Use sigaction instead of signal. On purely BSD systems, such as SunOS or
-FreeBSD, this is necessary because we need to change the semantics of
-signals. On some systems (Irix, Solaris), do not use this option, because
-it will prevent echoping to compile (this is a bug).
-
 
 If 'echoping -h' fails with "tcp_open: unknown service: http/tcp", add
 "http" to the services database (typically /etc/services or a NIS map).

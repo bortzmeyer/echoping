@@ -1,6 +1,14 @@
-/*
- * Definitions for TCP and UDP client/server programs. 
- */
+/* Settings you can change */
+
+#define DEFLINE 256
+#define MAXLINE 65535
+#define UDPMAX 65535
+#ifdef HTTP
+#define MAXTOREAD 150000
+#endif
+#define MAXNUMBER 20
+
+/* Settings you should not change */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -46,6 +54,11 @@ extern char *sys_errlist[];
 #endif
 #ifdef DECL_SYS_NERR
 extern int sys_nerr;
+#endif
+
+/* If we have it, use it */
+#ifdef HAVE_SIGACTION
+#define USE_SIGACTION 1
 #endif
 
 struct timeval null_timeval;
@@ -104,14 +117,6 @@ int read_from_server ();
 #endif
 #endif
 
-
-#define DEFLINE 256
-#define MAXLINE 65535
-#define UDPMAX 65535
-#ifdef HTTP
-#define MAXTOREAD 150000
-#endif
-#define MAXNUMBER 20
 
 extern char *progname;
 

@@ -1,3 +1,6 @@
+dnl Macros beginning with CF_ stolen from Lynx
+dnl Thanks to "T.E.Dickey" <dickey@clark.net>
+
 dnl ---------------------------------------------------------------------------
 dnl Make an uppercase version of a variable
 dnl $1=uppercase($2)

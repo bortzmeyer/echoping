@@ -6,4 +6,3 @@ echoping_LDADD =
 
 
 
-
