@@ -811,9 +811,11 @@ main (argc, argv)
 	}
       /* That's all, folks */
       if (http) {
+#ifdef OPENSSL
 	if (ssl) 
 	  SSL_shutdown (channel.ssl);
 	else
+#endif
 	  fclose (channel.fs);
       }
       close (sockfd);
