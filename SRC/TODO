@@ -38,6 +38,21 @@ messages, because they expect you to start to read right now.
 
 Make FLUSH a configure-able option.
 
+--------------------------------- 
+
+New protocols (all with a configure option to enable/disable them
+since most of them would require an external library)
+
+* DNS (dig performs some of the functions of echoping but not all: it
+  does not set the return code, it cannot repeat a query, etc)
+
+* whois
+
+* LDAP
+
+* PostgreSQL 
+
+
 ---------------------------------
 
 Long-term wishes (will need much more work):
