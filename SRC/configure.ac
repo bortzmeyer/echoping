@@ -1,8 +1,9 @@
 dnl $Id$
 
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(echoping.h)
+
 m4_include(configure-common.ac)
+AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
 dnl User options

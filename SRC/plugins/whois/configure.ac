@@ -1,7 +1,7 @@
 dnl $Id$
 
-AC_INIT(whois.c)
 m4_include([../../configure-common.ac])
+AM_INIT_AUTOMAKE(foreign)
 AC_CONFIG_HEADERS(config.h)
 
 m4_include([../configure-plugins.ac])

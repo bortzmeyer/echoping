@@ -1,7 +1,7 @@
 dnl $Id$
 
-AC_INIT(random.c)
 m4_include(../../configure-common.ac)
+AM_INIT_AUTOMAKE(foreign)
 AC_CONFIG_HEADERS(config.h)
 
 RANDOM_BUILD=1

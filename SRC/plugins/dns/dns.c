@@ -142,7 +142,7 @@ execute ()
   int response_length;		/* buffer length */
   if ((response_length = res_query (request,	/* the domain we care about   */
 				    C_IN,	/* Internet class records     */
-				    type,	/* Look up name server records */
+				    type,	
 				    (u_char *) & response,	/*response buffer */
 				    sizeof (response)))	/*buffer size    */
       < 0)
