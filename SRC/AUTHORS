@@ -17,6 +17,9 @@ Samuel Tardieu <sam@rfc1149.net> for the SMTP code.
 Pierre-Yves Lochou <lochou@ilog.fr> for a lot of testing, debugging
 and porting.
 
+Bertrand Petit <elrond@phoe.frmug.org> for a lot of testing, debugging
+and useful comments and advices.
+
 Glen Turner <glen.turner@aarnet.edu.au> for the Type Of Service code.
 
 Munechika Sumikawa <sumikawa@ebina.hitachi.co.jp>, from KAME, for the
