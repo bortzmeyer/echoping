@@ -526,7 +526,8 @@ main (argc, argv)
 #endif
 
 #ifdef LIBIDN
-  /* Check if it is an address or a name (libidn will have trouble with IPv6 addresses otherwise) */
+  /* Check if it is an address or a name (libidn will have trouble with 
+     IPv6 addresses otherwise) */
   memset (&hints_numeric, 0, sizeof (hints_numeric));
   hints_numeric.ai_family = family;
   hints_numeric.ai_flags = AI_NUMERICHOST;
@@ -537,7 +538,11 @@ main (argc, argv)
 	   idna_to_ascii_8z (utf8_server, &ace_server,
 			     IDNA_USE_STD3_ASCII_RULES)) != IDNA_SUCCESS)
 	{
-	  err_quit ("IDN error for host: %s %d", server, result);
+	  if (result == IDNA_CONTAINS_LDH) 
+	    err_quit ("Illegal name for host: %s", server); /* foo@bar or 
+                                                               similar errors */
+	  else
+	    err_quit ("IDN error for host: %s %d", server, result);
 	}
       if (strcmp (utf8_server, ace_server))
 	{
