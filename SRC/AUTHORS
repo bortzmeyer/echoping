@@ -25,6 +25,9 @@ adaptation to the new API, which allows IPv6.
 Luca Deri <deri@ntop.org> for the patch separating kernel (TCP) and
 application latency.
 
+SourceForge for the very good environment to work with. SourceForge
+changed the life of many free software programmers!
+
 The Pasteur Institute because the initial work was done when working
 on the French national Web cache project, while being an employee of
 the Institute.
