@@ -112,13 +112,11 @@ typedef union _CHANNEL
 }
 CHANNEL;
 
-#if __sparc__ && __GNUC__
-/* There is a bug in gcc 2.95 and gcc 3.3 on UltraSparc platforms, that is triggered when you give addresses of shorts to the popt library. See
-   for instance Debian bug #254322. Alignment bug? */
+/* Do not use "short" for "boolean" because popt does not know this
+   type. On a little-endian machine without alignment issues, it may
+   work but not, for instance, on UltraSparc platforms. See for
+   instance Debian bug #254322. */
 typedef unsigned int boolean;
-#else
-typedef unsigned int boolean;
-#endif
 
 struct result
 {
