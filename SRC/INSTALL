@@ -1,17 +1,20 @@
 echoping appears to compile and run at least on Tru64 (ex-Digital
-Unix, ex-OSF/1), Solaris, Linux, SunOS, FreeBSD, IRIX and Ultrix. You
-do not have to be root to install it.
+Unix, ex-OSF/1), Solaris, Linux, SunOS, FreeBSD, NetBSD, IRIX and
+Ultrix. You do not have to be root to install it.
 
 Just type "./configure", then "make", and then (as root if necessary),
 "make install".
 
 "configure" has some options: 
 --disable-http (suppress the HTTP support)
+--disable-smtp (suppress the SMTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
 --disable-ttcp  (suppress the T/TCP support which is enabled only if 
          your system supports it - FreeBSD does. See 
          <http://www.kohala.com/start/ttcp.html>)
 
+Standard "autoconf/configure" options are supported such as --prefix
+to set the installation root directory.
 
 If 'echoping -h' fails with "tcp_open: unknown service:
 undefined:use_:80/tcp",it means configure was not able to find a port

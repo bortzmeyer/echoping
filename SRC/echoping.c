@@ -30,10 +30,10 @@ unsigned int successes, attempts = 0;
 unsigned int size = DEFLINE;
 unsigned int j = 0;
 struct result
-  {
-    unsigned short valid;
-    struct timeval timevalue;
-  };
+{
+  unsigned short valid;
+  struct timeval timevalue;
+};
 struct result results[MAXNUMBER];
 struct timeval good_results[MAXNUMBER];
 extern int tvcmp ();
@@ -54,12 +54,12 @@ main (argc, argv)
   struct sockaddr_in serv_addr;
   struct sockaddr_in udp_cli_addr;	/* client's Internet socket
 					 * addr */
-  struct servent *sp;
+  struct servent *sp = NULL;
   int verbose = FALSE;
   char *server_address;
   u_int addr;
   struct in_addr *ptr;
-  int n, nr;
+  int n, nr = 0;
   char *sendline, recvline[MAXLINE + 1];
 #ifdef ICP
   char retcode[DEFLINE];
@@ -88,6 +88,7 @@ main (argc, argv)
   char *port_name = ECHO_TCP_PORT;
   unsigned short port_to_use = USE_ECHO;
   unsigned short http = 0;
+  unsigned short smtp = 0;
   unsigned short udp = 0;
   unsigned short icp = 0;
 #ifdef ICP
@@ -116,7 +117,7 @@ main (argc, argv)
       results[i].valid = 0;
     }
   progname = argv[0];
-  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:")) != EOF)
+  while ((ch = getopt (argc, argv, "vs:n:w:dch:i:rut:f:S")) != EOF)
     {
       switch (ch)
 	{
@@ -155,6 +156,11 @@ main (argc, argv)
 	  fill = *optarg;
 	  fill_requested = 1;
 	  break;
+	case 'S':
+	  port_name = "smtp";
+	  port_to_use = USE_SMTP;
+	  smtp = 1;
+	  break;
 	case 's':
 	  size = atoi (optarg);
 	  if (size > MAXLINE)
@@ -166,8 +172,7 @@ main (argc, argv)
 	    }
 	  if (size <= 0)
 	    {
-	      (void) fprintf (stderr,
-			      "%s: illegal packet size.\n", progname);
+	      (void) fprintf (stderr, "%s: illegal packet size.\n", progname);
 	      exit (1);
 	    }
 	  size_requested = 1;
@@ -177,8 +182,7 @@ main (argc, argv)
 	  timeout_requested = 1;
 	  if (size <= 0)
 	    {
-	      (void) fprintf (stderr,
-			      "%s: illegal timeout.\n", progname);
+	      (void) fprintf (stderr, "%s: illegal timeout.\n", progname);
 	      exit (1);
 	    }
 	  break;
@@ -187,14 +191,15 @@ main (argc, argv)
 	  if (number > MAXNUMBER)
 	    {
 	      (void) fprintf (stderr,
-			 "%s: number of iterations too large, max is %d.\n",
+			      "%s: number of iterations too large, max is %d.\n",
 			      progname, MAXNUMBER);
 	      exit (1);
 	    }
 	  if (number <= 0)
 	    {
 	      (void) fprintf (stderr,
-			   "%s: illegal number of iterations.\n", progname);
+			      "%s: illegal number of iterations.\n",
+			      progname);
 	      exit (1);
 	    }
 	  break;
@@ -213,10 +218,12 @@ main (argc, argv)
 	  usage ();
 	}
     }
-  if (udp && ((port_to_use == USE_CHARGEN) || (port_to_use == USE_HTTP)))
+  if (udp && ((port_to_use == USE_CHARGEN) ||
+	      (port_to_use == USE_HTTP) || (port_to_use == USE_SMTP)))
     {
       (void) fprintf (stderr,
-	     "%s: I don't know how to use this port with UDP.\n", progname);
+		      "%s: I don't know how to use this port with UDP.\n",
+		      progname);
       exit (1);
     }
 /*  
@@ -229,10 +236,11 @@ main (argc, argv)
    exit (1);
    }
  */
-  if (http && (fill_requested))
+  if ((http || smtp) && (fill_requested))
     {
       (void) fprintf (stderr,
-	     "%s: Filling incompatible with HTTP connections.\n", progname);
+		      "%s: Filling incompatible with HTTP connections.\n",
+		      progname);
       exit (1);
     }
 #ifndef USE_TTCP
@@ -251,6 +259,14 @@ main (argc, argv)
       exit (1);
     }
 #endif
+#ifndef SMTP
+  if (smtp)
+    {
+      (void) fprintf (stderr,
+		      "%s: Not compiled with SMTP support.\n", progname);
+      exit (1);
+    }
+#endif
 #ifndef ICP
   if (icp)
     {
@@ -259,10 +275,11 @@ main (argc, argv)
       exit (1);
     }
 #endif
-  if (http && size_requested)
+  if ((http || smtp) && size_requested)
     {
       (void) fprintf (stderr,
-		      "%s: HTTP and message size specification are incompatible.\n", progname);
+		      "%s: %s and message size specification are incompatible.\n",
+		      http ? "HTTP" : "SMTP", progname);
       exit (1);
     }
   if (udp && ttcp)
@@ -313,8 +330,8 @@ main (argc, argv)
 	  err_quit ("gethostbyname error for host: %s %s",
 		    server, sys_err_str ());
 	}
-      server_address = *(hostptr->h_addr_list);		/* First item of the
-							 * list */
+      server_address = *(hostptr->h_addr_list);	/* First item of the
+						 * list */
       /*
        * addr = (u_long) *server_address; 
        */
@@ -329,7 +346,7 @@ main (argc, argv)
       ptr = (struct in_addr *) malloc (sizeof (struct in_addr));
       ptr->s_addr = addr;
     }
-  if (!http && !icp)			/* Already find */
+  if (!http && !icp)		/* Already find */
     {
       if (!udp)
 	{
@@ -338,7 +355,7 @@ main (argc, argv)
 	      err_quit ("tcp_open: unknown service: %s/tcp", port_name);
 	    }
 	}
-      else 
+      else
 	{
 	  if ((sp = getservbyname (port_name, "udp")) == NULL)
 	    {
@@ -370,6 +387,13 @@ main (argc, argv)
     }
   else
 #endif
+#ifdef SMTP
+  if (smtp)
+    {
+      sendline = "QUIT\r\n";
+    }
+  else
+#endif
 #ifdef ICP
   if (icp)
     {
@@ -379,7 +403,7 @@ main (argc, argv)
 #endif
   if (!fill_requested)
     {
-      sendline = random_string (size); 
+      sendline = random_string (size);
     }
   else
     {
@@ -421,14 +445,16 @@ main (argc, argv)
 	{
 	  if (tcp)
 	    {
-	      printf ("Trying to connect to internet address %s %s to transmit %u bytes...\n",
-		      inet_ntoa (*ptr), (port == 0 ? "" : text_port), n);
+	      printf
+		("Trying to connect to internet address %s %s to transmit %u bytes...\n",
+		 inet_ntoa (*ptr), (port == 0 ? "" : text_port), n);
 	    }
 #ifdef ICP
 	  if (icp)
 	    {
-	      printf ("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
-		      length, inet_ntoa (*ptr));
+	      printf
+		("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
+		 length, inet_ntoa (*ptr));
 	    }
 #endif
 	  else
@@ -503,13 +529,15 @@ main (argc, argv)
 	  /* No initial connection */
 	}
       if ((port_to_use == USE_ECHO) || (port_to_use == USE_DISCARD) ||
-	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP))
+	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
+	  (port_to_use == USE_SMTP))
 	{
 #ifdef USE_TTCP
 	  if (ttcp)
 	    {
 	      if (sendto (sockfd, sendline, n, MSG_EOF,
-		   (struct sockaddr *) &serv_addr, sizeof (serv_addr)) != n)
+			  (struct sockaddr *) &serv_addr,
+			  sizeof (serv_addr)) != n)
 		err_sys ("sendto error on socket");
 	      if (verbose)
 		{
@@ -521,16 +549,17 @@ main (argc, argv)
 	  if (!udp)
 	    {
 	      /* Write something to the server */
-	      if (writen (sockfd, sendline, n) != n) {
-		if ((nr < 0 || nr != n) && timeout_flag)
-		  {
-		    nr = n;
-		    printf ("Timeout while writing\n");
-		    continue;
-		  }
-		else
-		  err_sys ("writen error on socket");
-	      }
+	      if (writen (sockfd, sendline, n) != n)
+		{
+		  if ((nr < 0 || nr != n) && timeout_flag)
+		    {
+		      nr = n;
+		      printf ("Timeout while writing\n");
+		      continue;
+		    }
+		  else
+		    err_sys ("writen error on socket");
+		}
 	    }
 	  else
 	    {
@@ -569,21 +598,28 @@ main (argc, argv)
 	    }
 	}
       if ((port_to_use == USE_ECHO) || (port_to_use == USE_CHARGEN) ||
-	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP))
+	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
+	  (port_to_use == USE_SMTP))
 	{
 	  if (!udp)
 	    {
-	      if ((fs = fdopen (sockfd, "r")) == NULL) 
+	      if ((fs = fdopen (sockfd, "r")) == NULL)
 		err_sys ("Cannot fdopen");
-	      if (!http)
+	      if (!http && !smtp)
 		{
 		  /* Read from the server */
 		  nr = readline (fs, recvline, n, stop_at_newlines);
 		}
 #ifdef HTTP
-	      else
+	      else if (http)
 		{
 		  nr = read_from_server (fs);
+		}
+#endif
+#ifdef SMTP
+	      else if (smtp)
+		{
+		  nr = smtp_read_response_from_server (fs);
 		}
 #endif
 	    }
@@ -643,12 +679,13 @@ main (argc, argv)
 		}
 #endif
 	    }
-	  if (!http && !icp)
+	  if (!http && !icp && !smtp)
 	    {
 	      if ((nr < 0 || nr != n) && timeout_flag)
 		/* if ((nr < 0 || nr != n) && (errno == EINTR) && timeout_flag) */
 		{
-		  printf ("Timeout while reading (%d byte(s) read)\n", (nr == -1) ? 0 : nr);
+		  printf ("Timeout while reading (%d byte(s) read)\n",
+			  (nr == -1) ? 0 : nr);
 		  nr = n;
 #ifdef FLUSH_OUTPUT
 		  if (fflush ((FILE *) NULL) != 0)
@@ -659,14 +696,16 @@ main (argc, argv)
 		  continue;
 		}
 	      if (nr < 0 || nr != n)
-		err_sys ("readline error: %d bytes read, %d bytes requested", nr, n);
+		err_sys ("readline error: %d bytes read, %d bytes requested",
+			 nr, n);
 	    }
 	  else
 	    /* This is HTTP */
 	    {
 	      if ((nr < 0) && (errno == EINTR) && (timeout_flag))
 		{
-		  printf ("Timeout while reading (%d byte(s) read)\n", (nr == -1) ? 0 : nr);
+		  printf ("Timeout while reading (%d byte(s) read)\n",
+			  (nr == -1) ? 0 : nr);
 #ifdef FLUSH_OUTPUT
 		  if (fflush ((FILE *) NULL) != 0)
 		    {
@@ -675,9 +714,10 @@ main (argc, argv)
 #endif
 		  continue;
 		}
-	      if (nr < 0) {
-		err_ret ("Error reading HTTP reply");
-	      }
+	      if (nr < 0)
+		{
+		  err_ret ("Error reading HTTP reply");
+		}
 	    }
 	  if (verbose)
 	    printf ("%d bytes read from server.\n", nr);
@@ -773,12 +813,15 @@ printstats ()
 	printf ("Warning: %d message(s) lost (%d %%)\n", attempts - successes,
 		((attempts - successes) * 100) / attempts);
       printf ("Minimum time: %d.%06d seconds (%.0f bytes per sec.)\n",
-      (int) min.tv_sec, (int) min.tv_usec, (double) size / tv2double (min));
+	      (int) min.tv_sec, (int) min.tv_usec,
+	      (double) size / tv2double (min));
       printf ("Maximum time: %d.%06d seconds (%.0f bytes per sec.)\n",
-      (int) max.tv_sec, (int) max.tv_usec, (double) size / tv2double (max));
+	      (int) max.tv_sec, (int) max.tv_usec,
+	      (double) size / tv2double (max));
       tvavg (&total, successes);
       printf ("Average time: %d.%06d seconds (%.0f bytes per sec.)\n",
-	      (int) total.tv_sec, (int) total.tv_usec, (double) size / tv2double (total));
+	      (int) total.tv_sec, (int) total.tv_usec,
+	      (double) size / tv2double (total));
       /* The number of bytes/second, as printed above, is not really
          meaningful: size does not reflect the number of bytes exchanged.
          With echo, N = 2*size, with discard, N = size, with http, N = size + (response)... */
@@ -814,7 +857,8 @@ printstats ()
 	  tvavg (&median, 2);
 	}
       printf ("Median  time: %d.%06d seconds (%.0f bytes per sec.)\n",
-	      (int) median.tv_sec, (int) median.tv_usec, (double) size / tv2double (median));
+	      (int) median.tv_sec, (int) median.tv_usec,
+	      (double) size / tv2double (median));
     }
 }
 

@@ -14,6 +14,7 @@ echoping \- tests a remote host with TCP or UDP
 .RI [ -t\ number ]
 .RI [ -h\ URL ]
 .RI [ -i\ URL ]
+.RI [ -S ]
 .B hostname
 [:port]
 
@@ -65,6 +66,8 @@ servers will not understand a request for an absolute URL.
 .IP -i\ url
 Use the ICP protocol (instead of echo) for the given URL. The URL has to
 be an absolute one. This is mostly for testing Squid Web proxy/caches.
+.IP -S
+Use the SMTP protocol (instead of echo) for the given server.
 .IP -r
 Use T/TCP (if it has been compiled with it). See the INSTALL file for details.
 .IP -f\ character

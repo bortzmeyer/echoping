@@ -1,5 +1,11 @@
 /* $Id* */
 
+/* Settings you should not change -- see below for changeable ones */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /* Settings you can change */
 
 #define DEFLINE 256
@@ -8,13 +14,11 @@
 #ifdef HTTP
 #define MAXTOREAD 150000
 #endif
-#define MAXNUMBER 20
-
-/* Settings you should not change */
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
+#ifdef SMTP
+#define MAXSMTP 1024
+#define MAXSMTPLINES 30
 #endif
+#define MAXNUMBER 20
 
 /* Probably too many inclusions but this is to keep 'gcc -Wall' happy... */
 #include	<stdio.h>
@@ -80,6 +84,7 @@ struct timeval max_timeval;
 #define	USE_CHARGEN	3
 #define	USE_HTTP	4
 #define USE_ICP		5
+#define USE_SMTP        6
 
 #define CHARGENERATED " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefg";
 
@@ -122,6 +127,9 @@ int read_from_server ();
 #endif
 #endif
 
+#ifdef SMTP
+int smtp_read_response_from_server ();
+#endif
 
 extern char *progname;
 

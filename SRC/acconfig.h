@@ -15,6 +15,9 @@
 /* HTTP support */
 #undef HTTP 
 
+/* SMTP support */
+#undef SMTP
+
 /* ICP support */
 #undef ICP 
 

@@ -1,3 +1,7 @@
+3.1.0
+
+	* SMTP support
+	
 3.0.1 (2000-07-06)
 
 	* configure now tries to detect the name of the HTTP port
