@@ -171,6 +171,7 @@ main (argc, argv)
     {"module", 'm', POPT_ARG_STRING, &plugin_name, 'm'},
     {NULL, 0, 0, NULL, 0, NULL, NULL}
   };
+  poptContext poptcon;
 
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
@@ -191,8 +192,9 @@ main (argc, argv)
     {
       results[i].valid = 0;
     }
-  progname = (char *) argv[0];
-  poptContext poptcon = poptGetContext (NULL, argc,
+  progname = (char *) argv[0]; 
+
+  poptcon = poptGetContext (NULL, argc,
 					argv,
 					options,
 					0);
