@@ -6,6 +6,14 @@ To see a given bug (say #132001):
 
 http://sourceforge.net/bugs/?group_id=4581&func=detailbug&bug_id=132001
 
+-------------------------------------
+
+grep -i TODO *.{c,h}
+
+is interesting, too.
+
+------------------------------------
+
 Wishes:
 
 Display other calculations such as kurtosis.
