@@ -1,3 +1,6 @@
+	* Now uses getnameinfo/getaddrinfo. Two consequences:
+	   - you can compile only on a recent Unix
+	   - you have IPv6 support
 	* Now displays the standard deviation for repeated tests. Warning:
 	  this may break some scripts which parse the output of echoping.
 	
