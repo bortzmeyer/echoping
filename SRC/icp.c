@@ -1,9 +1,9 @@
+#include "echoping.h"
+
 #ifdef ICP
 
 /* Code contributed by Christian Grimm <grimm@rvs.uni-hannover.de> 
    and patched by Stephane Bortzmeyer. */
-
-#include "echoping.h"
 
 void *
 make_icp_sendline (url, shost, opcode, length)

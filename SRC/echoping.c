@@ -5,6 +5,8 @@
  * from Richard Stevens' book "Unix network programming" and Pierre Beyssac's
  * "bing" tool. 
  * 
+ * $Id$
+ *
  */
 
 char *progname;
@@ -335,14 +337,13 @@ main (argc, argv)
 	      err_quit ("tcp_open: unknown service: %s/tcp", port_name);
 	    }
 	}
-      else if (!icp)
+      else 
 	{
 	  if ((sp = getservbyname (port_name, "udp")) == NULL)
 	    {
 	      err_quit ("tcp_open: unknown service: %s/udp", port_name);
 	    }
 	}
-      /* Else ICP... */
     }
   /*
    * Fill in the structure "serv_addr" with the address of the server
@@ -519,7 +520,7 @@ main (argc, argv)
 	  if (!udp)
 	    {
 	      /* Write something to the server */
-	      if (writen (sockfd, sendline, n) != n)
+	      if (writen (sockfd, sendline, n) != n) {
 		if ((nr < 0 || nr != n) && timeout_flag)
 		  {
 		    nr = n;
@@ -528,6 +529,7 @@ main (argc, argv)
 		  }
 		else
 		  err_sys ("writen error on socket");
+	      }
 	    }
 	  else
 	    {
