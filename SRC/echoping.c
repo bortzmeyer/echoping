@@ -119,6 +119,14 @@ main (argc, argv)
   SSL_CTX *ctx = NULL;
   SSL *sslh = NULL;
 #endif
+#ifdef GNUTLS
+  gnutls_session session;
+  gnutls_certificate_credentials xcred;
+  int tls_result;
+  const int cert_type_priority[3] = { GNUTLS_CRT_X509,
+    GNUTLS_CRT_OPENPGP, 0
+  };
+#endif
 
   int priority;
   int priority_requested = 0;
@@ -328,11 +336,11 @@ main (argc, argv)
       exit (1);
     }
 #endif
-#ifndef OPENSSL
+#if ! (OPENSSL || GNUTLS)
   if (ssl)
     {
       (void) fprintf (stderr,
-		      "%s: not compiled with SSL support.\n", progname);
+		      "%s: not compiled with SSL/TLS support.\n", progname);
       exit (1);
     }
 #endif
@@ -596,6 +604,14 @@ main (argc, argv)
 	err_sys ("Cannot create a new SSL context");
     }
 #endif
+#ifdef GNUTLS
+  if (ssl)
+    {
+      gnutls_global_init ();
+      gnutls_certificate_allocate_credentials (&xcred);
+      /* gnutls_certificate_set_x509_trust_file(xcred, CAFILE, GNUTLS_X509_FMT_PEM); */
+    }
+#endif
 
   for (i = 1; i <= number; i++)
     {
@@ -792,6 +808,40 @@ main (argc, argv)
 	         things */
 	    }
 #endif
+#ifdef GNUTLS
+	  if (ssl)
+	    {
+	      tls_result = gnutls_init (&session, GNUTLS_CLIENT);
+	      if (tls_result != 0)
+		err_sys ("Cannot create a new TLS session");
+	      gnutls_set_default_priority (session);
+	      gnutls_certificate_type_set_priority (session,
+						    cert_type_priority);
+	      gnutls_credentials_set (session, GNUTLS_CRD_CERTIFICATE, xcred);
+	      gnutls_transport_set_ptr (session,
+					(gnutls_transport_ptr) sockfd);
+	      tls_result = gnutls_handshake (session);
+	      if (tls_result < 0)
+		{
+		  if ((errno == EINTR) && (timeout_flag))
+		    {
+		      printf ("Timeout while starting TLS\n");
+		      close (sockfd);
+		      continue;
+		    }
+		  else
+		    {
+		      err_sys ("Cannot start the TLS session: %s",
+			       gnutls_strerror (tls_result));
+		    }
+		}
+	      if (verbose)
+		printf ("TLS connection using \"%s\"\n",
+			gnutls_cipher_get_name (gnutls_cipher_get (session)));
+	      /* We could check the server's certificate or other funny
+	         things. See http://www.gnu.org/software/gnutls/documentation/gnutls/gnutls.html#SECTION00622000000000000000 */
+	    }
+#endif
 	}
       /* Not T/TCP */
       else
@@ -854,6 +904,29 @@ main (argc, argv)
 		    }
 		  /* printf ("DEBUG: writing %s with SSL\n", sendline); */
 		}
+#endif
+#ifdef GNUTLS
+	      else
+	      {
+		if ((rc =
+		     gnutls_record_send (session, sendline,
+					 strlen (sendline))) != n)
+		  {
+		    if ((nr < 0 || nr != n) && timeout_flag)
+		      {
+			nr = n;
+			printf ("Timeout while writing\n");
+			close (sockfd);
+			continue;
+		      }
+		    else
+		      {
+			err_sys ("gnutls_record_send error %d on socket: %s",
+				 rc, gnutls_strerror (rc));
+		      }
+		  }
+		/* printf ("DEBUG: writing %s with TLS\n", sendline); */
+	      }
 #endif
 	      /* Write something to the server */
 	      if (writen (sockfd, sendline, n) != n)
@@ -922,7 +995,12 @@ main (argc, argv)
 	      n = SSL_get_fd (sslh);
 	    }
 #endif
-
+#ifdef GNUTLS
+	  else
+	  {
+	    n = sockfd;
+	  }
+#endif
 	  FD_SET (n, &mask);
 	  if (select (n + 1, &mask, 0, 0, NULL) > 0)
 	    {
@@ -960,6 +1038,10 @@ main (argc, argv)
 		  else
 		    channel.ssl = sslh;
 #endif
+#ifdef GNUTLS
+		  else
+		  channel.tls = session;
+#endif
 		  nr = read_from_server (channel, ssl);
 		}
 #endif
@@ -969,7 +1051,6 @@ main (argc, argv)
 		  nr = smtp_read_response_from_server (files);
 		}
 #endif
-
 
 	    }
 	  else
@@ -1083,6 +1164,13 @@ main (argc, argv)
 	    SSL_shutdown (channel.ssl);
 	  else
 #endif
+#ifdef GNUTLS
+	  if (ssl)
+	    {
+	      gnutls_global_deinit ();
+	    }
+	  else
+#endif
 	    fclose (channel.fs);
 	}
       close (sockfd);
@@ -1153,6 +1241,14 @@ main (argc, argv)
 	    {
 	      /* SSL_clear (sslh); No, we have to free. Bug #130151 */
 	      SSL_free (sslh);
+	    }
+#endif
+#ifdef GNUTLS
+	  if (ssl)
+	    {
+	      gnutls_bye (channel.tls, GNUTLS_SHUT_RDWR);
+	      gnutls_deinit (session);
+	      /* gnutls_certificate_free_credentials(xcred); */
 	    }
 #endif
 	}

@@ -85,6 +85,9 @@
 /* SSL (crypto) */
 #undef OPENSSL
 
+/* TLS (crypto) */
+#undef GNUTLS
+
 /* Port name for HTTP. Unused. */
 #undef HTTP_TCP_PORT
 

@@ -1,6 +1,6 @@
 dnl $Id$
 
-dnl Macros beginning with CF_ stolen from Lynx
+dnl Macros beginning with CF_ (mostly) stolen from Lynx
 dnl Thanks to "T.E.Dickey" <dickey@clark.net>
 
 dnl ---------------------------------------------------------------------------
@@ -177,6 +177,14 @@ AC_CHECK_LIB(ssl,SSL_CTX_new,
 [LIBS="${LIBS} -lssl -lcrypto"],
 [AC_ERROR([Get the OpenSSL library (http://www.openssl.org/)])], dnl
 -lcrypto
+)])
+
+# Check GNU TLS
+AC_DEFUN([CF_LIB_GNUTLS],
+[
+AC_CHECK_LIB(gnutls,gnutls_global_init,
+[LIBS="${LIBS} `libgnutls-config --libs`"],
+[AC_ERROR([Get the GNU TLS library (http://www.gnutls.org/)])], dnl
 )])
 
 dnl experimental

@@ -76,7 +76,17 @@ read_from_server (CHANNEL fs, short ssl)
 	    }
 	}
 #endif
-      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr);  */
+#ifdef GNUTLS
+      else
+      {
+	nr = TLS_readline (fs.tls, big_recvline, MAXTOREAD, TRUE);
+	if (nr == -1)
+	  {
+	    err_ret ("TLS_readline error: %s", gnutls_strerror (nr));
+	  }
+      }
+#endif
+      /* printf ("DEBUG: reading \"%s\"\n (%d chars)\n", big_recvline, nr); */
       /* HTTP replies should be separated by CR-LF. Unfortunately, some
          servers send only CR :-( */
       body = ((nr == 2) || (nr == 1));	/* Empty line CR-LF seen */
@@ -104,6 +114,10 @@ read_from_server (CHANNEL fs, short ssl)
 #ifdef OPENSSL
   else
     nr = SSL_readline (fs.ssl, big_recvline, MAXTOREAD, FALSE);
+#endif
+#ifdef GNUTLS
+  else
+  nr = TLS_readline (fs.tls, big_recvline, MAXTOREAD, FALSE);
 #endif
   /* printf ("DEBUG: reading body \"%s\"\n (%d chars)\n", big_recvline, nr);  */
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */

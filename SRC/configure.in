@@ -3,7 +3,7 @@ dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(echoping, 5.0.2-BETA)
+AM_INIT_AUTOMAKE(echoping, 5.1-BETA)
 AM_CONFIG_HEADER(config.h)
 
 dnl User options
@@ -40,6 +40,21 @@ AC_ARG_WITH(ssl,
 	SSLROOT=$withval
 	LDFLAGS="${LDFLAGS} -L$SSLROOT/lib"
         CPPFLAGS="${CPPFLAGS} -I$SSLROOT/include"  
+   fi
+ fi],
+ dnl Default: disable it
+)
+AC_ARG_WITH(gnutls,
+ [--with-gnutls[=DIR]   SSL/TLS crypt support (needs GNU TLS), the argument DIR should not be necessary],dnl
+ [if test "$withval" != "no"; then
+   AC_DEFINE(GNUTLS)
+   GNUTLS=1
+   CPPFLAGS="${CPPFLAGS} `libgnutls-config --cflags`"
+   LDFLAGS="${LDFLAGS} `libgnutls-config --libs`"
+   if test "$withval" != "yes"; then
+	GNUTLSROOT=$withval
+	LDFLAGS="${LDFLAGS} -L$GNUTLSROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$GNUTLSROOT/include"  
    fi
  fi],
  dnl Default: disable it
@@ -92,8 +107,14 @@ AC_CHECK_FUNCS(getaddrinfo getnameinfo inet_ntop, ,
 AC_CHECK_FUNCS(gettimeofday socket sigaction, , AC_MSG_ERROR(Missing mandatory function))
 AC_CHECK_FUNCS(usleep)
 
+if test "$OPENSSL" = "1" && test "$GNUTLS" = "1"; then
+AC_MSG_ERROR([Choose OpenSSL or GNU TLS but not both])
+fi
 if test "$OPENSSL" = "1"; then
 CF_LIB_OPENSSL
+fi
+if test "$GNUTLS" = "1"; then
+CF_LIB_GNUTLS
 fi
 
 dnl T/TCP
@@ -199,6 +220,7 @@ echo "Configuration of echoping:"
 DISPLAY_SETTING(HTTP)
 DISPLAY_SETTING(ICP)
 DISPLAY_SETTING(OPENSSL)
+DISPLAY_SETTING(GNUTLS)
 DISPLAY_SETTING(SMTP)
 DISPLAY_SETTING(TTCP)
 DISPLAY_SETTING(TOS)

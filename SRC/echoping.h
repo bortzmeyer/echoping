@@ -45,6 +45,10 @@
 #include <openssl/rand.h>
 #endif /* OpenSSL */
 
+#ifdef GNUTLS
+#include <gnutls/gnutls.h>
+#endif
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -98,6 +102,9 @@ typedef union _CHANNEL
 #ifdef OPENSSL
   SSL *ssl;
 #endif
+#ifdef GNUTLS
+  gnutls_session tls;
+#endif
 }
 CHANNEL;
 
@@ -148,6 +155,9 @@ int writen ();
 int readline ();
 #ifdef OPENSSL
 int SSL_readline ();
+#endif
+#ifdef GNUTLS
+int TLS_readline ();
 #endif
 /* util.c */
 char *random_string ();
