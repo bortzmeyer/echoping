@@ -10,4 +10,5 @@ echo " echoping's fault: it may be a network problem."
 
 ./echoping -h / -v ns3.nic.fr
 
+./echoping -v -h / "[3ffe:b00:c18:1::10]:80" # RFC 2732
 

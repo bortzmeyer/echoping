@@ -1,12 +1,13 @@
 /*
- * echoping : uses the TCP echo service to measure (roughly) response times.
+ * echoping : uses the TCP echo (or other TCP or UDP protocols)
+ * service to measure (roughly) response times.
  * 
  * Written by Stephane Bortzmeyer <bortz@users.sourceforge.net>. See
  * the AUTHORS file for other contributors. 
  * 
  * $Id$
- * 
- */
+ *
+ *  */
 
 
 char *progname;
@@ -121,7 +122,7 @@ main (argc, argv)
   int priority_requested = 0;
   int tos;
   int tos_requested = 0;
-  char *arg_end;
+  char *arg_end, *p;
 
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
@@ -415,6 +416,19 @@ main (argc, argv)
       printf ("\nThis is %s, version %s.\n\n", progname, VERSION);
     }
   server = argv[0];
+  if (!http && !icp)
+    {
+      for (p = server; *p && (*p != ':'); p++)
+	{
+	}
+      if (*p && (*p == ':'))
+	{
+	  (void) fprintf (stderr,
+			  "%s: The syntax hostname:port is only for HTTP or ICP\n",
+			  progname);
+	  exit (1);
+	}
+    }
   signal (SIGINT, interrupted);
   memset (&hints, 0, sizeof (hints));
   hints.ai_family = family;
@@ -423,12 +437,12 @@ main (argc, argv)
 #ifdef HTTP
   if (http || icp)
     {
-      char *text_port = NULL, *p;
+      char *text_port = NULL;
 
       if (*server == '[')
 	{			/* RFC 2732 */
 	  server++;
-	  for (p = server; *p != ']'; p++)
+	  for (p = server; *p && *p != ']'; p++)
 	    {
 	    }
 	  p++;
@@ -441,9 +455,19 @@ main (argc, argv)
 	    }
 	  else
 	    {
-	      /* No port number */
 	      p--;
-	      *p = 0;
+	      if (*p == ']')
+		{
+		  /* No port number */
+		  *p = 0;
+		}
+	      else
+		{
+		  (void) fprintf (stderr,
+				  "%s: Invalid syntax for IPv6 address.\n",
+				  progname);
+		  exit (1);
+		}
 	    }
 	}
       else
