@@ -427,9 +427,12 @@ main (argc, argv)
   server = argv[0];
 #ifdef IDN
   locale_server = server;
-  /* TODO: segfaults if the locale is invalid */
   utf8_server = stringprep_locale_to_utf8 (server);
-  server = utf8_server;
+  if (utf8_server)
+    server = utf8_server;
+  else
+    err_quit ("Cannot convert %s to UTF-8 encoding: wrong locale (%s)?",
+	      server, stringprep_locale_charset ());
 #endif
   if (!http && !icp)
     {
@@ -529,9 +532,12 @@ main (argc, argv)
     {
       err_quit ("IDN error for host: %s %d", server, result);
     }
-  if (verbose)
-    printf ("ACE name of the server: %s\n", ace_server);
-  server = ace_server;
+  if (strcmp (utf8_server, ace_server))
+    {
+      if (verbose)
+	printf ("ACE name of the server: %s\n", ace_server);
+      server = ace_server;
+    }
 #endif
   error = getaddrinfo (server, port_name, &hints, &res);
   if (error)
