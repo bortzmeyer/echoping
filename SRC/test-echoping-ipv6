@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# $Id$
+
+echo ""
+echo "Since this tests tries remote servers, a failure is not always "
+echo " echoping's fault: it may be a network problem."
+
+./echoping -h / -v www.6bone.net
+
+./echoping -h / -v ns3.nic.fr
+
+
