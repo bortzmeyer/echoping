@@ -1,7 +1,8 @@
 echoping appears to compile and run at least on Linux, FreeBSD,
-Solaris (gcc only) and Tru64. On Mac OS X, you'll probably need a
-version >= 10.2. Some versions of RedHat 7 ship with a completely
-broken C compiler (echoping displays negative times). 
+NetBSD, MacOS X, Solaris (gcc only), HP/UX and Tru64. On Mac OS X,
+you'll probably need a version >= 10.2. Some versions of RedHat 7 ship
+with a completely broken C compiler (echoping displays negative
+times).
 
 You do not have to be root to install it.
 
@@ -16,6 +17,8 @@ may not be available on your platform).
 --disable-http (suppress the HTTP support)
 --disable-smtp (suppress the SMTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
+--with-gnutls[=/where/is/gnutls] (add the SSL/TLS support, you will need 
+         the GNU TLS library <http://www.gnutls.org/>)
 --with-ssl[=/where/is/ssl] (add the SSL/TLS support, you will need 
          the OpenSSL library <http://www.openssl.org/>)
 --disable-ttcp  (suppress the T/TCP support which is enabled only if 
@@ -24,8 +27,8 @@ may not be available on your platform).
 
 There is no option to disable IPv6. echoping now uses the new (RFC
 2133) socket interface, with getnameinfo/getaddrinfo. If your system
-does not support it (Mac OS X), you have no other choices than using
-echoping 4.
+does not support it (Mac OS X <= 10.1), you have no other choices than
+using echoping 4.
 
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.

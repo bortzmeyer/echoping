@@ -1,6 +1,8 @@
-5.1.0 (NOT YET RELEASED)
+5.1.0 (2003-11-09)
 
-	* GNU TLS support (alternative to OpenSSL)
+	* GNU TLS support (alternative to OpenSSL),
+	* Small licence change,
+	* Portability fixes (MacOS X)
 	
 5.0.1 (2002-11-04)
 
