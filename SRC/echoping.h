@@ -2,7 +2,9 @@
  * Definitions for TCP and UDP client/server programs. 
  */
 
-#define VERSION "2.2.1"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 /* Probably too many inclusions but this is to keep 'gcc -Wall' happy... */
 #include	<stdio.h>
@@ -39,17 +41,11 @@
 
 /* These entities should be in errno.h but some systems do not define
    them. */
-#ifdef sun
+#ifdef DECL_SYS_ERRLIST
+extern char *sys_errlist[];
+#endif
+#ifdef DECL_SYS_NERR
 extern int sys_nerr;
-extern char *sys_errlist[];
-/* Solaris */
-#ifdef __svr4__
-/* Nothing specific yet */
-#endif  /* SVR4 */
-#endif  /* Sun */
-#ifdef _AIX
-extern char *sys_nerr[];
-extern char *sys_errlist[];
 #endif
 
 struct timeval null_timeval;

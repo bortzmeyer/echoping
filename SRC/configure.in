@@ -1,0 +1,28 @@
+dnl $Id$
+
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(echoping.h)
+AM_INIT_AUTOMAKE(echoping, 3.0.0)
+AM_CONFIG_HEADER(config.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(sys/time.h unistd.h)
+CF_SYS_ERRLIST
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_HEADER_TIME
+
+dnl Checks for library functions.
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(gettimeofday socket)
+
+AC_OUTPUT(Makefile)

@@ -36,7 +36,7 @@ struct result results[MAXNUMBER];
 struct timeval good_results[MAXNUMBER];
 extern int tvcmp ();
 
-void
+int
 main (argc, argv)
      int argc;
      char *argv[];
