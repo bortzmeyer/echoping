@@ -61,6 +61,10 @@ main (argc, argv)
   u_int addr;
   struct in_addr *ptr;
   int n, nr = 0;
+  int rc;
+#ifdef OPENSSL
+  int sslcode;
+#endif
   char *sendline, recvline[MAXLINE + 1];
 #ifdef ICP
   char retcode[DEFLINE];
@@ -451,8 +455,6 @@ main (argc, argv)
       meth = SSLv2_client_method ();
       if ((ctx = SSL_CTX_new (meth)) == NULL)
 	err_sys ("Cannot create a new SSL context");
-      if ((sslh = SSL_new (ctx)) == NULL)
-	err_sys ("Cannot initialize SSL context");
     }
 #endif
 
@@ -460,6 +462,16 @@ main (argc, argv)
     {
 
       attempts++;
+#ifdef OPENSSL
+      if (ssl)
+	/* Despite what the OpenSSL documentation says, we must
+	   allocate a new SSL structure at each iteration, otherwise,
+	   *some* SSL servers fail at the second iteration with:
+	   error:1406D0D9:SSL routines:GET_SERVER_HELLO:reuse cert type not zero 
+	   Bug #130151 */
+	if ((sslh = SSL_new (ctx)) == NULL)
+	  err_sys ("Cannot initialize SSL context");
+#endif
       if (!udp)
 	{
 	  /*
@@ -628,7 +640,7 @@ main (argc, argv)
 #ifdef OPENSSL
 	      else
 		{
-		  if (SSL_write (sslh, sendline, n) != n)
+		  if ((rc = SSL_write (sslh, sendline, n)) != n)
 		    {
 		      if ((nr < 0 || nr != n) && timeout_flag)
 			{
@@ -638,7 +650,9 @@ main (argc, argv)
 			}
 		      else
 			{
-			  err_sys ("SSL_write error on socket");
+			  sslcode = ERR_get_error ();
+			  err_sys ("SSL_write error on socket: %s",
+				   ERR_error_string (sslcode, NULL));
 			}
 		    }
 		}
@@ -810,14 +824,15 @@ main (argc, argv)
 	    printf ("%d bytes read from server.\n", nr);
 	}
       /* That's all, folks */
-      if (http) {
+      if (http)
+	{
 #ifdef OPENSSL
-	if (ssl) 
-	  SSL_shutdown (channel.ssl);
-	else
+	  if (ssl)
+	    SSL_shutdown (channel.ssl);
+	  else
 #endif
-	  fclose (channel.fs);
-      }
+	    fclose (channel.fs);
+	}
       close (sockfd);
 
       (void) gettimeofday (&newtv, (struct timezone *) NULL);
@@ -886,7 +901,8 @@ main (argc, argv)
 #ifdef OPENSSL
 	  if (ssl)
 	    {
-	      SSL_clear (sslh);
+	      /* SSL_clear (sslh); No, we have to free. Bug #130151 */
+	      SSL_free (sslh);
 	    }
 #endif
 	  sleep (wait);
@@ -897,6 +913,7 @@ main (argc, argv)
     exit (0);
   else
     exit (1);
+  /* It would be nice to clean here (SSL, etc) */
 }
 
 

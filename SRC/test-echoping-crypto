@@ -8,8 +8,13 @@ echo " echoping's fault: it may be a network problem."
 
 ./echoping -C -h / www.gandi.net
 
-./echoping -C -h / www.modssl.org
+echo ""
 
-./echoping -C -h / www.creditmutuel.fr
+# We need to iterate to catch some SSL programming errors. See bug #130151 
+./echoping -C -h / -n 2 www.modssl.org
+
+echo ""
+
+./echoping -C -h / -n 2 www.creditmutuel.fr
 
 
