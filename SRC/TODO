@@ -36,7 +36,9 @@ Since echoping writes everything to the server, then begins to read
 the reply, some echo servers will timeout if you send very long
 messages, because they expect you to start to read right now.
 
-Make FLUSH a configure-able option.
+Make FLUSH a configure-able option. It would be useful for driving
+echoping from a GUI application, for instance. Code does exist but
+untested and probably broken.
 
 --------------------------------- 
 
