@@ -28,7 +28,10 @@
 #include	<sys/socket.h>
 #include	<netinet/in.h>
 #include	<arpa/inet.h>
+#ifndef OPENSSL
+/* OpenSSL includes stdarg :-( */
 #include        <varargs.h>
+#endif
 #include        <sys/time.h>
 #include        <errno.h>
 #include        <unistd.h>
@@ -41,7 +44,9 @@
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#endif
+
+#include        <varargs.h>
+#endif /* OpenSSL */
 
 #ifndef FALSE
 #define FALSE 0
