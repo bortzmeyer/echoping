@@ -497,13 +497,11 @@ main (argc, argv)
       if (res->ai_family == AF_INET)
 	{
 	  sendline =
-	    make_icp_sendline (url,
-			       &((struct sockaddr_in *) (res->ai_addrlen))->
-			       sin_addr, opcode, &length);
+	    make_icp_sendline (url, &(res->ai_addr), opcode, &length);
 	}
       else
 	{
-	  /* TODO: echoping -v  -i http://www.pasteur.fr/ 192.134.7.250 segfaults */
+	  /* TODO: we should be able to create a ICP hostid for IPv6 addresses... */
 	  sendline = make_icp_sendline (url, (void *) NULL, opcode, &length);
 	}
     }
