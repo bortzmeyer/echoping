@@ -1,6 +1,5 @@
-echoping appears to compile and run at least on Tru64 (ex-Digital
-Unix, ex-OSF/1), Solaris, Linux, FreeBSD, NetBSD, IRIX and AI/X. You
-do not have to be root to install it.
+echoping appears to compile and run at least on Linux, FreeBSD and
+Tru64. You do not have to be root to install it.
 
 Just type "./configure", then "make", "make test" if you wish (some
 tests depend on local servers and/or Internet access, interpret with
@@ -13,11 +12,15 @@ may not be available on your platform).
 --disable-http (suppress the HTTP support)
 --disable-smtp (suppress the SMTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
---with-ssl[=/where/is/ssl] (add the SSL support, you will need 
+--with-ssl[=/where/is/ssl] (add the SSL/TLS support, you will need 
          the OpenSSL library <http://www.openssl.org/>)
 --disable-ttcp  (suppress the T/TCP support which is enabled only if 
          your system supports it - FreeBSD does. See 
          <http://www.kohala.com/start/ttcp.html>)
+
+There is no option to disable IPv6. echoping now uses the new (RFC
+2133) socket interface, with getnameinfo/getaddrinfo. If your system
+does not support it, you jave no other choices than using echoping 4.
 
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
@@ -31,6 +34,16 @@ To report a bug, email Stephane Bortzmeyer
 <bortz@users.sourceforge.net> (if you have an account at SourceForge,
 you can use their bug reporting tool, too). If the problem is at the
 "./configure" step, do not forget to send the config.log.
+
+If echoping segfaults, please send me debugging info. To do so:
+make clean
+make debug
+gdb ./echoping
+run the-options-that-exhibits-the-problem
+where
+list
+print the-variables-displayed
+
 
 $Id$
 
