@@ -16,6 +16,7 @@ readline (fs, ptr, maxlen, ln)
 {
   int n = 1;
   char *rc;
+  int r;
 
   if (ln)
     {
@@ -32,8 +33,8 @@ readline (fs, ptr, maxlen, ln)
     {
       while (n < maxlen)
 	{
-	  rc = fgets (ptr, maxlen, fs);
-	  if (rc == NULL)
+	  r = read (fileno(fs), ptr, maxlen);
+	  if (r == 0)
 	    {
 	      if (timeout_flag)
 		return n;
@@ -42,7 +43,7 @@ readline (fs, ptr, maxlen, ln)
 	      else
 		break;		/* EOF, some data was read */
 	    }
-	  n = n + strlen (rc);
+	  n = n + r;
 	}
     }
   return (n);
