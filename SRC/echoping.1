@@ -1,0 +1,109 @@
+.TH echoping 1 "November 22, 1996" "ECHOPING" "echoping"
+
+.SH NAME
+echoping \- tests a remote host with TCP or UDP
+
+.SH SYNOPSIS
+.B echoping
+.RI [ -vudcr ]
+.RI [ -s\ number ]
+.RI [ -n\ number ]
+.RI [ -w\ number ]
+.RI [ -t\ number ]
+.RI [ -h\ URL ]
+.RI [ -i\ URL ]
+.B hostname
+[:port]
+
+.SH DESCRIPTION 
+.LP
+.B echoping
+is a small program to test (approximatively) performances 
+of a remote Internet host by sending it TCP "echo" packets. It can use other
+protocols as well (HTTP, UDP "echo", etc). 
+.LP
+.B echoping 
+simply shows the elapsed time, including the time to set up the TCP 
+connection and to transfer the data. Therefore, it is unsuitable to physical
+line raw throughput measures (unlike bing or treno). On the other end, the 
+action it performs are close from, for instance, a HTTP request and it is meaningful 
+to use it (carefully) to measure Web performances.
+
+.SH ARGUMENT
+.IP hostname[:port]
+Name of the server to test. For HTTP, you can specify a port number.
+
+.SH OPTIONS
+.IP -v
+Verbose
+.IP -s\ nnn
+Size of the data to send. Large values can produce strange results with
+some echo servers.
+.IP -n\ nnn
+Numbers of repeated tests. With this option, you have also the minimum, maximum, average and median
+time. The median is the value such that half of the measures are under it
+and the other half is above. When you measure highly variables values, like
+it is often the case on the whole Internet, median is better than average
+to avoid  "extreme" values.
+.IP -w\ nnn
+Number of seconds to wait between two tests (default is one)
+.IP -t\ nnn
+Number of seconds to wait a reply before giving up. For TCP, this is the
+maximum number of seconds for the whole connection (setup and data exchange).
+.IP -u
+Use UDP instead of TCP
+.IP -d
+Use the "discard" service instead of echo
+.IP -c
+Use the "chargen" service instead of echo
+.IP -h\ url
+Use the HTTP protocol (instead of echo) for the given URL. The URL has to
+be a relative one (for instance '/' or '/pics/foobar.gif') because HTTP 1.0
+servers will not understand a request for an absolute URL.
+.IP -i\ url
+Use the ICP protocol (instead of echo) for the given URL. The URL has to
+be an absolute one. This is mostly for testing Squid Web proxy/caches.
+.IP -r
+Use T/TCP (if it has been compiled with it). See the INSTALL file for details.
+.IP -f\ character
+Fill the packet with this character (default is random filling)
+
+.SH EXAMPLES
+.IP echoping\ \-v\ foobar.whoops.org
+Tests the remote machine with TCP echo (one test).
+.IP echoping\ \-n\ 5\ \-w\ 10\ foobar.whoops.org
+Tests the remote machine with TCP echo (five tests, every ten seconds).
+.IP echoping\ \-h\ /\ foobar.whoops.org
+Tests the remote Web server and asks its home page. Note you don't
+indicate the whole URL.
+.IP echoping\ \-h\ http://www.whoops.org/\ cache.whoops.org:3128
+Tests the remote Web proxy-cache and asks a Web page. Note that you must
+indicate the whole URL.
+
+.SH BUGS
+UDP isn't really useable with large packets because of sockets 
+limitations and the lack of workaround code.
+
+ICP support is far from perfect, specially on the Alpha or when
+something goes wrong (filtering for instance).
+
+If a Web page is empty, 
+.B echoping
+will display meaningless messages.
+
+Timeouts on TCP connections are a bit experimental. 
+
+Since
+.B echoping
+writes everything to the server, then begins to read the reply, some echo 
+servers
+will timeout if you send very long messages, because they expect you to 
+start to read right now.
+
+.SH SEE ALSO
+See the README for information about other network measurements programs.
+
+.SH AUTHOR
+Stephane Bortzmeyer <bortzmeyer@pasteur.fr>
+
+

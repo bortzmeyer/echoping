@@ -1,0 +1,42 @@
+echoping appears to compile and run at least on OSF/1, Solaris, Linux, SunOS,
+FreeBSD, IRIX and Ultrix. You do not have to be root to install it.
+
+Check the Makefile if you wish (C compiler, libraries to include, there are
+  comments to guide you), 
+just type "make",
+and copy the "echoping" executable anywhere you want. 
+
+Same thing for the man page echoping.1. (You can do an automatic install 
+with "make install" but this depends on the "install" program which is 
+not portable.)
+
+You can define the following in the Makefile (in CFLAGS):
+
+HTTP 
+HyperText Transport Protocol support
+
+ICP
+ICP protocol support (for Squid Web proxy/cache)
+
+TTCP 
+T/TCP support if your system supports it (FreeBSD does). See 
+   <http://www.noao.edu/~rstevens/ttcp.html>
+
+USE_SIGACTION
+Use sigaction instead of signal. On purely BSD systems, such as SunOS or
+FreeBSD, this is necessary because we need to change the semantics of
+signals. On some systems (Irix, Solaris), do not use this option, because
+it will prevent echoping to compile (this is a bug).
+
+If 'echoping -h' fails with "tcp_open: unknown service: http/tcp", add
+"http" to the services database (typically /etc/services or a NIS map).
+Its value is 80. Or, change HTTP_TCP_PORT in echoping.h from "http" to "www"
+or whatever is defined on your system (at least AIX or Solaris have the 
+problem). A workaround is to specify the port on the command line:
+echoping -h / www.mydomain.org:80
+
+If 'echoping -h' replies with a "404" error while the file really exists,
+check first that you use the FQDN of the server on the command line
+(this is a consequence of the HTTP 1.1 protocol, not a bug in echoping
+and this will show only if the HTTP server uses "virtual hosting").
+

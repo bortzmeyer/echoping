@@ -1,0 +1,120 @@
+"echoping" is a small program to test (approximatively) performances of a 
+remote host by sending it TCP "echo" packets.
+
+It assumes the remote host accepts such connections. Experience show that 
+most Internet routers do and many hosts also. However, some Unices are not 
+shipped with this service enabled and, anyway, the administrator is always 
+free to close it (I think they shouldn't). echoping has therefore less chance 
+to succeed than ping or bing. (On a typical Unix box, "echo" service is 
+configured in /etc/inetd.conf.)
+
+In any case, be polite: don't bother the remote host with many repeated 
+requests, especially with large size.
+
+The current version is very rough. It was written quickly and not debugged 
+in detail.
+
+It appears to compile and run at least on OSF/1 3.2, Solaris (?),
+Linux 1.1, SunOS 4.1 and Ultrix 4.3. You do not have to be root to 
+install it: just type make and copy the "echoping" executable anywhere you 
+want. There is no man page.
+
+To use it, simply:
+
+% echoping machine.somewhere.org
+
+or use the options before the machine name:
+
+-v : verbose
+-s nnn : size of the data to send
+-n nnn : numbers of repeated tests
+-w nnn : number of seconds to wait between two tests (default is one)
+-t nnn : number of seconds to wait a reply before giving up
+-u : use UDP instead of TCP
+-d : use the "discard" service instead of echo
+-c : use the "chargen" service instead of echo
+
+echoping simply shows the elapsed time, including the time to set up the TCP 
+connection and to transfer the data. Therefore, it is unsuitable to physical
+line raw throughput measures (unlike bing). On the other end, the action it 
+performs are close from a HTTP request and it is meaningful to use it 
+(carefully) to measure Web performances.
+
+With the '-n' option, you have also the minimum, maximum, average and median
+time. The median is the value such that half of the measures are under it
+and the other half is above. When you measure highly variables values, like
+it is often the case on the whole Internet, median is better than average
+to avoid  "extreme" values.
+
+There are many, many traps when measuring something on the Internet. Just one
+example: 'echoping -w 0 -n 4 a-sunOS-machine' and you'll see the first test
+succeed in a very short time (if you are close from the machine) and all of
+the others take a much longer time (one second). With '-w 1' (wait one second 
+between tests, the default), everything works fine: it seems the sockets on 
+SunOS need time to recover :-)
+
+With UDP servers you can have other surprises: the first test is quite often
+much slower since inetd has to launch the process. After that, the process
+stays a while so the next texts run faster.
+
+If you have the Perl/Tk <http://pubweb.bnl.gov/~ptk/> package, you can use a 
+(quite rough) windowing interface, "echoping.ptk". To use it, you should 
+define FLUSH_OUTPUT at the beginning of echoping.c (this seems to work
+on only a few Unices, including DEC's OSF/1).
+
+Known bugs: 
+
+- UDP isn't really useable with large packets because of sockets 
+  limitations and the lack of workaround code
+
+To do:
+
+- display statistics even when interrupted by Control-C
+- display other calculations such as standard deviation
+- timeouts even on TCP connections
+
+To measure performances on the Internet you can also see:
+
+Unix:
+
+- bing, a bandwidth measurement tool <ftp://ftp.ibp.fr/pub/networking>
+- ping, probably available with your system
+- traceroute, idem (otherwise, see <ftp://ftp.ee.lbl.gov/>)
+- ttcp, the best measurement tool but it needs some control over the 
+  two machines <ftp://ftp.arl.mil/pub/ttcp>
+- spray is a tool which I dont't know very well. It is available on some 
+  machines (Sun, OSF/1).
+I've also heard of but never tried:
+- NetPerf <http://www.cup.hp.com/netperf/NetperfPage.html>
+- a suite of Bandwidth Measuring programs from gnn@netcom.com 
+  <ftp.netcom.com/~ftp/gnn/bwmeas-0.3.tar.Z>. These are several 
+  programs that measure bandwidth and jitter over several kinds of 
+  IPC links, including TCP and UDP.
+  
+Macintosh:
+
+- TCP Watcher, a very nice "swiss-army knife" tool, to test ping, DNS, echo. 
+  It includes an echo server. Available on Info-Mac in "comm/tcp".
+  
+Web clients:
+
+- You can ping or traceroute on the Web. See 
+  <http://hplyot.obspm.fr/cgi-bin/nph-traceroute>, <http://www.fr.net/>,
+  and <gopher://ns.urec.fr/11/Reseaux/Annuaires>.
+
+
+Use all of them with care, the result is not obvious to interpret.
+
+And don't forget to read RFC 1470 ("Tools for Monitoring and Debugging 
+TCP/IP Internets and Interconnected Devices"), specially its "Benchmark"
+section and the Richard Stevens' books (all of them), published by 
+Addison-Wesley.
+
+
+The reference site for echoping is:
+
+ftp://ftp.pasteur.fr/pub/Network/echoping
+
+Stephane Bortzmeyer <bortzmeyer@pasteur.fr>. October 1995 for the
+first version. December 1995 for this one.
+
