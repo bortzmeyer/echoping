@@ -10,6 +10,9 @@ someone can reproduce it and perform tests? It seems to work now.
 
 Better detection of the name of the HTTP port. At run time?
 
+Do not display the end-of-line after the HTTP reply, for instance when
+a page is moved.
+
 gcc's warnings:
 
 1) NetBSD
@@ -25,5 +28,5 @@ echoping.c:540: warning: passing arg 5 of `sendto' from incompatible pointer typ
                     err_sys ("sendto error on socket");
                 }
 
-
 $Id$
+
