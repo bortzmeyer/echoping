@@ -2,7 +2,7 @@
  * echoping : uses the TCP echo service to measure (roughly) response times.
  * 
  * Written by Stephane Bortzmeyer <bortz@users.sourceforge.net>. See
- * the AUTHORS file for other contributors.
+ * the AUTHORS file for other contributors. 
  * 
  * $Id$
  * 
@@ -95,6 +95,7 @@ main (argc, argv)
   unsigned short port_to_use = USE_ECHO;
   unsigned short http = 0;
   unsigned short smtp = 0;
+  unsigned short discard = 0;
   unsigned short udp = 0;
   unsigned short icp = 0;
 
@@ -161,6 +162,7 @@ main (argc, argv)
 	case 'd':
 	  strcpy (port_name, DISCARD_TCP_PORT);
 	  port_to_use = USE_DISCARD;
+	  discard = 1;
 	  break;
 	case 'c':
 	  strcpy (port_name, CHARACTER_GENERATOR_TCP_PORT);
@@ -679,17 +681,20 @@ main (argc, argv)
 	    }
 	  else
 	    {
-	      (void) gettimeofday (&connectedtv, (struct timezone *) NULL);
-	      temp = connectedtv;
-	      tvsub (&temp, &conntv);
-	      if (verbose)
-		printf ("TCP Latency: %d.%06d seconds\n", (int) temp.tv_sec,
-			(int) temp.tv_usec);
+	      if (tcp) {
+		(void) gettimeofday (&connectedtv, (struct timezone *) NULL);
+		temp = connectedtv;
+		tvsub (&temp, &conntv);
+		if (verbose) {
+		  printf ("Connected...\n");
+		  printf ("TCP Latency: %d.%06d seconds\n", (int) temp.tv_sec,
+			  (int) temp.tv_usec);
+		}
+	      }
 	    }
 
 	  if (verbose && tcp)
 	    {
-	      printf ("Connected...\n");
 #ifdef FLUSH_OUTPUT
 	      if (fflush ((FILE *) NULL) != 0)
 		{
@@ -828,7 +833,7 @@ main (argc, argv)
 	    }
 	}
 
-      {
+      if (tcp && !discard) {
 	fd_set mask;
 	int n = 0;
 
@@ -839,7 +844,7 @@ main (argc, argv)
 #ifdef OPENSSL
 	else
 	  {
-	    n = fileno (files);
+	    n = SSL_get_fd (sslh);
 	  }
 #endif
 
@@ -862,11 +867,14 @@ main (argc, argv)
 	{
 	  if (!udp)
 	    {
-	      if (!http && !smtp)
+	      if (!http && !smtp  && !discard)
 		{
 		  /* Read from the server */
 		  nr = readline (files, recvline, n, stop_at_newlines);
 		}
+	      else if (discard) {
+		/* No reply, no read */
+	      }
 #ifdef HTTP
 	      else if (http)
 		{
@@ -944,7 +952,7 @@ main (argc, argv)
 		}
 #endif
 	    }
-	  if (!http && !icp && !smtp)
+	  if (!http && !icp && !smtp && !discard)
 	    {
 	      if ((nr < 0 || nr != n) && timeout_flag)
 		/* if ((nr < 0 || nr != n) && (errno == EINTR) && timeout_flag) */
@@ -965,7 +973,7 @@ main (argc, argv)
 			 nr, n);
 	    }
 	  else
-	    /* This is HTTP */
+	    /* This is probably HTTP */
 	    {
 	      if ((nr < 0) && (errno == EINTR) && (timeout_flag))
 		{
