@@ -31,7 +31,7 @@ short no_recurse = FALSE;
  *     NS records for domains, so we need our own list of error *
  *     strings.                                                 *
  ****************************************************************/
-void
+int
 nsError (error, domain)
      int error;
      char *domain;
@@ -39,17 +39,17 @@ nsError (error, domain)
   switch (error)
     {
     case HOST_NOT_FOUND:
-      (void) fprintf (stderr, "Unknown domain: %s\n", domain);
-      break;
+      err_ret ("Unknown domain: %s\n", domain);
+      return -1;
     case NO_DATA:
-      (void) fprintf (stderr, "No records for %s\n", domain);
-      break;
+      err_ret ("No records for %s in the Answer section\n", domain);
+      return -1;
     case TRY_AGAIN:
-      (void) fprintf (stderr, "No response for query\n");
-      break;
+      err_ret ("No response for query\n");
+      return -2;
     default:
-      (void) fprintf (stderr, "Unexpected error\n");
-      break;
+      err_ret ("Unexpected error\n");
+      return -1;
     }
 }
 
@@ -141,7 +141,7 @@ start (struct addrinfo *res)
   _res.options &= ~(RES_DNSRCH | RES_DEFNAMES | RES_NOALIASES);
   if (use_tcp)
     {
-      _res.options &= RES_USEVC;
+      _res.options |= RES_USEVC;
     }
   if (no_recurse)
     {
