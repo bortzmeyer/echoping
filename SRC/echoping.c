@@ -444,7 +444,8 @@ main (argc, argv)
 	sprintf (plugin_name, "%s.so", plugin_name);
       plugin = dlopen (plugin_name, RTLD_NOW);
       if (!plugin)
-	{			/* retries with the absolute name */
+	{	
+	  /* Retries with the absolute name */
 	  complete_plugin_name = (char *) malloc (MAX_LINE);
 	  sprintf (complete_plugin_name, "%s/%s", PLUGINS_DIR, plugin_name);
 	  plugin = dlopen (complete_plugin_name, RTLD_NOW);
