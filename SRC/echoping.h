@@ -128,6 +128,7 @@ boolean timeout_flag;
 struct echoping_struct
 {
   boolean udp;			/* Use the UDP protocol (TCP is the default) */
+  boolean ttcp;
   boolean only_ipv4;
   boolean only_ipv6;
   boolean verbose;

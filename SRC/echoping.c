@@ -48,7 +48,7 @@ main (argc, argv)
   int remaining = argc;
   char **leftover;
 
-  int sockfd;
+  int sockfd = -1;
   struct addrinfo hints, hints_numeric, *res;
   int error;
   char hbuf[NI_MAXHOST], pbuf[NI_MAXSERV];
@@ -76,17 +76,17 @@ main (argc, argv)
   void printstats ();
 
 #ifdef HAVE_USLEEP
-  double wait = 1.0;
+  float wait = 1.0;
 #else
   unsigned int wait = 1;
 #endif
   unsigned char fill = ' ';
-  unsigned int fill_i;
-  boolean fill_requested = 0;
+  char *fill_s;
+  boolean fill_requested = FALSE;
   unsigned int i = 0;
   char *plugin_name, *complete_plugin_name = NULL;
   char *ext;
-  void *plugin;
+  void *plugin = NULL;
   int plugin_result;
 
   void to_alarm ();		/* our alarm() signal handler */
@@ -100,7 +100,7 @@ main (argc, argv)
 #endif
 
   char *plugin_port_name, *port_name;
-  boolean plugin_raw;
+  boolean plugin_raw = FALSE;
   boolean port_to_use = USE_ECHO;
   boolean http = 0;
   boolean smtp = 0;
@@ -147,35 +147,41 @@ main (argc, argv)
     {"verbose", 'v', POPT_ARG_NONE, &verbose, 'v'},
     {"help", '?', POPT_ARG_NONE, NULL, '?'},
     {"size", 's', POPT_ARG_INT, &size, 's'},
-    {"number", 'n', POPT_ARG_INT, &number, 'n'},
+    {"number", 'n', POPT_ARG_INT, &number, 'n', "Number of iterations"},
 #ifdef HAVE_USLEEP
-    {"wait", 'w', POPT_ARG_FLOAT, &wait, 'w'},
+    {"wait", 'w', POPT_ARG_FLOAT, &wait, 'w', "Delay between iterations"},
 #else
-    {"wait", 'w', POPT_ARG_INT, &wait, 'w'},
+    {"wait", 'w', POPT_ARG_INT, &wait, 'w', "Delay between iterations"},
 #endif
     {"discard", 'd', POPT_ARG_NONE, &discard, 'd'},
     {"chargen", 'c', POPT_ARG_NONE, &chargen, 'c'},
     {"http", 'h', POPT_ARG_STRING, &url, 'h'},
-    {"icp", 'i', POPT_ARG_STRING, &url, 'i'},
-    {"ttcp", 'r', POPT_ARG_NONE, &ttcp, 'r'},
+    {"icp", 'i', POPT_ARG_STRING, &url, 'i',
+     "ICP protocol, for Web proxies/caches"},
+    {"ttcp", 'r', POPT_ARG_NONE, &ttcp, 'r',
+     "Use the T/TCP protocol (Transaction TCP)"},
     {"udp", 'u', POPT_ARG_NONE, &udp, 'u'},
     {"timeout", 't', POPT_ARG_INT, &timeout, 't'},
-    {"fill", 'f', POPT_ARG_INT, &fill_i, 'f'},
+    {"fill", 'f', POPT_ARG_STRING, &fill_s, 'f'},
     {"smtp", 'S', POPT_ARG_NONE, &smtp, 'S'},
     {"ssl", 'C', POPT_ARG_NONE, &ssl, 'C'},
     {"priority", 'p', POPT_ARG_INT, &priority, 'p'},
     {"type-of-service", 'P', POPT_ARG_INT, &tos, 'P'},
-    {"check-original", 'a', POPT_ARG_NONE, NULL, 'a'},
-    {"ignore-cache", 'A', POPT_ARG_NONE, NULL, 'A'},
+    {"check-original", 'a', POPT_ARG_NONE, NULL, 'a',
+     "For HTTP through a proxy/cache"},
+    {"ignore-cache", 'A', POPT_ARG_NONE, NULL, 'A',
+     "For HTTP through a proxy/cache"},
     {"ipv4", '4', POPT_ARG_NONE, NULL, '4'},
     {"ipv6", '6', POPT_ARG_NONE, NULL, '6'},
-    {"module", 'm', POPT_ARG_STRING, &plugin_name, 'm'},
+    {"module", 'm', POPT_ARG_STRING, &plugin_name, 'm',
+     "Loads the given plugin"},
     POPT_TABLEEND
   };
   poptContext poptcon;
 
-  global_options.udp = 0;
-  global_options.verbose = 0;
+  global_options.udp = FALSE;
+  global_options.ttcp = FALSE;
+  global_options.verbose = FALSE;
 
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
@@ -216,6 +222,9 @@ main (argc, argv)
 	case '?':
 	  poptPrintHelp (poptcon, stdout, 0);
 	  fprintf (stdout, " hostname [plugin-options...]\n");
+	  fprintf (stdout,
+		   "  (You can get a list of available plugins with \"ls %s\")\n",
+		   PLUGINS_DIR);
 	  exit (0);
 	case 'v':
 	  break;
@@ -255,7 +264,9 @@ main (argc, argv)
 	  break;
 	case 'f':
 	  remaining--;
-	  fill = (char) fill_i;
+	  if (strlen (fill_s) > 1)
+	    err_quit ("Argument --fill should be a one-character string");
+	  fill = fill_s[0];
 	  fill_requested = 1;
 	  break;
 	case 'S':
@@ -444,7 +455,7 @@ main (argc, argv)
 	sprintf (plugin_name, "%s.so", plugin_name);
       plugin = dlopen (plugin_name, RTLD_NOW);
       if (!plugin)
-	{	
+	{
 	  /* Retries with the absolute name */
 	  complete_plugin_name = (char *) malloc (MAX_LINE);
 	  sprintf (complete_plugin_name, "%s/%s", PLUGINS_DIR, plugin_name);
@@ -462,6 +473,7 @@ main (argc, argv)
 	  err_sys ("Cannot find init in %s: %s", plugin_name, dlerror ());
 	}
       global_options.udp = udp;
+      global_options.ttcp = ttcp;
       global_options.verbose = verbose;
       if (family == AF_INET)
 	global_options.only_ipv4 = 1;
@@ -725,9 +737,10 @@ main (argc, argv)
     }
   else
     {
-      sendline = (char *) malloc (size);
+      sendline = (char *) malloc (size + 1);
       for (i = 0; i < size; i++)
 	sendline[i] = fill;
+      sendline[size] = 0;
     }
   n = strlen (sendline);
 

@@ -14,7 +14,7 @@ random_string (unsigned length)
 {
 
   char *state = (char *) malloc (sizeof (char) * STATES);
-  char *result = (char *) malloc (length);
+  char *result = (char *) malloc (length + 1);
   int i, number;
   unsigned seed = (unsigned) time ((time_t *) NULL);
 

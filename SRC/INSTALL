@@ -58,6 +58,12 @@ check first that you use the FQDN of the server on the command line
 (this is a consequence of the HTTP 1.1 protocol, not a bug in echoping
 and this will show only if the HTTP server uses "virtual hosting").
 
+The SSL support (with OpenSSL *or* GNU TLS) is not established by
+default, mostly because cryptography software's status is still
+unclear in some countries. You have to use --with-ssl (which should be
+--with--openssl, I know, there are two libraries, with incompatible
+APIs) or --with-gnutls
+
 ************* Bug reports ***********************
 
 To report a bug, email Stephane Bortzmeyer

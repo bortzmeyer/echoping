@@ -52,7 +52,7 @@ make_http_sendline (char *url, char *host, int port, int nocache)
 int
 read_from_server (CHANNEL fs, short ssl)
 {
-  int nr;
+  int nr = 0;
   int total = 0;
   char reply_code;
   int first_line = TRUE;
