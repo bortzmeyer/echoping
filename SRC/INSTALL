@@ -1,22 +1,29 @@
 echoping appears to compile and run at least on Tru64 (ex-Digital
 Unix, ex-OSF/1), Solaris, Linux, SunOS, FreeBSD, NetBSD, IRIX and
-Ultrix. You do not have to be root to install it.
+AI/X. You do not have to be root to install it.
 
-Just type "./configure", then "make", and then (as root if necessary),
-"make install".
+Just type "./configure", then "make", "make test" if you wish (some
+tests depend on local servers and/or Internet access, interpret with
+care) and then (as root if necessary), "make install".
 
 "configure" has some options: 
 --disable-http (suppress the HTTP support)
 --disable-smtp (suppress the SMTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
---with-ssl   (add the SSL support, you will need the OpenSSL library 
-               <http://www.openssl.org/>)
+--with-ssl[=/where/is/ssl] (add the SSL support, you will need 
+         the OpenSSL library <http://www.openssl.org/>)
 --disable-ttcp  (suppress the T/TCP support which is enabled only if 
          your system supports it - FreeBSD does. See 
          <http://www.kohala.com/start/ttcp.html>)
 
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
+
+If you get messages about va_start like: 
+error.c:29: macro `va_start' used with just one arg 
+it is a bug in echoping (triggered by C's inability to do modular
+programming). Email the author and, in the meantime, configure
+--without-ssl.
 
 If 'echoping -h' replies with a "404" error while the file really exists,
 check first that you use the FQDN of the server on the command line

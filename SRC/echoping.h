@@ -1,4 +1,4 @@
-/* $Id* */
+/* $Id$ */
 
 /* Settings you should not change -- see below for changeable ones */
 

@@ -26,7 +26,9 @@ err_ret (va_alist)
   va_list args;
   char *fmt;
 
-  va_start (args);
+  va_start (args); /* TODO: use stdarg, otherwise, on *some*
+  platforms: "macro `va_start' used with just one arg" because OpenSSL
+  includes stdarg. */
   fmt = va_arg (args, char *);
   vfprintf (stderr, fmt, args);
   va_end (args);
