@@ -192,7 +192,7 @@ AC_DEFUN([CF_LIB_GNUIDN],
 [
 AC_CHECK_LIB(idn,idna_to_ascii_from_utf8,
 [LIBS="${LIBS} `pkg-config libidn --libs-only-L` `pkg-config libidn --libs-only-l`"],
-[AC_ERROR([Get the GNU IDN library (http://www.josefsson.org/libidn/)])], dnl
+[AC_ERROR([Get the GNU IDN library (http://www.josefsson.org/libidn/) or use --disable-idn])], dnl
 )])
 
 dnl experimental

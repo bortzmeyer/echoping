@@ -2140,7 +2140,7 @@ if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   LIBS="${LIBS} `pkg-config libidn --libs-only-L` `pkg-config libidn --libs-only-l`"
 else
   echo "$ac_t""no" 1>&6
-{ echo "configure: error: Get the GNU IDN library (http://www.josefsson.org/libidn/)" 1>&2; exit 1; }
+{ echo "configure: error: Get the GNU IDN library (http://www.josefsson.org/libidn/) or use --disable-idn" 1>&2; exit 1; }
 fi
 
 fi
