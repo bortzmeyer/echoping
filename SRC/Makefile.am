@@ -18,6 +18,10 @@ MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echop
 test: check
 tests: check
 
+# TODO: raise a warning at install-time when the prefix changes (just
+# a warning because we do not want to prevent Debian packages for
+# being built), otherwise, the plugins will not be found.
+
 fulltest: test moretest
 
 moretests: moretest
