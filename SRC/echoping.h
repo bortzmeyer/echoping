@@ -9,7 +9,6 @@
 /* Settings you can change */
 
 #define DEFLINE 256
-#define MAXLINE 65535
 #define UDPMAX 65535
 #ifdef HTTP
 #define MAXTOREAD 150000
@@ -18,7 +17,6 @@
 #define MAXSMTP 1024
 #define MAXSMTPLINES 30
 #endif
-#define MAXNUMBER 20
 
 /* Probably too many inclusions but this is to keep 'gcc -Wall' happy... */
 #include	<stdio.h>

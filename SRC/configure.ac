@@ -4,10 +4,33 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
 AC_CANONICAL_HOST
 AC_PROG_CC(cc gcc)
-AM_INIT_AUTOMAKE(echoping, 5.2.0)
+AM_INIT_AUTOMAKE(echoping, 6.0-BETA)
 AM_CONFIG_HEADER(config.h)
 
 dnl User options
+dnl http://sources.redhat.com/ml/automake-prs/2001-q3/msg00033.html
+max_iterations_specified=0
+AC_ARG_ENABLE(max-iterations,
+[--enable-max-iterations=MAX   limit the number of iterations (-n option) to MAX],
+[if test "$enableval" != "no"; then
+   max_iterations_specified=1
+fi])
+if test "$max_iterations_specified" = 0; then
+   AC_DEFINE(MAX_ITERATIONS, 20, Maximum number of iterations)
+else
+   AC_DEFINE_UNQUOTED(MAX_ITERATIONS, $enableval, Maximum number of iterations)
+fi
+max_line_specified=0
+AC_ARG_ENABLE(max-request-size,
+[--enable-max-request-size=MAX   limit the size of a request to MAX],
+[if test "$enableval" != "no"; then
+   max_line_specified=1
+fi])
+if test "$max_line_specified" = 0; then
+  AC_DEFINE(MAX_LINE, 65535, Maximum size of a request)
+else
+   AC_DEFINE_UNQUOTED(MAX_LINE, $enableval, Maximum size of a request)
+fi
 AC_ARG_ENABLE(http,
  [--enable-http   HTTP (Web's main protocol) support],dnl
  [if test "$enableval" = "yes"; then

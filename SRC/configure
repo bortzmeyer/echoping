@@ -849,6 +849,8 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+--enable-max-iterations=MAX   limit the number of iterations (-n option) to MAX
+--enable-max-request-size=MAX   limit the size of a request to MAX
 --enable-http   HTTP (Web's main protocol) support
 --enable-icp   ICP (for testing Web proxies/caches) support
 --enable-smtp   SMTP (Mail's main protocol) support
@@ -2265,7 +2267,7 @@ fi
 
 PACKAGE=echoping
 
-VERSION=5.2.0
+VERSION=6.0-BETA
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -2367,6 +2369,48 @@ fi
           ac_config_commands="$ac_config_commands default-1"
 
 
+max_iterations_specified=0
+# Check whether --enable-max-iterations or --disable-max-iterations was given.
+if test "${enable_max_iterations+set}" = set; then
+  enableval="$enable_max_iterations"
+  if test "$enableval" != "no"; then
+   max_iterations_specified=1
+fi
+fi;
+if test "$max_iterations_specified" = 0; then
+
+cat >>confdefs.h <<\_ACEOF
+#define MAX_ITERATIONS 20
+_ACEOF
+
+else
+
+cat >>confdefs.h <<_ACEOF
+#define MAX_ITERATIONS $enableval
+_ACEOF
+
+fi
+max_line_specified=0
+# Check whether --enable-max-request-size or --disable-max-request-size was given.
+if test "${enable_max_request_size+set}" = set; then
+  enableval="$enable_max_request_size"
+  if test "$enableval" != "no"; then
+   max_line_specified=1
+fi
+fi;
+if test "$max_line_specified" = 0; then
+
+cat >>confdefs.h <<\_ACEOF
+#define MAX_LINE 65535
+_ACEOF
+
+else
+
+cat >>confdefs.h <<_ACEOF
+#define MAX_LINE $enableval
+_ACEOF
+
+fi
 # Check whether --enable-http or --disable-http was given.
 if test "${enable_http+set}" = set; then
   enableval="$enable_http"

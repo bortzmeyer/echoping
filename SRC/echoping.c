@@ -20,7 +20,7 @@ unsigned short timeout_flag;
  * process. Useless but harmless otherwise. In practice, while OSF/1 is happy
  * with it, SunOS refuses to use fflush on a NULL and Linux fails. 
  */
-#undef FLUSH_OUTPUT
+#undef FLUSH_OUTPUT		/* Not really supported, see the TODO */
 
 /* Global variables for main and printstats */
 
@@ -35,8 +35,8 @@ unsigned int j = 0;
 
 int family = PF_UNSPEC;
 
-struct result results[MAXNUMBER];
-struct timeval good_results[MAXNUMBER];
+struct result results[MAX_ITERATIONS];
+struct timeval good_results[MAX_ITERATIONS];
 extern int tvcmp ();
 
 int
@@ -65,9 +65,9 @@ main (argc, argv)
   int n, nr = 0;
 #ifdef OPENSSL
   int sslcode;
-  char rand_file[MAXLINE];
+  char rand_file[MAX_LINE];
 #endif
-  char *sendline, recvline[MAXLINE + 1];
+  char *sendline, recvline[MAX_LINE + 1];
 #ifdef ICP
   char retcode[DEFLINE];
   int length;
@@ -148,7 +148,7 @@ main (argc, argv)
   stddev = null_timeval;
   strcpy (port_name, ECHO_TCP_PORT);
 
-  for (i = 0; i <= MAXNUMBER; i++)
+  for (i = 0; i <= MAX_ITERATIONS; i++)
     {
       results[i].valid = 0;
     }
@@ -238,11 +238,11 @@ main (argc, argv)
 	  break;
 	case 's':
 	  size = atoi (optarg);
-	  if (size > MAXLINE)
+	  if (size > MAX_LINE)
 	    {
 	      (void) fprintf (stderr,
 			      "%s: packet size too large, max is %d.\n",
-			      progname, MAXLINE);
+			      progname, MAX_LINE);
 	      exit (1);
 	    }
 	  if (size <= 0)
@@ -263,11 +263,11 @@ main (argc, argv)
 	  break;
 	case 'n':
 	  number = atoi (optarg);
-	  if (number > MAXNUMBER)
+	  if (number > MAX_ITERATIONS)
 	    {
 	      (void) fprintf (stderr,
 			      "%s: number of iterations too large, max is %d.\n",
-			      progname, MAXNUMBER);
+			      progname, MAX_ITERATIONS);
 	      exit (1);
 	    }
 	  if (number <= 0)
@@ -538,9 +538,9 @@ main (argc, argv)
 	   idna_to_ascii_8z (utf8_server, &ace_server,
 			     IDNA_USE_STD3_ASCII_RULES)) != IDNA_SUCCESS)
 	{
-	  if (result == IDNA_CONTAINS_LDH) 
-	    err_quit ("Illegal name for host: %s", server); /* foo@bar or 
-                                                               similar errors */
+	  if (result == IDNA_CONTAINS_LDH)
+	    err_quit ("Illegal name for host: %s", server);	/* foo@bar or 
+								   similar errors */
 	  else
 	    err_quit ("IDN error for host: %s %d", server, result);
 	}

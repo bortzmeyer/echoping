@@ -78,6 +78,12 @@
 /* Internationalized Domain Names support */
 #undef LIBIDN
 
+/* Maximum number of iterations */
+#undef MAX_ITERATIONS
+
+/* Maximum size of a request */
+#undef MAX_LINE
+
 /* Crypto (SSL) support */
 #undef OPENSSL
 
