@@ -1,3 +1,5 @@
+/* $Id* */
+
 /* Settings you can change */
 
 #define DEFLINE 256
@@ -70,8 +72,8 @@ struct timeval max_timeval;
 #define	ECHO_TCP_PORT	"echo"
 #define	DISCARD_TCP_PORT	"discard"
 #define	CHARACTER_GENERATOR_TCP_PORT	"chargen"
-#define	HTTP_TCP_PORT	"http"
-#define ICP_UDP_PORT	"icp"
+/* #define	HTTP_TCP_PORT	"http" */ /* In config.h */
+/* #define ICP_UDP_PORT	"icp" */ /* In config.h */
 
 #define	USE_ECHO	1
 #define	USE_DISCARD	2

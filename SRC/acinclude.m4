@@ -89,7 +89,7 @@ done
 ])dnl
 
 dnl Useful macros to check libraries which are not implicit 
-dnl in Solaris.
+dnl in Solaris, for instance.
 AC_DEFUN([CF_LIB_NSL],
 [
 AC_CHECK_LIB(nsl,gethostbyname,
@@ -125,3 +125,52 @@ AC_TRY_LINK([#include <sys/types.h>
 ])
 
 
+dnl Check the port name for HTTP. Everyone should declare "http" but
+dnl not everyone does. this test is not perfect, we should use a program
+dnl which calls getservbyname() otherwise we miss NIS tables, for
+dnl instance.
+AC_DEFUN([CF_CHECK_SERVICES],
+[
+AC_MSG_CHECKING(what is the name of the HTTP port in your services database)
+dnl We should test it is really port 80 and not any mention of "http"
+if grep http /etc/services > /dev/null; then
+    AC_DEFINE(HTTP_TCP_PORT,"http")
+    AC_MSG_RESULT(http)
+else
+    if grep www /etc/services > /dev/null; then
+	AC_DEFINE(HTTP_TCP_PORT,"www")
+        AC_MSG_RESULT(www)	
+    else
+	AC_DEFINE(HTTP_TCP_PORT,"undefined:use_:80")
+	AC_MSG_RESULT([undefined, you should add it in your database])
+    fi
+fi
+AC_MSG_CHECKING(what is the name of the ICP port in your services database)
+if grep icp /etc/services > /dev/null; then
+    AC_DEFINE(ICP_UDP_PORT,"icp")
+    AC_MSG_RESULT(icp)
+else
+    AC_DEFINE(ICP_UDP_PORT,"undefined:use_:3130")
+    AC_MSG_RESULT([undefined, you should add it in your database])
+fi
+])
+
+AC_DEFUN([CF_CHECK_HTTP_SERVICE],
+[
+AC_MSG_CHECKING(what is the name of the HTTP port in your services database)
+AC_TRY_RUN([
+int 
+main (argc, argv)
+     int argc;
+     char *argv[];
+{
+  struct servent *sp;
+  if ((sp = getservbyname ("http", "tcp")) == 0)
+	exit (1);
+  else
+	exit (0);
+} 
+],
+[AC_DEFINE(HTTP_TCP_PORT,"http")
+AC_MSG_RESULT(http)]
+,)])

@@ -18,6 +18,9 @@
 /* ICP support */
 #undef ICP 
 
+#undef HTTP_TCP_PORT
+#undef ICP_UDP_PORT
+
 #undef PACKAGE
 #undef VERSION
 
