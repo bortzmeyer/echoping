@@ -6,9 +6,13 @@ echo ""
 echo "Since this tests tries remote servers, a failure is not always "
 echo " echoping's fault: it may be a network problem."
 
-./echoping -h / -v www.6bone.net
+./echoping -6 -h / -v www.6bone.net
 
-./echoping -h / -v ns3.nic.fr
+./echoping -6 -h / -v ns3.nic.fr
 
-./echoping -v -h / "[3ffe:b00:c18:1::10]:80" # RFC 2732
+./echoping -6 -v -h / "[3ffe:b00:c18:1::10]:80" # RFC 2732
+
+# We force the use of IPv6 with -6 because some libc (Solaris) are
+# smart enough to send only the IPv4 adresses to the application if
+# the machine has no IPv6 connectivity.
 
