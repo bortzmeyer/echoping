@@ -32,7 +32,9 @@ struct timeval conntv, connectedtv, sendtv, recvtv;
 unsigned int successes, attempts = 0;
 unsigned int size = DEFLINE;
 unsigned int j = 0;
+
 int family = PF_UNSPEC;
+
 struct result results[MAXNUMBER];
 struct timeval good_results[MAXNUMBER];
 extern int tvcmp ();
@@ -136,7 +138,6 @@ main (argc, argv)
   max = null_timeval;
   min = max_timeval;
   stddev = null_timeval;
-
   strcpy (port_name, ECHO_TCP_PORT);
 
   for (i = 0; i <= MAXNUMBER; i++)
