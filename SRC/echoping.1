@@ -1,7 +1,5 @@
 .\" $Id$
-
 .TH echoping 1 "November 22, 1996" "ECHOPING" "echoping"
-
 .SH NAME
 echoping \- tests a remote host with TCP or UDP
 
@@ -88,24 +86,9 @@ Tests the remote Web proxy-cache and asks a Web page. Note that you must
 indicate the whole URL.
 
 .SH BUGS
-UDP isn't really useable with large packets because of sockets 
-limitations and the lack of workaround code.
 
-ICP support is far from perfect, specially on the Alpha or when
-something goes wrong (filtering for instance).
-
-If a Web page is empty, 
-.B echoping
-will display meaningless messages.
-
-Timeouts on T/TCP connections are a bit experimental. 
-
-Since
-.B echoping
-writes everything to the server, then begins to read the reply, some echo 
-servers
-will timeout if you send very long messages, because they expect you to 
-start to read right now.
+See the TODO file or SourceForge bug tracking system at
+<http://sourceforge.net/bugs/?group_id=4581>.
 
 .SH SEE ALSO
 See the README for information about other network measurements programs.

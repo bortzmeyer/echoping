@@ -19,6 +19,18 @@ someone can reproduce it and perform tests? It seems to work now.
 Do not display the end-of-line after the HTTP reply, for instance when
 a page is moved.
 
+UDP isn't really useable with large packets because of sockets
+limitations and the lack of workaround code.
+
+If a Web page is empty, echoping
+will display meaningless messages.
+
+Timeouts on T/TCP connections are a bit experimental. 
+
+Since echoping writes everything to the server, then begins to read
+the reply, some echo servers will timeout if you send very long
+messages, because they expect you to start to read right now.
+
 gcc's warnings:
 
 1) Free/NetBSD

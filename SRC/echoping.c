@@ -1,13 +1,11 @@
 /*
  * echoping : uses the TCP echo service to measure (roughly) response times.
  * 
- * Written by Stephane Bortzmeyer <bortzmeyer@pasteur.fr>. A lot of code stolen
- * from Richard Stevens' book "Unix network programming" and Pierre Beyssac's
- * "bing" tool. 
+ * Written by Stephane Bortzmeyer <bortz@users.sourceforge.net>. See
+ * the AUTHORS file for other contributors.
  * 
  * $Id$
- *
- */
+ * */
 
 char *progname;
 unsigned short timeout_flag;
