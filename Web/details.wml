@@ -43,7 +43,7 @@ SunOS need time to recover :-)
 <UL>
 <LI><A HREF="ftp://ftp.lip6.fr/pub/networking">bing</A>, a bandwidth measurement tool
 <LI>ping, probably available with your system
-<LI>traceroute, idem (otherwise, see <A HREF="ftp://ftp.ee.lbl.gov/">LBL</A>>)
+<LI>traceroute, idem (otherwise, see <A HREF="ftp://ftp.ee.lbl.gov/">LBL</A>)
 <LI><A HREF="ftp://ftp.arl.mil/pub/ttcp/">ttcp</A>, the best measurement tool but it needs some control over the 
   two machines (nothing to do with
   the T/TCP protocol)
@@ -84,8 +84,8 @@ can be enabled through the Network Control Panel
 <H3>Web clients</H3>
 
 You can ping or traceroute on the Web. See 
-  <http://hplyot.obspm.fr/cgi-bin/nph-traceroute> or
-  <http://www.fr.net/internet/>.
+  <A HREF="http://hplyot.obspm.fr/cgi-bin/nph-traceroute">OBSPM</A> or
+  <A HREF="http://www.fr.net/internet/">fr.net</A>.
 
 
 <P>Use all of them with care, the result is not obvious to interpret.
