@@ -3,9 +3,7 @@
 #define DEFLINE 256
 #define MAXLINE 65535
 #define UDPMAX 65535
-#ifdef HTTP
 #define MAXTOREAD 150000
-#endif
 #define MAXNUMBER 20
 
 /* Settings you should not change */
@@ -95,6 +93,7 @@ char *sys_err_str ();
 int writen ();
 /* readline.c */
 int readline ();
+void clear_read_buffer ();
 /* util.c */
 char *random_string ();
 void tvsub ();

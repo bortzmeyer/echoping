@@ -391,6 +391,8 @@ main (argc, argv)
   for (i = 1; i <= number; i++)
     {
 
+      clear_read_buffer();
+
       attempts++;
       if (!udp)
 	{
