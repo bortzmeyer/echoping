@@ -19,9 +19,10 @@ test hosts which aren't yours.
 
 Current features:
 
-- uses the protocols echo, discard, chargen, HTTP or ICP, 
-- uses UDP instead of TCP for the protocols which accept it (like echo),
-- can repeat the test and display various measures about it,
+- uses the protocols echo, discard, chargen, HTTP (with SSL if you 
+  wish), ICP or SMTP,
+- uses UDP instead of TCP for the protocols which accept it (like echo), 
+-  can repeat the test and display various measures about it,
 - can use T/TCP on systems which support it.
 
 Examples of output:
@@ -52,10 +53,6 @@ Elapsed time: 0.686792 seconds
 to test repeatedly a Web server, to be sure it runs fine.)
 
 
-To do for a future version:
-
-- display other calculations such as standard deviation
-- fix the bugs (everlasting aim)
 
 -------------
 The reference site for echoping is:
@@ -67,6 +64,6 @@ The distribution is from:
 ftp://ftp.internatif.org/pub/unix/echoping
 
 Stephane Bortzmeyer <bortz@users.sourceforge.net>. October 1995 for the
-first version. June 2000 for this one.
+first version. November 2000 for this one.
 
 $Id$

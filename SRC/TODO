@@ -2,6 +2,10 @@ Actual bugs are registered at SourceForge:
 
 http://sourceforge.net/bugs/?group_id=4581
 
+Wishes:
+
+Display other calculations such as standard deviation.
+
 Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
 machines exist.
 
@@ -15,7 +19,7 @@ a page is moved.
 
 gcc's warnings:
 
-1) NetBSD
+1) Free/NetBSD
 
 gcc -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -Wall -c echoping.c
 echoping.c: In function `main':
