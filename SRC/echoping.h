@@ -63,6 +63,9 @@ extern int sys_nerr;
 #ifdef HAVE_TTCP
 #define USE_TTCP 1
 #endif
+#ifdef HAVE_TOS
+#define USE_TOS 1
+#endif
 
 struct timeval null_timeval;
 struct timeval max_timeval;

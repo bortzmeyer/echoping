@@ -30,10 +30,10 @@ unsigned int successes, attempts = 0;
 unsigned int size = DEFLINE;
 unsigned int j = 0;
 struct result
-  {
-    unsigned short valid;
-    struct timeval timevalue;
-  };
+{
+  unsigned short valid;
+  struct timeval timevalue;
+};
 struct result results[MAXNUMBER];
 struct timeval good_results[MAXNUMBER];
 extern int tvcmp ();
@@ -104,7 +104,6 @@ main (argc, argv)
   int tos_requested = 0;
   char *arg_end;
 
-
   null_timeval.tv_sec = 0;
   null_timeval.tv_usec = 0;
   max_timeval.tv_sec = 1000000000;
@@ -161,10 +160,8 @@ main (argc, argv)
 	  fill = *optarg;
 	  fill_requested = 1;
 	  break;
-        case 'p':
-	  priority = (int)strtol( optarg,
-				  &arg_end,
-				  0);
+	case 'p':
+	  priority = (int) strtol (optarg, &arg_end, 0);
 	  if (arg_end == optarg || arg_end == '\0')
 	    {
 	      (void) fprintf (stderr,
@@ -177,16 +174,13 @@ main (argc, argv)
 	      priority_requested = 1;
 	    }
 	  break;
-        case 'P':
-	  tos = (int)strtol( optarg,
-			     &arg_end,
-			     0);
+	case 'P':
+	  tos = (int) strtol (optarg, &arg_end, 0);
 	  if (arg_end == optarg || arg_end == '\0')
 	    {
 	      (void) fprintf (stderr,
 			      "%s: IP type of service (-P) should be "
-			      "numeric.\n",
-			      progname);
+			      "numeric.\n", progname);
 	      exit (1);
 	    }
 	  else
@@ -205,8 +199,7 @@ main (argc, argv)
 	    }
 	  if (size <= 0)
 	    {
-	      (void) fprintf (stderr,
-			      "%s: illegal packet size.\n", progname);
+	      (void) fprintf (stderr, "%s: illegal packet size.\n", progname);
 	      exit (1);
 	    }
 	  size_requested = 1;
@@ -216,8 +209,7 @@ main (argc, argv)
 	  timeout_requested = 1;
 	  if (size <= 0)
 	    {
-	      (void) fprintf (stderr,
-			      "%s: illegal timeout.\n", progname);
+	      (void) fprintf (stderr, "%s: illegal timeout.\n", progname);
 	      exit (1);
 	    }
 	  break;
@@ -226,14 +218,15 @@ main (argc, argv)
 	  if (number > MAXNUMBER)
 	    {
 	      (void) fprintf (stderr,
-			 "%s: number of iterations too large, max is %d.\n",
+			      "%s: number of iterations too large, max is %d.\n",
 			      progname, MAXNUMBER);
 	      exit (1);
 	    }
 	  if (number <= 0)
 	    {
 	      (void) fprintf (stderr,
-			   "%s: illegal number of iterations.\n", progname);
+			      "%s: illegal number of iterations.\n",
+			      progname);
 	      exit (1);
 	    }
 	  break;
@@ -255,7 +248,8 @@ main (argc, argv)
   if (udp && ((port_to_use == USE_CHARGEN) || (port_to_use == USE_HTTP)))
     {
       (void) fprintf (stderr,
-	     "%s: I don't know how to use this port with UDP.\n", progname);
+		      "%s: I don't know how to use this port with UDP.\n",
+		      progname);
       exit (1);
     }
 /*  
@@ -271,7 +265,8 @@ main (argc, argv)
   if (http && (fill_requested))
     {
       (void) fprintf (stderr,
-	     "%s: Filling incompatible with HTTP connections.\n", progname);
+		      "%s: Filling incompatible with HTTP connections.\n",
+		      progname);
       exit (1);
     }
 #ifndef USE_TTCP
@@ -298,10 +293,20 @@ main (argc, argv)
       exit (1);
     }
 #endif
+#ifndef USE_TOS
+  if (priority_requested || tos_requested)
+    {
+      (void) fprintf (stderr,
+		      "%s: Not compiled with Type Of Service support.\n",
+		      progname);
+      exit (1);
+    }
+#endif
   if (http && size_requested)
     {
       (void) fprintf (stderr,
-		      "%s: HTTP and message size specification are incompatible.\n", progname);
+		      "%s: HTTP and message size specification are incompatible.\n",
+		      progname);
       exit (1);
     }
   if (udp && ttcp)
@@ -352,8 +357,8 @@ main (argc, argv)
 	  err_quit ("gethostbyname error for host: %s %s",
 		    server, sys_err_str ());
 	}
-      server_address = *(hostptr->h_addr_list);		/* First item of the
-							 * list */
+      server_address = *(hostptr->h_addr_list);	/* First item of the
+						 * list */
       /*
        * addr = (u_long) *server_address; 
        */
@@ -368,7 +373,7 @@ main (argc, argv)
       ptr = (struct in_addr *) malloc (sizeof (struct in_addr));
       ptr->s_addr = addr;
     }
-  if (!http && !icp)			/* Already find */
+  if (!http && !icp)		/* Already find */
     {
       if (!udp)
 	{
@@ -377,7 +382,7 @@ main (argc, argv)
 	      err_quit ("tcp_open: unknown service: %s/tcp", port_name);
 	    }
 	}
-      else 
+      else
 	{
 	  if ((sp = getservbyname (port_name, "udp")) == NULL)
 	    {
@@ -456,21 +461,20 @@ main (argc, argv)
 	      err_sys ("bind error");
 	    }
 	}
+#ifdef USE_TOS
       if (priority_requested)
 	{
 	  if (verbose)
 	    {
 	      printf ("Setting socket priority to %d (0x%02x)\n",
-		      priority,
-		      (unsigned int)priority);
+		      priority, (unsigned int) priority);
 	    }
-	  if (setsockopt(sockfd,
-			 SOL_SOCKET,
-			 SO_PRIORITY,
-			 (void *)&priority,
-			 (socklen_t)sizeof(priority)))
+	  if (setsockopt (sockfd,
+			  SOL_SOCKET,
+			  SO_PRIORITY,
+			  (void *) &priority, (socklen_t) sizeof (priority)))
 	    {
-	      err_sys("Failed setting socket priority");
+	      err_sys ("Failed setting socket priority");
 	    }
 	}
       if (tos_requested)
@@ -478,30 +482,30 @@ main (argc, argv)
 	  if (verbose)
 	    {
 	      printf ("Setting IP type of service octet to %d (0x%02x)\n",
-		      tos,
-		      (unsigned int)tos);
+		      tos, (unsigned int) tos);
 	    }
-	  if (setsockopt(sockfd,
-			 SOL_IP,
-			 IP_TOS,
-			 (void *)&tos,
-			 (socklen_t)sizeof(tos)))
+	  if (setsockopt (sockfd,
+			  SOL_IP,
+			  IP_TOS, (void *) &tos, (socklen_t) sizeof (tos)))
 	    {
-	      err_sys("Failed setting IP type of service octet");
+	      err_sys ("Failed setting IP type of service octet");
 	    }
 	}
+#endif
       if (verbose)
 	{
 	  if (tcp)
 	    {
-	      printf ("Trying to connect to internet address %s %s to transmit %u bytes...\n",
-		      inet_ntoa (*ptr), (port == 0 ? "" : text_port), n);
+	      printf
+		("Trying to connect to internet address %s %s to transmit %u bytes...\n",
+		 inet_ntoa (*ptr), (port == 0 ? "" : text_port), n);
 	    }
 #ifdef ICP
 	  if (icp)
 	    {
-	      printf ("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
-		      length, inet_ntoa (*ptr));
+	      printf
+		("Trying to send an ICP packet of %u bytes to the internet address %s...\n",
+		 length, inet_ntoa (*ptr));
 	    }
 #endif
 	  else
@@ -582,7 +586,8 @@ main (argc, argv)
 	  if (ttcp)
 	    {
 	      if (sendto (sockfd, sendline, n, MSG_EOF,
-		   (struct sockaddr *) &serv_addr, sizeof (serv_addr)) != n)
+			  (struct sockaddr *) &serv_addr,
+			  sizeof (serv_addr)) != n)
 		err_sys ("sendto error on socket");
 	      if (verbose)
 		{
@@ -594,16 +599,17 @@ main (argc, argv)
 	  if (!udp)
 	    {
 	      /* Write something to the server */
-	      if (writen (sockfd, sendline, n) != n) {
-		if ((nr < 0 || nr != n) && timeout_flag)
-		  {
-		    nr = n;
-		    printf ("Timeout while writing\n");
-		    continue;
-		  }
-		else
-		  err_sys ("writen error on socket");
-	      }
+	      if (writen (sockfd, sendline, n) != n)
+		{
+		  if ((nr < 0 || nr != n) && timeout_flag)
+		    {
+		      nr = n;
+		      printf ("Timeout while writing\n");
+		      continue;
+		    }
+		  else
+		    err_sys ("writen error on socket");
+		}
 	    }
 	  else
 	    {
@@ -719,7 +725,8 @@ main (argc, argv)
 	      if ((nr < 0 || nr != n) && timeout_flag)
 		/* if ((nr < 0 || nr != n) && (errno == EINTR) && timeout_flag) */
 		{
-		  printf ("Timeout while reading (%d byte(s) read)\n", (nr == -1) ? 0 : nr);
+		  printf ("Timeout while reading (%d byte(s) read)\n",
+			  (nr == -1) ? 0 : nr);
 		  nr = n;
 #ifdef FLUSH_OUTPUT
 		  if (fflush ((FILE *) NULL) != 0)
@@ -730,14 +737,16 @@ main (argc, argv)
 		  continue;
 		}
 	      if (nr < 0 || nr != n)
-		err_sys ("readline error: %d bytes read, %d bytes requested", nr, n);
+		err_sys ("readline error: %d bytes read, %d bytes requested",
+			 nr, n);
 	    }
 	  else
 	    /* This is HTTP */
 	    {
 	      if ((nr < 0) && (errno == EINTR) && (timeout_flag))
 		{
-		  printf ("Timeout while reading (%d byte(s) read)\n", (nr == -1) ? 0 : nr);
+		  printf ("Timeout while reading (%d byte(s) read)\n",
+			  (nr == -1) ? 0 : nr);
 #ifdef FLUSH_OUTPUT
 		  if (fflush ((FILE *) NULL) != 0)
 		    {
@@ -841,12 +850,15 @@ printstats ()
 	printf ("Warning: %d message(s) lost (%d %%)\n", attempts - successes,
 		((attempts - successes) * 100) / attempts);
       printf ("Minimum time: %d.%06d seconds (%.0f bytes per sec.)\n",
-      (int) min.tv_sec, (int) min.tv_usec, (double) size / tv2double (min));
+	      (int) min.tv_sec, (int) min.tv_usec,
+	      (double) size / tv2double (min));
       printf ("Maximum time: %d.%06d seconds (%.0f bytes per sec.)\n",
-      (int) max.tv_sec, (int) max.tv_usec, (double) size / tv2double (max));
+	      (int) max.tv_sec, (int) max.tv_usec,
+	      (double) size / tv2double (max));
       tvavg (&total, successes);
       printf ("Average time: %d.%06d seconds (%.0f bytes per sec.)\n",
-	      (int) total.tv_sec, (int) total.tv_usec, (double) size / tv2double (total));
+	      (int) total.tv_sec, (int) total.tv_usec,
+	      (double) size / tv2double (total));
       /* The number of bytes/second, as printed above, is not really
          meaningful: size does not reflect the number of bytes exchanged.
          With echo, N = 2*size, with discard, N = size, with http, N = size + (response)... */
@@ -882,7 +894,8 @@ printstats ()
 	  tvavg (&median, 2);
 	}
       printf ("Median  time: %d.%06d seconds (%.0f bytes per sec.)\n",
-	      (int) median.tv_sec, (int) median.tv_usec, (double) size / tv2double (median));
+	      (int) median.tv_sec, (int) median.tv_usec,
+	      (double) size / tv2double (median));
     }
 }
 

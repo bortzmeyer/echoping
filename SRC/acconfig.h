@@ -6,6 +6,9 @@
 /* Do we have T/TCP? */
 #undef HAVE_TTCP
 
+/* Do we have TOS? */
+#undef HAVE_TOS
+
 /* Is sys_errlist declared? */
 #undef DECL_SYS_ERRLIST
 
