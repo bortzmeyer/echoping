@@ -4,37 +4,39 @@ Some details about echoping
 
 echo service:
 
-echoping assumes the remote host accepts such connections. Experience show that 
-most Internet routers do and many hosts also. However, some Unices are not 
-shipped with this service enabled and, anyway, the administrator is always 
-free to close it (I think they shouldn't). echoping has therefore less chance 
-to succeed than ping or bing. (On a typical Unix box, "echo" service is 
-configured in /etc/inetd.conf but see the CERT advisory 
+echoping assumes the remote host accepts such connections. Experience
+show that most Internet routers do and many hosts also. However, some
+Unices are not shipped with this service enabled and, anyway, the
+administrator is always free to close it (I think they
+shouldn't). echoping has therefore less chance to succeed than ping or
+bing. (On a typical Unix box, "echo" service is configured in
+/etc/inetd.conf but see the CERT advisory
 <http://www.cert.org/advisories/CA-96.01.UDP_service_denial.html>.)
 
 What does it measure?
 
-echoping simply shows the elapsed time, including the time to set up the TCP 
-connection and to transfer the data (but excluding the time for the 
-- possible - DNS call). Therefore, it is unsuitable to physical
-line raw throughput measures (unlike bing). On the other end, the action it 
-performs are close from a HTTP request and it is meaningful to use it 
-(carefully) to measure Web performances. 
+echoping simply shows the elapsed time, including the time to set up
+the TCP connection and to transfer the data (but excluding the time
+for the - possible - DNS call). Therefore, it is unsuitable to
+physical line raw throughput measures (unlike bing). On the other end,
+the action it performs are close from a HTTP request and it is
+meaningful to use it (carefully) to measure Web performances.
 
 UDP and inetd:
 
 With UDP servers you can have surprises: the first test is quite often
-much slower since inetd has to launch the process. After that, the process
-stays a while so the next texts run faster.
+much slower since inetd has to launch the process. After that, the
+process stays a while so the next texts run faster.
 
 A nice example:
 
-There are many, many traps when measuring something on the Internet. Just one
-example: 'echoping -w 0 -n 4 a-sunOS-machine' and you'll see the first test
-succeed in a very short time (if you are close from the machine) and all of
-the others take a much longer time (one second). With '-w 1' (wait one second 
-between tests, the default), everything works fine: it seems the sockets on 
-SunOS need time to recover :-)
+There are many, many traps when measuring something on the
+Internet. Just one example: 'echoping -w 0 -n 4 a-sunOS-machine' and
+you'll see the first test succeed in a very short time (if you are
+close from the machine) and all of the others take a much longer time
+(one second). With '-w 1' (wait one second between tests, the
+default), everything works fine: it seems the sockets on SunOS need
+time to recover :-)
 
 To measure performances on the Internet you can also see:
 
@@ -75,9 +77,9 @@ MS-Windows:
   
 Windows-NT :
 
-echo and other services can (apparently) be provided within
-'Simple TCP/IP Services' which
-can be enabled through the Network Control Panel
+echo and other services can (apparently) be provided within 'Simple
+TCP/IP Services' which can be enabled through the Network Control
+Panel
 
 Web clients:
 
@@ -89,10 +91,10 @@ Web clients:
 
 Use all of them with care, the result is not obvious to interpret.
 
-And don't forget to read RFC 1470 ("Tools for Monitoring and Debugging 
-TCP/IP Internets and Interconnected Devices"), specially its "Benchmark"
-section and the Richard Stevens' books (all of them), published by 
-Addison-Wesley.
+And don't forget to read RFC 1470 ("Tools for Monitoring and Debugging
+TCP/IP Internets and Interconnected Devices"), specially its
+"Benchmark" section and the Richard Stevens' books (all of them),
+published by Addison-Wesley.
 
 
 $Id$
