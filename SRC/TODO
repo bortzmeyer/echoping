@@ -38,9 +38,24 @@ messages, because they expect you to start to read right now.
 
 Make FLUSH a configure-able option.
 
+---------------------------------
+
+Long-term wishes (will need much more work):
+
+Following a suggestion from Tobias Oetiker : the remaining thing is
+parallel operation ... analog to fping, this would be great as it
+would increasse the performance of eechoping greatly ... This would
+require changing echoping and creating a loop around select().
+
+Adding support for a new protocol (say, DNS, with BIND's library),
+requires changing too many things. echoping needs a plug-in API, so we
+can write the new cde outside of echoping and dlopen() it.
+
+------------------------------------
+
 Compiler's warnings:
 
-1) Tru64's cc:
+Tru64's cc:
 cc -DHAVE_CONFIG_H -I. -I. -I.   -D_POSIX_PII_SOCKET  -g -c icp.c
 cc: Warning: icp.c, line 92: In this statement, the referenced type of the pointer value "(int ...)0" is "int", which is not compatible with "unsigned long". (ptrmismatch)
   nr = recvfrom (sockfd, buf, DEFLINE, 0, (struct sockaddr *) 0, (int *) 0);
