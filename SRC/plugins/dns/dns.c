@@ -5,7 +5,7 @@
  */
 
 #define IN_PLUGIN
-#include "../echoping.h"
+#include "../../echoping.h"
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>

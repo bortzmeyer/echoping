@@ -1,0 +1,30 @@
+CCFLAGS=-DHAVE_CONFIG_H -Wall -O0 -g 
+CCDYNAMICFLAGS=${CCFLAGS} -fPIC 
+LDFLAGS=
+LDDYNAMICFLAGS=${LDFLAGS} -shared 
+# Autoconf variables
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+DESTDIR=@libdir@/echoping
+INSTALL=@INSTALL@
+
+%.o: %.c
+	${CC} ${CCDYNAMICFLAGS} -c -o $@ $<
+
+%.so: %.o
+	${CC} ${LDDYNAMICFLAGS} -o $@ $<
+
+prepare-install:
+	@if [ ! -d ${DESTDIR} ]; then \
+		mkdir ${DESTDIR}; \
+	fi
+
+clean: 
+	-rm -f *.o *.so
+
+distclean: clean
+	-rm -f *~
+
+# $Id$
+
+

@@ -120,6 +120,8 @@ main (argc, argv)
 
   unsigned short stop_at_newlines = 1;
 
+  char *newenv, *curenv;
+
 #ifdef OPENSSL
   SSL_METHOD *meth;
   SSL_CTX *ctx = NULL;
@@ -432,6 +434,13 @@ main (argc, argv)
       ext = strstr(plugin_name, ".so");
       if ((ext == NULL) || (strcmp (ext, ".so") != 0)) 
 	sprintf (plugin_name, "%s.so", plugin_name);
+      curenv = getenv ("LD_LIBRARY_PATH");
+      if (! curenv)
+	newenv = PLUGINS_DIR;
+      else
+	sprintf (newenv, "%s:%s", curenv, PLUGINS_DIR);
+      if (setenv ("LD_LIBRARY_PATH", newenv, 1) == -1)
+	  err_sys ("Cannot change LD_LIBRARY_PATH");
       plugin = dlopen (plugin_name, RTLD_NOW);
       if (!plugin)
 	{

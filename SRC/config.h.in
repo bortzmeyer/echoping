@@ -117,6 +117,9 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* Directory where the plugins will be installed */
+#undef PLUGINS_DIR
+
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 

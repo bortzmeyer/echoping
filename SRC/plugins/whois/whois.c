@@ -5,7 +5,7 @@
  */
 
 #define IN_PLUGIN
-#include "../echoping.h"
+#include "../../echoping.h"
 
 #define MAX_REQUEST 256
 

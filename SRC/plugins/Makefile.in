@@ -1,31 +1,15 @@
-CCFLAGS=-DHAVE_CONFIG_H -Wall -O0 -g 
-CCDYNAMICFLAGS=${CCFLAGS} -fPIC 
-LDFLAGS=
-LDDYNAMICFLAGS=${LDFLAGS} -shared -lpq -lresolv # TODO: add the flags only when necessary
+SUBDIRS=@subdirs@
 
-PLUGINS=random.so whois.so postgres dns.so
+all:
+ifneq (${SUBDIRS},)
+	@for subdir in ${SUBDIRS}; do \
+		(cd $$subdir && ${MAKE} HAVE_CONFIG_H=1 $@) \
+	done
+endif
 
-all: $(PLUGINS)
-
-postgres: postgresql.so
-
-%.o: %.c
-	${CC} ${CCDYNAMICFLAGS} -c -o $@ $<
-
-%.so: %.o
-	${CC} ${LDDYNAMICFLAGS} -o $@ $<
-
-test-postgresql: test-postgresql.o
-	${CC} -o $@ -l pq $<
-
-clean: 
-	-rm -f *.o *.so program
-
-distclean: clean
-	-rm -f *~
-
-.SECONDARY: ${OBJECTS}
-
-# $Id$
-
-
+install:
+ifneq (${SUBDIRS},)
+	@for subdir in ${SUBDIRS}; do \
+		(cd $$subdir && ${MAKE} $@) \
+	done
+endif

@@ -257,6 +257,20 @@ if test "$GCC" = yes; then
         CFLAGS="$CFLAGS -Wall"
 fi
 
+interpolate() {  
+  old=$1
+  eval new=$old
+  AC_MSG_WARN(DEBUG-INTERPOL $new)
+  if test "$new" != "$old" ; then
+	interpolate $new
+  else 
+     echo $new
+  fi
+}
+dnl TODO: the following is broken because installation prefix can be changed at instal-time,
+dnl not compilation time.
+plugins_dir=`interpolate '$prefix/lib/echoping'`
+AC_DEFINE(PLUGINS_DIR, $plugins_dir, [Directory where the plugins will be installed])
 AC_CONFIG_SUBDIRS(plugins)
 AC_OUTPUT(Makefile)
 

@@ -5990,6 +5990,23 @@ if test "$GCC" = yes; then
         CFLAGS="$CFLAGS -Wall"
 fi
 
+interpolate() {
+  old=$1
+  eval new=$old
+  { echo "$as_me:$LINENO: WARNING: DEBUG-INTERPOL $new" >&5
+echo "$as_me: WARNING: DEBUG-INTERPOL $new" >&2;}
+  if test "$new" != "$old" ; then
+	interpolate $new
+  else
+     echo $new
+  fi
+}
+plugins_dir=`interpolate '$libdir/echoping'`
+
+cat >>confdefs.h <<_ACEOF
+#define PLUGINS_DIR $plugins_dir
+_ACEOF
+
 
 
 subdirs="$subdirs plugins"

@@ -1,0 +1,21 @@
+PLUGIN=dns.so
+include ../Makefile.plugins
+
+ifeq (@DNS_BUILD@,1)
+all: ${PLUGIN}
+else
+all:
+	@echo "Not building the DNS plugin"
+endif
+
+ifeq (@DNS_BUILD@,1)
+install: all prepare-install
+	${INSTALL} ${PLUGIN} ${DESTDIR}
+else
+all:
+	@echo "Not installing the DNS plugin"
+endif
+
+# $Id$
+
+

@@ -1,0 +1,23 @@
+PLUGIN=postgresql.so
+
+include ../Makefile.plugins
+
+ifeq (@PGSQL_BUILD@,1)
+all: ${PLUGIN}
+else
+all:
+	@echo "Not building the PostgreSQL plugin"
+endif
+
+ifeq (@PGSQL_BUILD@,1)
+install: all prepare-install
+	${INSTALL} ${PLUGIN} ${DESTDIR}
+else
+all:
+	@echo "Not installing the PostgreSQL plugin"
+endif
+
+
+# $Id$
+
+
