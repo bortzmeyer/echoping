@@ -18,7 +18,7 @@ unsigned short timeout_flag;
 /*
  * An option to define only if you want to drive echoping from another
  * process. Useless but harmless otherwise. In practice, while OSF/1 is happy
- * with it, SunOS refuses to use fflush on a NULL and Linux fails.
+ * with it, SunOS refuses to use fflush on a NULL and Linux fails. 
  */
 #undef FLUSH_OUTPUT
 
@@ -538,7 +538,7 @@ main (argc, argv)
 #ifdef HTTP
   if (http)
     {
-      sendline = make_http_sendline (url, server, atoi(pbuf), nocache);
+      sendline = make_http_sendline (url, server, atoi (pbuf), nocache);
       /* printf ("DEBUG: sending %s\n", sendline); */
     }
   else
@@ -1167,9 +1167,7 @@ main (argc, argv)
 #endif
 #ifdef GNUTLS
 	  if (ssl)
-	    {
-	      gnutls_global_deinit ();
-	    }
+	    shutdown (sockfd, SHUT_RDWR);
 	  else
 #endif
 	    fclose (channel.fs);
@@ -1253,13 +1251,19 @@ main (argc, argv)
 	    }
 #endif
 	}
-    }
+    }				/* End of main loop */
   printstats ();
   if (successes >= 1)
     exit (0);
   else
     exit (1);
-  /* It would be nice to clean here (SSL, etc) */
+  /* It would be nice to clean here (OpenSSL, etc) */
+#ifdef GNUTLS
+  if (ssl)
+    {
+      gnutls_global_deinit ();
+    }
+#endif
 }
 
 
