@@ -8,5 +8,5 @@ echo " you may not have an appropriate server."
 
 ./echoping localhost
 ./echoping -d localhost
-./echoping -c localhost
+#./echoping -c localhost
 #./echoping -h / localhost
