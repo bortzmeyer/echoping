@@ -17,6 +17,9 @@ install:
 	@echo "Not installing the whois plugin"
 endif
 
+distdir:	
+	test -d ../${top_distdir}/plugins/whois || mkdir ../${top_distdir}/plugins/whois
+
 # $Id$
 
 

@@ -17,6 +17,8 @@ install:
 	@echo "Not installing the PostgreSQL plugin"
 endif
 
+distdir:	
+	test -d ../${top_distdir}/plugins/postgresql || mkdir ../${top_distdir}/plugins/postgresql
 
 # $Id$
 

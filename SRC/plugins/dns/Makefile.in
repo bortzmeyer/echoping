@@ -16,6 +16,9 @@ install:
 	@echo "Not installing the DNS plugin"
 endif
 
+distdir:	
+	test -d ../${top_distdir}/plugins/dns || mkdir ../${top_distdir}/plugins/dns
+
 # $Id$
 
 

@@ -13,3 +13,10 @@ ifneq (${SUBDIRS},)
 		(cd $$subdir && ${MAKE} $@) \
 	done
 endif
+
+distdir:
+ifneq (${SUBDIRS},)
+	@for subdir in ${SUBDIRS}; do \
+		(cd $$subdir && ${MAKE} $@) \
+	done
+endif

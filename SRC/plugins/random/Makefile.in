@@ -17,6 +17,10 @@ install:
 	@echo "Not installing the random plugin"
 endif
 
+distdir:	
+	test -d ../${top_distdir}/plugins/random || mkdir ../${top_distdir}/plugins/random
+	cp random.c Makefile.in configure.ac configure ../${top_distdir}/plugins/random
+
 # $Id$
 
 
