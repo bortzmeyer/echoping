@@ -38,11 +38,12 @@ SunOS need time to recover :-)
 
 A graphical interface:
 
-If you have the Perl/Tk <http://pubweb.bnl.gov/~ptk/> package, you can use a 
-(quite rough) windowing interface, "echoping.ptk". To use it, you should 
-define FLUSH_OUTPUT at the beginning of echoping.c (this seems to work
-on only a few Unices, including DEC's OSF/1). This interface has not yet
-been updated for echoping 2's new features (like HTTP support).
+If you have the Perl/Tk <http://pubweb.bnl.gov/~ptk/> package, you can
+use a (quite rough and completely unmaintained) windowing interface,
+"echoping.ptk". To use it, you should define FLUSH_OUTPUT at the
+beginning of echoping.c (this seems to work on only a few Unices,
+including DEC's OSF/1). This interface has not yet been updated for
+echoping 2's new features (like HTTP support).
 
 To measure performances on the Internet you can also see:
 
@@ -59,7 +60,7 @@ Unix:
 - spray is a tool which I dont't know very well. It is available on some 
   machines (Sun, OSF/1).
 I've also heard of but never tried:
-- NetPerf <http://www.cup.hp.com/netperf/NetperfPage.html>
+- NetPerf <http://www.netperf.org/netperf/NetperfPage.html>
 - a suite of Bandwidth Measuring programs from gnn@netcom.com 
   <ftp://ftp.netcom.com/~ftp/gnn/bwmeas-0.3.tar.Z>. These are several 
   programs that measure bandwidth and jitter over several kinds of 
@@ -76,6 +77,10 @@ MS-Windows:
 
 - WSNUTIL. Seems to be an echo client and server. 
   <http://www.ccs.org/winsock/xref-e.html#echo_clients>
+- echox32. An echo server.
+  <http://www.winsite.com/info/pc/win95/misc/echox32.zip/>
+- cfinger. An echo client and server.
+  <http://www.winsite.com/info/pc/win3/winsock/cfing13b.zip/>
   
 Windows-NT :
 
@@ -86,8 +91,9 @@ can be enabled through the Network Control Panel
 Web clients:
 
 - You can ping or traceroute on the Web. See 
-  <http://hplyot.obspm.fr/cgi-bin/nph-traceroute> or
-  <http://www.fr.net/internet/>.
+  <http://www.freenix.org/cgi-bin/traceroute.iphtml>,
+  <http://www.tracert.com/> or
+  <http://www.fr.net/internet/trace.html>.
 
 
 Use all of them with care, the result is not obvious to interpret.
@@ -96,3 +102,6 @@ And don't forget to read RFC 1470 ("Tools for Monitoring and Debugging
 TCP/IP Internets and Interconnected Devices"), specially its "Benchmark"
 section and the Richard Stevens' books (all of them), published by 
 Addison-Wesley.
+
+
+$Id$
