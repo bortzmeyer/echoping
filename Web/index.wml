@@ -17,7 +17,7 @@ hurry :-) <A HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if 
 <P>or use the options before the machine name (see the man page).
 
 <P>See the DETAILS file for various traps when benchmarking networks,
-specially with this program
+specially with this program.
 
 <P>In any case, be polite: don't bother the remote host with many repeated 
 requests, especially with large size. Ask for permission if you often
@@ -65,8 +65,9 @@ Elapsed time: 0.686792 seconds
 
 </OL>
 
-<P>(The exit status is set if there is any problem, so you can use echoping
-to test repeatedly a Web server, to be sure it runs fine.)
+<P>The exit status is set if there is any problem, so you can use echoping
+to test repeatedly a Web server, to be sure it runs fine. Or you can
+display statistics like <A HREF="http://monitor.internatif.org/web.html">at Internatif</A>.
 
 <P>To do for a future version:
 
