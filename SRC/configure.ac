@@ -100,7 +100,6 @@ AC_ARG_WITH(gnutls,
  fi],
  dnl Default: disable it 
 ) 
-
 dnl TODO: test if the getopt variable optreset exists and, if it
 dnl does, we can use getopt (Free BSDs and MacOS X). This implies to
 dnl maintain the two versions, popt and getopt, while echoping has 
@@ -309,7 +308,7 @@ AC_OUTPUT(Makefile echoping.1)
 
 AC_DEFUN([DISPLAY_SETTING],
 [
-AC_MSG_CHECKING($1)
+echo $ECHO_N $1 ": "
 if [ eval 'test "$$1" = "1"' > /dev/null]; then
 	AC_MSG_RESULT( enabled)
 else 
@@ -328,6 +327,7 @@ DISPLAY_SETTING(LIBIDN)
 DISPLAY_SETTING(TTCP)
 DISPLAY_SETTING(TOS)
 DISPLAY_SETTING(PRIORITY)
+
 
 
 

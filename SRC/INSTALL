@@ -34,6 +34,7 @@ may not be available on your platform).
 --enable-max-iterations=MAX   (limit the number of iterations (-n option for
           repeated tests) to MAX)
 --enable-max-request-size=MAX   (limit the size of the request (-s option) to MAX)
+--enable-plugin=LIST (list of plugins to build)
 
 There is no option to disable IPv6. echoping now uses the new (RFC
 3493, but first specified in RFC 2133 in september 1997) socket

@@ -18940,7 +18940,6 @@ _ACEOF
  fi
 fi;
 
-
 # Check whether --with-popt or --without-popt was given.
 if test "${with_popt+set}" = set; then
   withval="$with_popt"
@@ -23753,8 +23752,7 @@ echo ""
 echo "Configuration of echoping:"
 
 
-echo "$as_me:$LINENO: checking HTTP" >&5
-echo $ECHO_N "checking HTTP... $ECHO_C" >&6
+echo $ECHO_N HTTP ": "
 if  eval 'test "$HTTP" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23764,8 +23762,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking ICP" >&5
-echo $ECHO_N "checking ICP... $ECHO_C" >&6
+echo $ECHO_N ICP ": "
 if  eval 'test "$ICP" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23775,8 +23772,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking OPENSSL" >&5
-echo $ECHO_N "checking OPENSSL... $ECHO_C" >&6
+echo $ECHO_N OPENSSL ": "
 if  eval 'test "$OPENSSL" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23786,8 +23782,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking GNUTLS" >&5
-echo $ECHO_N "checking GNUTLS... $ECHO_C" >&6
+echo $ECHO_N GNUTLS ": "
 if  eval 'test "$GNUTLS" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23797,8 +23792,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking SMTP" >&5
-echo $ECHO_N "checking SMTP... $ECHO_C" >&6
+echo $ECHO_N SMTP ": "
 if  eval 'test "$SMTP" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23808,8 +23802,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking LIBIDN" >&5
-echo $ECHO_N "checking LIBIDN... $ECHO_C" >&6
+echo $ECHO_N LIBIDN ": "
 if  eval 'test "$LIBIDN" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23819,8 +23812,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking TTCP" >&5
-echo $ECHO_N "checking TTCP... $ECHO_C" >&6
+echo $ECHO_N TTCP ": "
 if  eval 'test "$TTCP" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23830,8 +23822,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking TOS" >&5
-echo $ECHO_N "checking TOS... $ECHO_C" >&6
+echo $ECHO_N TOS ": "
 if  eval 'test "$TOS" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23841,8 +23832,7 @@ echo "${ECHO_T}disabled" >&6
 fi
 
 
-echo "$as_me:$LINENO: checking PRIORITY" >&5
-echo $ECHO_N "checking PRIORITY... $ECHO_C" >&6
+echo $ECHO_N PRIORITY ": "
 if  eval 'test "$PRIORITY" = "1"' > /dev/null; then
 	echo "$as_me:$LINENO: result: enabled" >&5
 echo "${ECHO_T}enabled" >&6
@@ -23850,6 +23840,7 @@ else
 	echo "$as_me:$LINENO: result: disabled" >&5
 echo "${ECHO_T}disabled" >&6
 fi
+
 
 
 

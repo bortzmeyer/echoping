@@ -15,7 +15,7 @@ init (const int argc, const char *argv[])
   struct timeval tv;
   (void) gettimeofday (&tv, (struct timezone *) NULL);
   srand (tv.tv_usec);
-  return NULL;
+  return "7"; /* Not used, just to say we use the cooked interface */
 }
 
 void start ()

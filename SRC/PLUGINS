@@ -9,7 +9,7 @@ addrinfo.
 But some libraries (typically, the one used by the DBMS) do not work
 on struct addrinfo but on strings such as "dbname=test
 hostname=foo.bar". Plugins using these libraries will have to use the
-raw interface.
+raw interface. The host name given as argument is ignored.
 
 You indicate to echoping wether you use the raw interface or the
 cooked one by returning a port name or NULL from the init() function.
