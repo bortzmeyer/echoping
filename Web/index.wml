@@ -2,8 +2,13 @@
 
 <!-- $Id$ -->
 
+<P><em>Recent news:</em> a beta version of the future echoping is <A
+HREF="ftp://ftp.internatif.org/pub/unix/echoping/">available</A>. This
+version, 6.0, will be the first with plugins, so you can extend
+echoping with any protocol you like and/or use.
+
 <P>"echoping" is a small program to test (approximatively) performances of a 
-remote host by sending it TCP "echo" (or other protocol) packets.
+remote host by sending it TCP "echo" (or other protocol, such as HTTP) packets.
 
 <P>To install it, see the INSTALL file. Or type "<code>./configure && make
 && sudo make install</code>" if you're in a
@@ -86,9 +91,10 @@ Elapsed time: 0.686792 seconds
 <P>The exit status is set if there is any problem, so you can use
 echoping to test repeatedly a Web server, to be sure it runs fine (<A
 HREF="http://people.ee.ethz.ch/~oetiker/webtools/smokeping/">SmokePing</A>
-does it). Or you can display statistics like <A
-HREF="https://monitor.netaktiv.com/MRTG/web.html">at Netaktiv</A> (see
-the <A HREF="echoping-web.sh">shell script</A> which runs echoping).
+does it). Or you can display statistics with <A
+HREF="http://people.ee.ethz.ch/~oetiker/webtools/mrtg/">MRTG</A>. (see
+an example of a <A HREF="echoping-web.sh">shell script</A> which runs echoping
+from MRTG).
 
 <P>To do for a future version: see the TODO file.
 
