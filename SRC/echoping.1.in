@@ -130,7 +130,7 @@ interesting constants for setting Type Of Service.
 Load the given plugin. Quite experimental. The plugin is first
 searched in the normal library directories (see 
 .BR ld.so(8)
-) then in /usr/local/lib/echoping. The documentation for a
+) then in @plugins_dir@. The documentation for a
 given plugin is in 
 .BR echoping_PLUGINNAME(1)
 . The plugin-specific options appear
@@ -219,7 +219,7 @@ See the TODO file or SourceForge bug tracking system at
 See the README for information about other network measurements programs.
 
 .SH FILES
-.IP "\fB/usr/local/lib/echoping \fR" 4
+.IP "\fB@plugins_dir@ \fR" 4
 Plugins directory
 
 .SH AUTHOR
