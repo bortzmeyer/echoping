@@ -7,6 +7,8 @@ echo "A message such as 'connection refused' is not always an error"
 echo " you may not have an appropriate server."
 
 ./echoping localhost
+./echoping -u localhost
 ./echoping -d localhost
+./echoping -d -u localhost
 #./echoping -c localhost
 #./echoping -h / localhost
