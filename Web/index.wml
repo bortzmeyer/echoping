@@ -34,6 +34,7 @@ test hosts which aren't yours.
 
 <UL>
 <LI>Supports IPv6 as well as IPv4,
+<LI>Supports IDN (Unicode domain names like <CODE>café.gennic.net</CODE>),
 <LI>uses the protocols echo, discard, chargen or HTTP,
 <LI>can use cryptographic connections with HTTP,
 <LI>uses UDP instead of TCP for the protocols which accept it (like echo),
