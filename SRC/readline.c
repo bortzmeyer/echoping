@@ -18,10 +18,12 @@ readline (fs, ptr, maxlen, ln)
   char *rc;
   int r;
 
+  /* Reading with fgets or fread instead of read
+     one-character-at-a-time is more than ten times faster, on a local
+     server. */
   if (ln)
     {
       rc = fgets (ptr, maxlen + 1, fs);
-      /* printf ("DEBUG: %d bytes asked, I read \"%s\"\n", maxlen, rc); */
       if (rc == NULL)
 	{
 	  return (-1);
@@ -84,13 +86,11 @@ SSL_readline (sslh, ptr, maxlen, ln)
       if (SSL_buffer[i] == '\n') 
 	buf_ptr++;
       *ptr = '\0';
-      /* printf ("DEBUG: %d bytes asked, I read \"%d\", newline was at
-	 %d\n", maxlen, rc, i); */
       return (i-oi);
     }
   else {
     /* Since OpenSSL reads at most 4096 characters, we should loop
-       here like we do in non-SSSL readline */
+       here like we do in non-SSL readline */
     if ((buf_end == 0) || (buf_ptr == buf_end)) {
       rc = SSL_read (sslh, ptr, maxlen);
       buf_end = 0;
