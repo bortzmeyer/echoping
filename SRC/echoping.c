@@ -49,7 +49,7 @@ main (argc, argv)
   signed char ch;
 
   int sockfd;
-  FILE *files;
+  FILE *files = NULL;
   CHANNEL channel;
   struct hostent *hostptr;
   struct sockaddr_in serv_addr;
@@ -105,7 +105,7 @@ main (argc, argv)
 #ifdef OPENSSL
   SSL_METHOD *meth;
   SSL_CTX* ctx = NULL;
-  SSL*     sslh;
+  SSL*     sslh = NULL;
 #endif
 
   null_timeval.tv_sec = 0;
