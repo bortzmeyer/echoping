@@ -14,6 +14,9 @@ MORE_TESTS=test-echoping-crypto
 test: check
 tests: check
 
+debug: 
+	$(MAKE) CFLAGS='-g -O0'
+
 upload: dist
 	@echo "Have you updated ChangeLog and tagged (cvs tag RELEASE_x_x_x) everything?"
 	@echo "If so, make upload-force"
