@@ -2,6 +2,7 @@ dnl $Id$
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
+AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE(echoping, 4.0-BETA)
 AM_CONFIG_HEADER(config.h)
 
