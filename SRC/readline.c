@@ -65,6 +65,7 @@ SSL_readline (sslh, ptr, maxlen, ln)
      unsigned short ln;
 {
   int rc = 0;
+  int n = 0;
   int i, oi;
   if (ln)
     {
@@ -93,23 +94,27 @@ SSL_readline (sslh, ptr, maxlen, ln)
     }
   else
     {
-      /* Since OpenSSL reads at most 4096 characters, we should loop
-         here like we do in non-SSSL readline */
-      if ((buf_end == 0) || (buf_ptr == buf_end))
-	{
-	  rc = SSL_read (sslh, ptr, maxlen);
-	  buf_end = 0;
-	  buf_ptr = 0;
-	}
-      else
-	{
-	  for (i = buf_ptr; i < maxlen && i <= buf_end; i++)
-	    {
-	      *ptr++ = SSL_buffer[i];
-	      rc++;
-	    }
-	}
-      return rc;
+      /* OpenSSL reads at most 4096 characters */
+      rc = 1; /* Just to avoid exiting too soon */
+      while (n < maxlen && rc != 0) {
+	if ((buf_end == 0) || (buf_ptr > buf_end))
+	  {
+	    rc = SSL_read (sslh, ptr, maxlen);
+	    buf_end = 0;
+	    buf_ptr = 0;
+	  }
+	else
+	  {
+	    for (i = buf_ptr; i < maxlen && i <= buf_end; i++)
+	      {
+		*ptr++ = SSL_buffer[i];
+		rc++;
+	      }
+	    buf_ptr = i;
+	  }
+	n = n + rc;
+      }
+      return n;
     }
 }
 #endif

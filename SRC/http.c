@@ -134,6 +134,7 @@ read_from_server (CHANNEL fs, short ssl)
   else
     nr = SSL_readline (fs.ssl, big_recvline, MAXTOREAD, FALSE);
 #endif
+  /* printf ("DEBUG: reading body \"%s\"\n (%d chars)\n", big_recvline, nr);  */
   if ((nr < 2) && (errno == EINTR))	/* Probably a timeout */
     return -1;
   if (nr < 2)			/* Hmm, if the body is empty, we'll

@@ -810,6 +810,12 @@ main (argc, argv)
 	    printf ("%d bytes read from server.\n", nr);
 	}
       /* That's all, folks */
+      if (http) {
+	if (ssl) 
+	  SSL_shutdown (channel.ssl);
+	else
+	  fclose (channel.fs);
+      }
       close (sockfd);
 
       (void) gettimeofday (&newtv, (struct timezone *) NULL);
