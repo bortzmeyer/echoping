@@ -55,7 +55,7 @@ init (int argc, char **argv)
     }
   hostname = (char *) poptGetArg (poptcon); /* Not used */
   domain = (char *) poptGetArg (poptcon);
-  if (domain == NULL)
+  if (domain == NULL || !strcmp(domain, ""))
     domquery_usage ("Mandatory request missing");
 
   return NULL;
@@ -70,6 +70,8 @@ start_raw() {
   /* Initialize our error-handling environment. */
   xmlrpc_env_init (&env);
 
+      printf ("env initialized\n");
+
 }
 
 int
@@ -77,19 +79,23 @@ execute ()
 {
   xmlrpc_value *result;
   xmlrpc_value *domain_h;
-  xmlrpc_bool found;
+  xmlrpc_int32 found;
   xmlrpc_value *error;
-  char *dst;
-  dst = HTAnchor_findAddress(ENDPOINT);
+  /*  char *dst;
+      dst = HTAnchor_findAddress(ENDPOINT); */
+      printf ("Ready to call\n");
   /* Call the server */
   result = xmlrpc_client_call (&env, ENDPOINT, "domquery", "(s)", domain);
   die_if_fault_occurred (&env);
+      printf ("Call done, now parsing\n");
 
-  xmlrpc_parse_value (&env, result, "{{},b,[]*}", "domain", domain_h, "found", &found, "error", error);
+  xmlrpc_parse_value (&env, result, "{s:i,*}", "found", &found);
   die_if_fault_occurred (&env);
   if (found)
     {
       printf ("%s is there\n", domain);
+  xmlrpc_parse_value (&env, result, "{s:S,i,s:A,*}", "domain", &domain_h, "found", &found, "error", &error);
+  die_if_fault_occurred (&env);
     }
   /* Dispose of our result value. */
   xmlrpc_DECREF (result);
