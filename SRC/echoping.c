@@ -44,7 +44,8 @@ main (argc, argv)
   extern char *optarg;
   extern int optind;
 
-  /* TODO: Sun's C compiler does not know "signed". And getopt returns an int, anyway */
+  /* TODO: Sun's C compiler does not know "signed" (bug #623444). And
+     getopt returns an int, anyway */
   signed char ch;
 
   int sockfd;
