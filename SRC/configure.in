@@ -78,6 +78,10 @@ osf*)
 	# the following workaround. 
         CPPFLAGS="$CPPFLAGS -D_POSIX_PII_SOCKET"
         ;;
+*darwin*)
+ 	# See bug #748145 and #765777
+        CPPFLAGS="$CPPFLAGS -D_BSD_SOCKLEN_T_=int -no-cpp-precomp"
+	;;
 esac
 
 dnl Checks for typedefs, structures, and compiler characteristics.

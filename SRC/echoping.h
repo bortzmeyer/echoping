@@ -118,9 +118,9 @@ struct timeval max_timeval;
 #define	ECHO_TCP_PORT	"echo"
 #define	DISCARD_TCP_PORT	"discard"
 #define	CHARACTER_GENERATOR_TCP_PORT	"chargen"
-#define DEFAULT_HTTP_TCP_PORT "HTTP"
-#define DEFAULT_HTTPS_TCP_PORT "HTTPS"
-#define DEFAULT_ICP_UDP_PORT "ICP"
+#define DEFAULT_HTTP_TCP_PORT "http"
+#define DEFAULT_HTTPS_TCP_PORT "https"
+#define DEFAULT_ICP_UDP_PORT "icp"
 
 #ifdef HTTP
 /* Use the old HTTP 1.0 protocol? If yes, set HTTP10 to 1*/
