@@ -1,6 +1,6 @@
-#ifdef HTTP
-
 #include "echoping.h"
+
+#ifdef HTTP
 #include "HTParse.h"
 
 

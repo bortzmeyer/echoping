@@ -5,3 +5,8 @@
 /* Is sys_nerr declared? */
 #undef DECL_SYS_NERR
 
+/* HTTP support */
+#undef HTTP 
+
+/* ICP support */
+#undef ICP 
