@@ -41,7 +41,6 @@ make debug
 gdb ./echoping
 run the-options-that-exhibits-the-problem
 where
-list
 print the-variables-displayed
 
 
