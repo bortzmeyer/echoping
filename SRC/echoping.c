@@ -366,10 +366,19 @@ main (argc, argv)
       port_name = DEFAULT_HTTPS_TCP_PORT;
     }
 #ifndef USE_TOS
-  if (priority_requested || tos_requested)
+  if (tos_requested)
     {
       (void) fprintf (stderr,
 		      "%s: Not compiled with Type Of Service support.\n",
+		      progname);
+      exit (1);
+    }
+#endif
+#ifndef USE_PRIORITY
+  if (priority_requested)
+    {
+      (void) fprintf (stderr,
+		      "%s: Not compiled with socket priority support.\n",
 		      progname);
       exit (1);
     }
@@ -553,7 +562,7 @@ main (argc, argv)
 	      err_sys ("bind error");
 	    }
 	}
-#ifdef USE_TOS
+#ifdef USE_PRIORITY
       if (priority_requested)
 	{
 	  if (verbose)
@@ -569,6 +578,8 @@ main (argc, argv)
 	      err_sys ("Failed setting socket priority");
 	    }
 	}
+#endif
+#if USE_TOS
       if (tos_requested)
 	{
 	  if (verbose)

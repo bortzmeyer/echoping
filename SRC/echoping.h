@@ -62,6 +62,10 @@
 #define       INADDR_NONE (-1)
 #endif
 
+#ifndef SOL_IP
+#define SOL_IP (getprotobyname("ip")->p_proto)
+#endif
+
 /* These entities should be in errno.h but some systems do not define
    them. */
 #ifdef DECL_SYS_ERRLIST
@@ -80,6 +84,9 @@ extern int sys_nerr;
 #endif
 #ifdef HAVE_TOS
 #define USE_TOS 1
+#endif
+#ifdef HAVE_SOCKET_PRIORITY
+#define USE_PRIORITY 1
 #endif
 
 

@@ -9,6 +9,9 @@
 /* Do we have TOS? */
 #undef HAVE_TOS
 
+/* Do we have socket priority? */
+#undef HAVE_SOCKET_PRIORITY
+
 /* Is sys_errlist declared? */
 #undef DECL_SYS_ERRLIST
 

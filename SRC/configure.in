@@ -102,19 +102,18 @@ AC_ARG_ENABLE(ttcp,
  fi)
 
 dnl Type Of Service
-dnl Linux only, it seems. Anyone knows a standard way to do so?
 AC_MSG_CHECKING([Type Of Service])
 AC_TRY_COMPILE(
  [#include <sys/types.h>
-  #include <sys/socket.h>
+  #include <netinet/in.h>
  ],
- [int foobar = SO_PRIORITY;],
- [AC_DEFINE(TOS)
+ [int foobar = IP_TOS;],
+ [AC_DEFINE(HAVE_TOS)
   ac_have_tos="yes"],
- ac_have_tos=no)
+ ac_have_tos="no")
 AC_MSG_RESULT($ac_have_tos)
 AC_ARG_ENABLE(tos,
- [--enable-tos   TOS (Type Of Service - and socket priority) support],
+ [--enable-tos   TOS (Type Of Service) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_tos = "yes"; then
      AC_DEFINE(HAVE_TOS)
@@ -127,6 +126,34 @@ AC_ARG_ENABLE(tos,
  if test $ac_have_tos = "yes"; then
    AC_DEFINE(HAVE_TOS)
    TOS=1
+ fi)
+
+dnl Socket priority
+dnl Linux only, it seems. Anyone knows a standard way to do so?
+AC_MSG_CHECKING([Socket priority])
+AC_TRY_COMPILE(
+ [#include <sys/types.h>
+  #include <sys/socket.h>
+ ],
+ [int foobar = SO_PRIORITY;],
+ [AC_DEFINE(HAVE_SOCKET_PRIORITY)
+  ac_have_priority="yes"],
+ ac_have_priority="no")
+AC_MSG_RESULT($ac_have_priority)
+AC_ARG_ENABLE(priority,
+ [--enable-priority   PRIORITY (socket priority) support],
+ [if test "$enableval" = "yes"; then
+   if test $ac_have_priority = "yes"; then
+     AC_DEFINE(HAVE_SOCKET_PRIORITY)
+     PRIORITY=1
+   else
+     AC_MSG_WARN([No socket priority support on this system, request ignored])
+   fi
+  fi],
+ dnl Default: enable it if supported
+ if test $ac_have_priority = "yes"; then
+   AC_DEFINE(HAVE_SOCKET_PRIORITY)
+   PRIORITY=1
  fi)
 
 if test "$GCC" = yes; then
@@ -153,6 +180,8 @@ DISPLAY_SETTING(OPENSSL)
 DISPLAY_SETTING(SMTP)
 DISPLAY_SETTING(TTCP)
 DISPLAY_SETTING(TOS)
+DISPLAY_SETTING(PRIORITY)
+
 
 
 
