@@ -1,6 +1,6 @@
 if DNSBUILD
 pkglib_LTLIBRARIES = dns.la
 dns_la_SOURCES = dns.c
-dns_la_LDFLAGS = -module
+dns_la_LDFLAGS = -module -lresolv
 endif
 
