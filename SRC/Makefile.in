@@ -472,6 +472,7 @@ upload: dist
 
 upload-force: dist
 	scp $(distdir).tar.gz  bortz@ftp.internatif.org:'~ftp/pub/unix/echoping'
+	rm -f upload.log
 	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -20,6 +20,7 @@ upload: dist
 
 upload-force: dist
 	scp $(distdir).tar.gz  bortz@ftp.internatif.org:'~ftp/pub/unix/echoping'
+	rm -f upload.log
 	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
 
 EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
