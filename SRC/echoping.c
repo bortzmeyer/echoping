@@ -427,6 +427,7 @@ main (argc, argv)
   server = argv[0];
 #ifdef IDN
   locale_server = server;
+  /* TODO: segfaults if the locale is invalid */
   utf8_server = stringprep_locale_to_utf8 (server);
   server = utf8_server;
 #endif
