@@ -11,7 +11,7 @@ Wishes:
 Display other calculations such as kurtosis.
 
 Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
-machines exist.
+machines exist. Timeouts on T/TCP connections are a bit experimental.
 
 TCP timeout with long packets seem to confuse Cisco routers. Does
 someone can reproduce it and perform tests? It seems to work now.
@@ -22,14 +22,13 @@ a page is moved.
 UDP isn't really useable with large packets because of sockets
 limitations and the lack of workaround code.
 
-If a Web page is empty, echoping
-will display meaningless messages.
-
-Timeouts on T/TCP connections are a bit experimental. 
+If a Web page is empty, echoping will display meaningless messages.
 
 Since echoping writes everything to the server, then begins to read
 the reply, some echo servers will timeout if you send very long
 messages, because they expect you to start to read right now.
+
+Make FLUSH a configure-able option.
 
 Compiler's warnings:
 
