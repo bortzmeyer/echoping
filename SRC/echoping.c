@@ -869,6 +869,12 @@ if (! udp && ! ssl)
 	}
       if (number > 1)
 	{
+#ifdef OPENSSL
+	  if (ssl) 
+	    {
+	      SSL_clear(sslh);
+	    } 
+#endif
 	  sleep (wait);
 	}
     }
