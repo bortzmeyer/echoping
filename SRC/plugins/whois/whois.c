@@ -1,5 +1,5 @@
 /*
- * Whois (RFC 954) plugin. 
+ * Whois (RFC 3912) plugin. 
  *
  * $Id$
  */
