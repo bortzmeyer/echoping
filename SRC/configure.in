@@ -2,7 +2,7 @@ dnl $Id$
 
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
-dnl AC_CANONICAL_HOST
+AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE(echoping, 4.2.0-BETA)
 AM_CONFIG_HEADER(config.h)
 
@@ -57,6 +57,14 @@ dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(sys/time.h unistd.h)
 CF_SYS_ERRLIST
+
+case $host_os in
+osf*)
+	# Stupid bug appeared in Tru64-OSF1 v5. socklen_t is undefined without
+	# the following workaround. 
+        CPPFLAGS="$CPPFLAGS -D_POSIX_PII_SOCKET"
+        ;;
+esac
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

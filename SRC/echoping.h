@@ -20,11 +20,6 @@
 #endif
 #define MAXNUMBER 20
 
-/* For Tru 64 > 5 only */
-#ifndef _POSIX_PII_SOCKET
-#define _POSIX_PII_SOCKET 1
-#endif
-
 /* Probably too many inclusions but this is to keep 'gcc -Wall' happy... */
 #include	<stdio.h>
 #include        <stdlib.h>
