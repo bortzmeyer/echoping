@@ -101,7 +101,19 @@ AC_ARG_WITH(gnutls,
  fi],
  dnl Default: disable it
 )
-
+AC_ARG_WITH(popt,
+ [--with-popt[=DIR]  popt command-line parsing library],dnl
+ [if test "$withval" != "no"; then
+   if test "$withval" != "yes"; then
+	POPTROOT=$withval
+	LDFLAGS="${LDFLAGS} -L$POPTROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$POPTROOT/include"  
+   fi
+  else
+	AC_MSG_ERROR([The popt command-line parsing library is mandatory for echoping])
+ fi],
+ dnl Default: disable it
+)
 dnl See T/TCP later 
 
 dnl Checks for programs.
@@ -260,7 +272,7 @@ fi
 interpolate() {  
   old=$1
   eval new=$old
-  AC_MSG_WARN(DEBUG-INTERPOL $new)
+  AC_MSG_WARN(DEBUG-INTERPOLATE $new)
   if test "$new" != "$old" ; then
 	interpolate $new
   else 
@@ -270,7 +282,7 @@ interpolate() {
 dnl TODO: the following is broken because installation prefix can be changed at instal-time,
 dnl not compilation time.
 plugins_dir=`interpolate '$prefix/lib/echoping'`
-AC_DEFINE(PLUGINS_DIR, $plugins_dir, [Directory where the plugins will be installed])
+AC_DEFINE_UNQUOTED(PLUGINS_DIR, "$plugins_dir", [Directory where the plugins will be installed])
 AC_CONFIG_SUBDIRS(plugins)
 AC_OUTPUT(Makefile)
 
