@@ -25,3 +25,7 @@ check first that you use the FQDN of the server on the command line
 (this is a consequence of the HTTP 1.1 protocol, not a bug in echoping
 and this will show only if the HTTP server uses "virtual hosting").
 
+$Id$
+
+
+

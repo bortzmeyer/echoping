@@ -60,8 +60,13 @@ To do for a future version:
 -------------
 The reference site for echoping is:
 
+http://echoping.sourceforge.net/
+
+The distribution is from:
+
 ftp://ftp.internatif.org/pub/unix/echoping
 
-Stephane Bortzmeyer <bortzmeyer@pasteur.fr>. October 1995 for the
-first version. August 1998 for this one.
+Stephane Bortzmeyer <bortz@users.sourceforge.net>. October 1995 for the
+first version. June 2000 for this one.
 
+$Id$
