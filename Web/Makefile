@@ -1,5 +1,6 @@
 PAGESHTML=$(shell ls *.wml | grep -v template | sed 's/.wml/.html/' )
 DEST=bortz@echoping.sourceforge.net:/home/groups/echoping/htdocs
+URL=http://echoping.sourceforge.net/
 
 all: test
 
@@ -14,6 +15,10 @@ test: ${PAGESHTML}
 install: ${PAGESHTML}
 	cvs commit
 	scp -v ${PAGESHTML} ${DEST}
+
+checkbot:
+	checkbot --url ${URL} --match ${URL} \
+		--verbose 
 
 clean:
 	rm -f ${PAGESHTML}
