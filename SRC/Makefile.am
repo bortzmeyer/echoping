@@ -60,6 +60,9 @@ upload-force: dist
 	rm -f upload.log
 	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
 
+realclean: clean
+	rm -f *~
+
 EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
 
 ## Otherwise, we depend on GNUmake, but for CVS users, not for regular
