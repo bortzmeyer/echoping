@@ -74,7 +74,11 @@ main (argc, argv)
   struct timeval newtv, oldtv;
   void printstats ();
 
+#ifdef HAVE_USLEEP
+  double wait = 1.0;
+#else
   unsigned int wait = 1;
+#endif
   unsigned char fill = ' ';
   unsigned short fill_requested = 0;
   unsigned int i = 0;
@@ -254,7 +258,11 @@ main (argc, argv)
 	    }
 	  break;
 	case 'w':
+#ifdef HAVE_USLEEP
+	  wait = atof (optarg);
+#else
 	  wait = atoi (optarg);
+#endif
 	  if (wait <= 0)
 	    /* atoi returns zero when there is an error. So we cannot use 
 	       '-w 0' to specify no waiting. */
@@ -997,7 +1005,11 @@ main (argc, argv)
 	      SSL_free (sslh);
 	    }
 #endif
+#ifdef HAVE_USLEEP
+	  usleep (wait * 1000000);
+#else
 	  sleep (wait);
+#endif
 	}
     }
   printstats ();

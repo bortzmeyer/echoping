@@ -55,7 +55,9 @@ and the other half is above. When you measure highly variables values, like
 it is often the case on the whole Internet, median is better than average
 to avoid  "extreme" values.
 .IP -w\ nnn
-Number of seconds to wait between two tests (default is one)
+Number of seconds to wait between two tests (default is one). On
+systems which have usleep(), you can write it as a fractional number,
+such as 3.14. Otherwise, use integers.
 .IP -t\ nnn
 Number of seconds to wait a reply before giving up. For TCP, this is the
 maximum number of seconds for the whole connection (setup and data exchange).
