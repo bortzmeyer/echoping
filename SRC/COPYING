@@ -1,3 +1,13 @@
+The following note is not part of the GPL:
+
+echoping adds a small permission to the GPL: This program is released
+under the GPL with the additional exemption that compiling, linking,
+and/or using the OpenSSL library is allowed.
+
+See <URL:http://www.openssl.org/support/faq.html#LEGAL2> and
+<URL:http://lists.debian.org/debian-legal/2002/debian-legal-200210/msg00113.html>
+for details.
+
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 
