@@ -31,21 +31,13 @@ Since echoping writes everything to the server, then begins to read
 the reply, some echo servers will timeout if you send very long
 messages, because they expect you to start to read right now.
 
-gcc's warnings:
+Compiler's warnings:
 
-1) Free/NetBSD
-
-gcc -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -Wall -c echoping.c
-echoping.c: In function `main':
-echoping.c:540: warning: passing arg 5 of `sendto' from incompatible pointer type
-
-              if (icp)
-                {
-                  if (sendto (sockfd, sendline, length, 0,
-                              &serv_addr, sizeof (serv_addr)) != length)
-                    err_sys ("sendto error on socket");
-                }
-
+1) Tru64's cc:
+cc -DHAVE_CONFIG_H -I. -I. -I.   -D_POSIX_PII_SOCKET  -g -c icp.c
+cc: Warning: icp.c, line 92: In this statement, the referenced type of the pointer value "(int ...)0" is "int", which is not compatible with "unsigned long". (ptrmismatch)
+  nr = recvfrom (sockfd, buf, DEFLINE, 0, (struct sockaddr *) 0, (int *) 0);
+-----------------------------------------------------------------^
 
 
 $Id$
