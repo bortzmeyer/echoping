@@ -504,7 +504,7 @@ internal_tests: internal_tests.o $(echoping_OBJECTS)
 	./internal_tests
 
 debug: 
-	$(MAKE) CFLAGS='-g -O0'
+	$(MAKE) DEBUG=1 CFLAGS='-g -O0'
 
 upload: dist
 	@echo "Have you updated ChangeLog and tagged (cvs tag RELEASE_x_x_x) everything?"
