@@ -11,6 +11,7 @@
 
 const char *request = NULL;
 const char *base = NULL;
+int scope = LDAP_SCOPE_BASE;
 const char *hostname;
 unsigned int port = 0;
 LDAP *session;
@@ -34,12 +35,15 @@ init (const int argc, const char **argv,
 {
   int value;
   char *msg;
+  char *scope_string = NULL;
   /* popt variables */
   struct poptOption options[] = {
     {"request", 'r', POPT_ARG_STRING, &request, 0,
      "Request (filter) to send to the LDAP server", 'r'},
     {"base", 'b', POPT_ARG_STRING, &base, 0,
      "Base of the LDAP tree", 'b'},
+    {"scope", 's', POPT_ARG_STRING, &scope_string, 0,
+     "Scope of the search in the LDAP tree (sub, one or base)", 's'},
     {"port", 'p', POPT_ARG_INT, &port, 0,
      "TCP port to connect to the LDAP server", 'p'},
     POPT_AUTOHELP POPT_TABLEEND
@@ -66,6 +70,18 @@ init (const int argc, const char **argv,
     base = "";
   if (request == NULL || !strcmp (request, ""))
     request = "(objectclass=*)";
+  if (scope_string != NULL)
+    {
+      scope_string = to_upper (scope_string);
+      if (!strcmp (scope_string, "BASE"))
+	scope = LDAP_SCOPE_BASE;
+      else if (!strcmp (scope_string, "SUB"))
+	scope = LDAP_SCOPE_SUBTREE;
+      else if (!strcmp (scope_string, "ONE"))
+	scope = LDAP_SCOPE_ONELEVEL;
+      else
+	err_quit ("Invalid scope \"%s\"", scope);
+    }
   return "ldap";
 }
 
@@ -84,8 +100,7 @@ execute ()
 {
   int result;
   LDAPMessage *response;
-  result = ldap_search_s (session, base, LDAP_SCOPE_BASE,	/* TODO: allow to set the scope */
-			  request, NULL,	/* Return all attributes */
+  result = ldap_search_s (session, base, scope, request, NULL,	/* Return all attributes */
 			  0,	/* Return attribute types *and* values */
 			  &response);
   if (result != 0)

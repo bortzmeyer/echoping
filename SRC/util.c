@@ -7,6 +7,7 @@
 #define STATES 32
 
 #include <time.h>
+#include <ctype.h>
 
 char *
 random_string (unsigned length)
@@ -34,6 +35,18 @@ random_string (unsigned length)
 
   return result;
 
+}
+
+char *
+to_upper (char *input)
+{
+  int c;
+  char *result;
+  result = (char *) malloc (strlen (input));
+  for (c = 0; c < strlen (input); c++)
+    result[c] = toupper (input[c]);
+  result[strlen (input)] = '\0';
+  return result;
 }
 
 /*

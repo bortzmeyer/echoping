@@ -69,7 +69,6 @@ char *
 init (const int argc, const char **argv)
 {
   int value;
-  int c;
   char *hostname;
   char *msg = malloc (256);
   char *type_name, *upper_type_name = NULL;
@@ -102,15 +101,12 @@ init (const int argc, const char **argv)
   request = (char *) poptGetArg (dns_poptcon);
   if (request == NULL)
     dns_usage ("Mandatory request missing");
-  if ((type_name == NULL) || !strcmp(type_name, ""))
+  if ((type_name == NULL) || !strcmp (type_name, ""))
     type = T_A;
   else
-    {		
+    {
+      upper_type_name = to_upper (type_name);
       /* TODO: a better algorithm. Use dns_rdatatype_fromtext in BIND ? */
-      upper_type_name = (char *) malloc(strlen(type_name));
-      for (c=0; c<strlen(type_name); c++)
-	upper_type_name[c] = toupper(type_name[c]);
-      upper_type_name[strlen(type_name)] = '\0';
       if (!strcmp (upper_type_name, "A"))
 	type = T_A;
       else if (!strcmp (upper_type_name, "AAAA"))
@@ -129,7 +125,7 @@ init (const int argc, const char **argv)
 	type = T_PTR;
       else if (!strcmp (upper_type_name, "TXT"))
 	type = T_TXT;
-      else 
+      else
 	dns_usage ("Unknown type");
     }
   return "domain";
