@@ -9,7 +9,7 @@ Just type "./configure", then "make", and then (as root if necessary),
 --disable-http (suppress the HTTP support)
 --disable-smtp (suppress the SMTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
---enable-ssl   (add the SSL support, you will need the OpenSSL library 
+--with-ssl   (add the SSL support, you will need the OpenSSL library 
                <http://www.openssl.org/>)
 --disable-ttcp  (suppress the T/TCP support which is enabled only if 
          your system supports it - FreeBSD does. See 
