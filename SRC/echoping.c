@@ -85,6 +85,7 @@ main (argc, argv)
   unsigned short fill_requested = 0;
   unsigned int i = 0;
   char *plugin_name = NULL;
+  char *ext;
   void *plugin;
   char *dl_result;
 
@@ -98,7 +99,7 @@ main (argc, argv)
   struct sigaction mysigaction;
 #endif
 
-  char port_name[NI_MAXSERV];
+  char *plugin_port_name, *port_name;
   unsigned short port_to_use = USE_ECHO;
   unsigned short http = 0;
   unsigned short smtp = 0;
@@ -181,6 +182,7 @@ main (argc, argv)
   max = null_timeval;
   min = max_timeval;
   stddev = null_timeval;
+  port_name = malloc (NI_MAXSERV);
   strcpy (port_name, ECHO_TCP_PORT);
 
   for (i = 0; i <= MAX_ITERATIONS; i++)
@@ -197,7 +199,7 @@ main (argc, argv)
     {
       if (result < -1)
 	{
-	  err_ret ("%s: %s",
+	  printf ("%s: %s",
 		   poptBadOption (poptcon, POPT_BADOPTION_NOALIAS),
 		   poptStrerror (result));
 	  usage ();
@@ -322,6 +324,7 @@ main (argc, argv)
 	  module_find = TRUE;
 	  break;
 	default:
+	  printf ("Unknown character option %d (%c)", result, (char) result);
 	  usage ();
 	}
     }
@@ -426,7 +429,9 @@ main (argc, argv)
   leftover = (char **) &argv[argc - remaining];
   if (plugin_name)
     {
-      /* TODO: add '.so' to the plugin name if it's not already there */
+      ext = strstr(plugin_name, ".so");
+      if ((ext == NULL) || (strcmp (ext, ".so") != 0)) 
+	sprintf (plugin_name, "%s.so", plugin_name);
       plugin = dlopen (plugin_name, RTLD_NOW);
       if (!plugin)
 	{
@@ -438,7 +443,11 @@ main (argc, argv)
 	{
 	  err_sys ("Cannot find init in %s: %s", plugin_name, dl_result);
 	}
-      strcpy (port_name, plugin_init (remaining, (const char **) leftover));
+      plugin_port_name = plugin_init (remaining, (const char **) leftover);
+      if (plugin_port_name != NULL)
+	strcpy (port_name, plugin_port_name);
+      else
+	port_name = 0;
       plugin_start = dlsym (plugin, "start");
       dl_result = dlerror ();
       if (dl_result)
@@ -456,8 +465,11 @@ main (argc, argv)
     {
       tcp = 1;
     }
-  if (remaining != 1)
+  if (remaining == 0)
+    usage ();
+  if (!module_find && remaining != 1)
     {
+      printf ("%d args remaning, should be 1\n", remaining);
       usage ();
     }
   if (verbose)

@@ -1,5 +1,7 @@
 /*
- * Pseudo-random plugin. Just an example. $Id$
+ * Pseudo-random plugin. Just an example. 
+ * 
+ * $Id$
  */
 
 #include <stdlib.h>
@@ -7,12 +9,17 @@
 #include <time.h>
 #include <unistd.h>
 
-void
+char *
 init (const int argc, const char *argv[])
 {
   struct timeval tv;
   (void) gettimeofday (&tv, (struct timezone *) NULL);
   srand (tv.tv_usec);
+  return NULL;
+}
+
+void start ()
+{
 }
 
 void
