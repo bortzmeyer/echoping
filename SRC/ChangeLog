@@ -1,0 +1,22 @@
+echoping now uses a numbering scheme analog to the
+Linux kernel one's. Even versions like 2.2 are stable (or supposed to),
+odd versions like 2.1 are unstable, beta.
+
+2.2.1 : 
+        Portability fixes
+
+2.2 :
+        Stable release, apart from ICP
+
+2.0.1 -> 2.1.0 :
+	Timeouts even on TCP connections.
+	Support of HTTP 1.1
+	
+2.0.0 -> 2.0.1 :
+
+	Bug with getservbyname for HTTP connections fixed.
+	
+1.3 -> 2.0.0 :
+	HTTP support. For testing of Web servers and Web proxies.
+	Much better portability.
+   
