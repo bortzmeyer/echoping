@@ -7,7 +7,15 @@
 #define IN_PLUGIN
 #include "../../echoping.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef POSTGRESQL_PREFIX
 #include <postgresql/libpq-fe.h>
+#else
+#include <libpq-fe.h>
+#endif
 
 const char *request = NULL;
 int readall = FALSE;
