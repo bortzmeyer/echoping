@@ -158,6 +158,7 @@ start (struct addrinfo *res)
   else if (name_server_sockaddr.sa_family == AF_INET6)
     {
       /* TODO: the code for IPv6 servers is hopelessly broken. Start again */
+      fprintf (stderr, "WARNING: IPv6 nameservers not really supported yet (experts may apply). Falling back to IPv4 and the default server. You may use -4, too\n");
 #ifdef HAVE_RES_EXT
       /* Converts a generic sockaddr to an IPv6 sockaddr_in6 */
       (void) memcpy ((void *) &name_server_sockaddr_in6,
