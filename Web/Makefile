@@ -1,5 +1,5 @@
 PAGESHTML=$(shell ls *.wml | grep -v template | sed 's/.wml/.html/' )
-DEST=bortz@echoping.sourceforge.net:/home/groups/echoping/htdocs
+DEST=bortz@echoping.sourceforge.net:/home/groups/e/ec/echoping/htdocs
 URL=http://echoping.sourceforge.net/
 
 all: test
