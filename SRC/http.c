@@ -1,3 +1,5 @@
+/* $Id$ */
+
 #include "echoping.h"
 
 #ifdef HTTP
