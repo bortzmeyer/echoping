@@ -53,9 +53,9 @@ SunOS need time to recover :-)
 <LI>I've also heard of but never tried:
 <UL>
 <LI><A
-  HREF="http://www.cup.hp.com/netperf/NetperfPage.html">Netperf</A>, a suite of Bandwidth Measuring programs from gnn@netcom.com 
-  <ftp://ftp.netcom.com/~ftp/gnn/bwmeas-0.3.tar.Z>. These are several 
-  programs that measure bandwidth and jitter over several kinds of 
+  HREF="http://www.netperf.org/netperf/NetperfPage.html">Netperf</A>, a suite of Bandwidth Measuring programs from gnn@netcom.com 
+  These are <A HREF="ftp://ftp.netcom.com/~ftp/gnn/bwmeas-0.3.tar.Z">several 
+  programs</A> that measure bandwidth and jitter over several kinds of 
   IPC links, including TCP and UDP.
 </UL>
 </UL>
@@ -64,7 +64,8 @@ SunOS need time to recover :-)
 
 <UL>
 <LI>TCP Watcher, a very nice "swiss-army knife" tool, to test ping, DNS, echo. 
-  It includes an echo server. Available on Info-Mac in "comm/tcp".
+  It includes an echo server. Available on <A
+  HREF="http://www.info-mac.org/">Info-Mac</A> in "comm/tcp".
 </UL>
 
 <H3>MS-Windows</H3>
@@ -72,7 +73,16 @@ SunOS need time to recover :-)
 (I have little knowledge of that environment and I tested nothing.) 
 
 <UL>
-<LI><http://www.ccs.org/winsock/xref-e.html#echo_clients>WSNUTIL</A>. Seems to be an echo client and server. 
+<LI><A
+HREF="http://www.ccs.org/winsock/xref-e.html#echo_clients">WSNUTIL</A>.
+Seems to be an echo client and server. 
+<LI><A
+HREF="http://www.winsite.com/info/pc/win95/misc/echox32.zip/">echox32</A>,
+an echo server
+<LI><A
+HREF="http://www.winsite.com/info/pc/win3/winsock/cfing13b.zip/">cfinger</A>,
+an
+echo client and server
 </UL>
   
 <H3>Windows-NT</H3>
@@ -84,8 +94,11 @@ can be enabled through the Network Control Panel
 <H3>Web clients</H3>
 
 You can ping or traceroute on the Web. See 
-  <A HREF="http://hplyot.obspm.fr/cgi-bin/nph-traceroute">OBSPM</A> or
-  <A HREF="http://www.fr.net/internet/">fr.net</A>.
+  <A
+  HREF="http://www.freenix.org/cgi-bin/traceroute.iphtml">Freenix</A>,
+  <A HREF="http://www.fr.net/internet/trace.html">fr.net</A> (with
+  Autonomous Systems handling) or
+  <A HREF="http://www.tracert.com/">Multiple Traceroute Gateway</A>.
 
 
 <P>Use all of them with care, the result is not obvious to interpret.

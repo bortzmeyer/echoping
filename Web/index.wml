@@ -37,7 +37,7 @@ test hosts which aren't yours.
 <LI>can use T/TCP on systems which support it.
 </UL>
 
-<P><A HREF="http://sourceforge.net/bugs/admin/?group_id=4581">Known bugs</A>
+<P><A HREF="http://sourceforge.net/bugs/?func=browse&group_id=4581&set=open">Known bugs</A>
 
 <P>Examples of output:
 
