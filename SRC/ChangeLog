@@ -1,4 +1,12 @@
-3.1.0
+4.0.0 (2001-01-25)
+
+	* SSL (Secure Sockets Layer) support
+	* Now reading many bytes at a time (big performance improvment).
+	  Uses the standard I/O library.
+	* Better detection of the HTTP port
+	* Bug fixes (AI/X, Solaris)
+	
+3.1.0 (never released)
 
 	* SMTP support
 	
