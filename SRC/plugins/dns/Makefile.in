@@ -12,7 +12,7 @@ ifeq (@DNS_BUILD@,1)
 install: all prepare-install
 	${INSTALL} ${PLUGIN} ${DESTDIR}
 else
-all:
+install:
 	@echo "Not installing the DNS plugin"
 endif
 
