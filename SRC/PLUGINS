@@ -36,7 +36,7 @@ void start_raw ()
 int execute ()
   Connects and do whatever the protocol requires. It is called once
   per iteration. It returns >=0 if it succeeds, -1 if it failed
-  temporarily (so echoping will continue its loop) and -2 if it failes
+  temporarily (so echoping will continue its loop) and -2 if it failed
   permanently (so echoping will stop the iteration).
 
 void terminate ()
@@ -52,5 +52,8 @@ simplest which still does something useful.
 
 The documentation of the plugin should be in a manual page named
 echoping_PLUGINNAME. See the above plugins for examples.
+
+You can write a shell script named test.sh in the plugin directory to
+test the plugin. test-echoping-plugins will execute it.
 
 $Id$
