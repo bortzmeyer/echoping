@@ -1999,6 +1999,7 @@ if test "${enable_ttcp+set}" = set; then
 #define HAVE_TTCP 1
 EOF
 
+     TTCP=1
    else
      echo "configure: warning: No T/TCP support on this system, request ignored" 1>&2
    fi
@@ -2009,6 +2010,7 @@ else
 #define HAVE_TTCP 1
 EOF
 
+   TTCP=1
  fi
 fi
 
@@ -2381,5 +2383,59 @@ chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
 
+
+
+echo ""
+echo "Configuration of echoping:"
+
+
+echo $ac_n "checking HTTP""... $ac_c" 1>&6
+echo "configure:2394: checking HTTP" >&5
+if  eval 'test "$HTTP" = "1"' > /dev/null; then
+	echo "$ac_t""enabled" 1>&6
+else 
+	echo "$ac_t""disabled" 1>&6
+fi
+
+
+echo $ac_n "checking ICP""... $ac_c" 1>&6
+echo "configure:2403: checking ICP" >&5
+if  eval 'test "$ICP" = "1"' > /dev/null; then
+	echo "$ac_t""enabled" 1>&6
+else 
+	echo "$ac_t""disabled" 1>&6
+fi
+
+
+echo $ac_n "checking OPENSSL""... $ac_c" 1>&6
+echo "configure:2412: checking OPENSSL" >&5
+if  eval 'test "$OPENSSL" = "1"' > /dev/null; then
+	echo "$ac_t""enabled" 1>&6
+else 
+	echo "$ac_t""disabled" 1>&6
+fi
+
+
+echo $ac_n "checking SMTP""... $ac_c" 1>&6
+echo "configure:2421: checking SMTP" >&5
+if  eval 'test "$SMTP" = "1"' > /dev/null; then
+	echo "$ac_t""enabled" 1>&6
+else 
+	echo "$ac_t""disabled" 1>&6
+fi
+
+
+echo $ac_n "checking TTCP""... $ac_c" 1>&6
+echo "configure:2430: checking TTCP" >&5
+if  eval 'test "$TTCP" = "1"' > /dev/null; then
+	echo "$ac_t""enabled" 1>&6
+else 
+	echo "$ac_t""disabled" 1>&6
+fi
+
+
+if test "HTTP" = 1; then
+	echo YES
+fi
 
 
