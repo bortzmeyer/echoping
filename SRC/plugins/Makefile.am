@@ -1,5 +1,5 @@
 SUBDIRS=@subdirs@
-CONFIGURE_DEPENDENCIES=list-of-dirs.m4
+CONFIGURE_DEPENDENCIES=list-of-dirs.m4 ../configure-common.ac configure-plugins.ac
 
 list-of-dirs.m4: 
 	@echo "dnl Created automatically on `date`" > $@

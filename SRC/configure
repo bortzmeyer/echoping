@@ -22101,8 +22101,6 @@ fi
 
 interpolate() {
   old=$1
-  { echo "$as_me:$LINENO: WARNING: DEBUG-INTERPOLATE $old" >&5
-echo "$as_me: WARNING: DEBUG-INTERPOLATE $old" >&2;}
   eval new=$old
   if test "$new" != "$old" ; then
 	interpolate $new

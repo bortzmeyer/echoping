@@ -192,6 +192,7 @@ target_alias = @target_alias@
 @PGSQLBUILD_TRUE@postgresql_la_SOURCES = postgresql.c
 @PGSQLBUILD_TRUE@postgresql_la_LDFLAGS = -module
 @PGSQLBUILD_TRUE@man_MANS = echoping_postgresql.1
+EXTRA_DIST = $(man_MANS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

@@ -276,7 +276,6 @@ fi
 
 interpolate() {  
   old=$1
-  AC_MSG_WARN(DEBUG-INTERPOLATE $old)
   eval new=$old
   if test "$new" != "$old" ; then
 	interpolate $new

@@ -168,7 +168,7 @@ subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = @subdirs@
-CONFIGURE_DEPENDENCIES = list-of-dirs.m4
+CONFIGURE_DEPENDENCIES = list-of-dirs.m4 ../configure-common.ac configure-plugins.ac
 all: all-recursive
 
 .SUFFIXES:

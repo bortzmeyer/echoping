@@ -1,6 +1,6 @@
 LIBIDN=1
 AC_ARG_WITH(libidn,
- [--with-libidn[=DIR]   Internationalized Domain Names support (needs GNU libidn)],dnl
+ [  --with-libidn[=DIR]   Internationalized Domain Names support (needs GNU libidn)],dnl
  [if test "$withval" != "no"; then
    if test "$withval" != "yes"; then
 	IDNROOT=$withval
@@ -16,7 +16,7 @@ AC_DEFINE(LIBIDN,,[Internationalized Domain Names support])
 fi
 
 AC_ARG_WITH(popt,
- [--with-popt[=DIR]  popt command-line parsing library],dnl
+ [  --with-popt[=DIR]  popt command-line parsing library],dnl
  [if test "$withval" != "no"; then
    if test "$withval" != "yes"; then
         POPTROOT=$withval

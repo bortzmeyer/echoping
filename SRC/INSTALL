@@ -6,14 +6,9 @@ times).
 
 You do not have to be root to install it.
 
-Just type "./configure", then "make", "make test" if you wish (some
-tests depend on local servers and/or Internet access, interpret with
-care) and then (as root if necessary), "make install".
-
-(The Makefile has the GNU syntax so, on BSD machines, you will need
-GNU make. Typically, you install the port "gmake" and run "gmake"
-instead of "make". Otherwise, you will have an error message like
-"Need an operator")
+Just type "./configure --config-cache", then "make", "make test" if
+you wish (some tests depend on local servers and/or Internet access,
+interpret with care) and then (as root if necessary), "make install".
 
 There is also a 'make fulltest' if you want to test more things (which
 may not be available on your platform).
@@ -49,7 +44,9 @@ better and easier parsing of options and, more important, is necessary
 for resuming parsing, something that the plugins rely heavily on.  If
 your system does not support dlopen() or if you do not want to install
 the popt library (which is free and runs on every Unix), you have no
-other choices than using echoping 5.
+other choices than using echoping 5. popt can be retrieved from, for
+instance, ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-1.7.tar.gz or
+ask Freshmeat at http://freshmeat.net/projects/popt/.
 
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.

@@ -1042,8 +1042,8 @@ Optional Packages:
                           both]
   --with-tags[=TAGS]
                           include additional configurations [automatic]
---with-libidn=DIR   Internationalized Domain Names support (needs GNU libidn)
---with-popt=DIR  popt command-line parsing library
+  --with-libidn=DIR   Internationalized Domain Names support (needs GNU libidn)
+  --with-popt=DIR  popt command-line parsing library
 
 Some influential environment variables:
   CC          C compiler command
