@@ -1,6 +1,6 @@
 echoping appears to compile and run at least on Tru64 (ex-Digital
-Unix, ex-OSF/1), Solaris, Linux, SunOS, FreeBSD, NetBSD, IRIX and
-AI/X. You do not have to be root to install it.
+Unix, ex-OSF/1), Solaris, Linux, FreeBSD, NetBSD, IRIX and AI/X. You
+do not have to be root to install it.
 
 Just type "./configure", then "make", "make test" if you wish (some
 tests depend on local servers and/or Internet access, interpret with
@@ -29,6 +29,11 @@ If 'echoping -h' replies with a "404" error while the file really exists,
 check first that you use the FQDN of the server on the command line
 (this is a consequence of the HTTP 1.1 protocol, not a bug in echoping
 and this will show only if the HTTP server uses "virtual hosting").
+
+To report a bug, email Stephane Bortzmeyer
+<bortz@users.sourceforge.net> (if you have an account at SourceForge,
+you can use their bug reporting tool, too). If the problem is at the
+"./configure" step, do not forget to send the config.log.
 
 $Id$
 
