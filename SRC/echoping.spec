@@ -1,3 +1,5 @@
+# $Id$
+
 Summary: Program to test network services
 Name: echoping
 Version: 4.1.0
@@ -7,7 +9,7 @@ Group: Utilities/Network
 Source0: echoping-4.1.0.tar.gz
 Url: http://echoping.sourceforge.net
 BuildRoot: /var/tmp/echoping
-Requires: openssl-devel openssl
+Requires: openssl
 BuildRequires: openssl-devel openssl 
 
 
@@ -36,7 +38,8 @@ rm -rf $RPM_BUILD_ROOT
 make  install
 
 
-%files  
+%files
+/
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog DETAILS INSTALL NEWS README TODO 
 %doc  test-echoping-crypto    test-echoping-icp   test-echoping-local   test-echoping-remote
