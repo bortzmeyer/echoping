@@ -80,9 +80,12 @@ Use the "discard" service instead of echo
 .IP -c
 Use the "chargen" service instead of echo
 .IP -h\ url
-Use the HTTP protocol (instead of echo) for the given URL. The URL has to
+Use the HTTP protocol (instead of echo) for the given URL. If the
+hostname is the Web server, the URL has to
 be a relative one (for instance '/' or '/pics/foobar.gif') because HTTP 1.0
-servers will not understand a request for an absolute URL.
+servers will not understand a request for an absolute URL. If the
+hostname is a proxy/cache like Squid, the URL has to
+be an absolute one.
 .IP -i\ url
 Use the ICP protocol (instead of echo) for the given URL. The URL has to
 be an absolute one. This is mostly for testing Squid Web proxy/caches.
