@@ -681,16 +681,19 @@ main (argc, argv)
 	    }
 	  else
 	    {
-	      if (tcp) {
-		(void) gettimeofday (&connectedtv, (struct timezone *) NULL);
-		temp = connectedtv;
-		tvsub (&temp, &conntv);
-		if (verbose) {
-		  printf ("Connected...\n");
-		  printf ("TCP Latency: %d.%06d seconds\n", (int) temp.tv_sec,
-			  (int) temp.tv_usec);
+	      if (tcp)
+		{
+		  (void) gettimeofday (&connectedtv,
+				       (struct timezone *) NULL);
+		  temp = connectedtv;
+		  tvsub (&temp, &conntv);
+		  if (verbose)
+		    {
+		      printf ("Connected...\n");
+		      printf ("TCP Latency: %d.%06d seconds\n",
+			      (int) temp.tv_sec, (int) temp.tv_usec);
+		    }
 		}
-	      }
 	    }
 
 	  if (verbose && tcp)
@@ -833,33 +836,34 @@ main (argc, argv)
 	    }
 	}
 
-      if (tcp && !discard) {
-	fd_set mask;
-	int n = 0;
+      if (tcp && !discard)
+	{
+	  fd_set mask;
+	  int n = 0;
 
-	FD_ZERO (&mask);
+	  FD_ZERO (&mask);
 
-	if (!(http && ssl))
-	  n = fileno (files);
+	  if (!(http && ssl))
+	    n = fileno (files);
 #ifdef OPENSSL
-	else
-	  {
-	    n = SSL_get_fd (sslh);
-	  }
+	  else
+	    {
+	      n = SSL_get_fd (sslh);
+	    }
 #endif
 
-	FD_SET (n, &mask);
-	if (select (n + 1, &mask, 0, 0, NULL) > 0)
-	  {
-	    (void) gettimeofday (&recvtv, (struct timezone *) NULL);
-	    temp = recvtv;
-	    tvsub (&temp, &sendtv);
-	    if (verbose)
-	      printf ("Application Latency: %d.%06d seconds\n",
-		      (int) temp.tv_sec, (int) temp.tv_usec);
-	  }
+	  FD_SET (n, &mask);
+	  if (select (n + 1, &mask, 0, 0, NULL) > 0)
+	    {
+	      (void) gettimeofday (&recvtv, (struct timezone *) NULL);
+	      temp = recvtv;
+	      tvsub (&temp, &sendtv);
+	      if (verbose)
+		printf ("Application Latency: %d.%06d seconds\n",
+			(int) temp.tv_sec, (int) temp.tv_usec);
+	    }
 
-      }
+	}
 
       if ((port_to_use == USE_ECHO) || (port_to_use == USE_CHARGEN) ||
 	  (port_to_use == USE_HTTP) || (port_to_use == USE_ICP) ||
@@ -867,14 +871,15 @@ main (argc, argv)
 	{
 	  if (!udp)
 	    {
-	      if (!http && !smtp  && !discard)
+	      if (!http && !smtp && !discard)
 		{
 		  /* Read from the server */
 		  nr = readline (files, recvline, n, stop_at_newlines);
 		}
-	      else if (discard) {
-		/* No reply, no read */
-	      }
+	      else if (discard)
+		{
+		  /* No reply, no read */
+		}
 #ifdef HTTP
 	      else if (http)
 		{
