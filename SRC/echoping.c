@@ -425,16 +425,39 @@ main (argc, argv)
     {
       char *text_port = NULL, *p;
 
-      for (p = server; *p; p++)
-	{
+      if (*server == '[')
+	{			/* RFC 2732 */
+	  server++;
+	  for (p = server; *p != ']'; p++)
+	    {
+	    }
+	  p++;
 	  if (*p == ':')
 	    {
+	      p--;
 	      *p = 0;
-	      text_port = p + 1;
+	      text_port = p + 2;
 	      strncpy (port_name, text_port, NI_MAXSERV);
 	    }
+	  else
+	    {
+	      /* No port number */
+	      p--;
+	      *p = 0;
+	    }
 	}
-
+      else
+	{
+	  for (p = server; *p; p++)
+	    {
+	      if (*p == ':')
+		{
+		  *p = 0;
+		  text_port = p + 1;
+		  strncpy (port_name, text_port, NI_MAXSERV);
+		}
+	    }
+	}
       if (text_port == NULL)
 	{
 	  error = getaddrinfo (server, port_name, &hints, &res);
