@@ -425,7 +425,7 @@ main (argc, argv)
       printf ("\nThis is %s, version %s.\n\n", progname, VERSION);
     }
   server = argv[0];
-#ifdef IDN
+#ifdef LIBIDN
   locale_server = server;
   utf8_server = stringprep_locale_to_utf8 (server);
   if (utf8_server)
@@ -525,10 +525,10 @@ main (argc, argv)
     }
 #endif
 
-#ifdef IDN
+#ifdef LIBIDN
   if ((result =
-       idna_to_ascii_from_utf8 (utf8_server, &ace_server, 0,
-				1)) != IDNA_SUCCESS)
+       idna_to_ascii_8z (utf8_server, &ace_server, IDNA_USE_STD3_ASCII_RULES
+				)) != IDNA_SUCCESS)
     {
       err_quit ("IDN error for host: %s %d", server, result);
     }

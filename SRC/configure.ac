@@ -3,6 +3,7 @@ dnl $Id$
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(echoping.h)
 AC_CANONICAL_HOST
+AC_PROG_CC(cc gcc)
 AM_INIT_AUTOMAKE(echoping, 5.2.0-BETA)
 AM_CONFIG_HEADER(config.h)
 
@@ -10,40 +11,49 @@ dnl User options
 AC_ARG_ENABLE(http,
  [--enable-http   HTTP (Web's main protocol) support],dnl
  [if test "$enableval" = "yes"; then
- AC_DEFINE(HTTP)
+ AC_DEFINE(HTTP,,[HTTP support])
  HTTP=1
  fi],
  dnl Default: enable it
- [AC_DEFINE(HTTP)
+ [AC_DEFINE(HTTP,,[HTTP support])
   HTTP=1])
 AC_ARG_ENABLE(icp,
  [--enable-icp   ICP (for testing Web proxies/caches) support],dnl
  [if test "$enableval" = "yes"; then
- AC_DEFINE(ICP)
+ AC_DEFINE(ICP,,[ICP support])
  ICP=1
  fi])
 AC_ARG_ENABLE(smtp,
  [--enable-smtp   SMTP (Mail's main protocol) support],dnl
  [if test "$enableval" = "yes"; then
- AC_DEFINE(SMTP)
+ AC_DEFINE(SMTP,,[SMTP support])
  SMTP=1
  fi],
  dnl Default: enable it
- [AC_DEFINE(SMTP)
+ [AC_DEFINE(SMTP,,[SMTP support])
   SMTP=1])
-AC_ARG_ENABLE(idn,
- [--enable-idn   IDN (Internationalized Domain Names, host names in Unicode, with GNU libidn) support],dnl
- [if test "$enableval" = "yes"; then
- AC_DEFINE(IDN)
- IDN=1
+dnl IDN
+dnl Default: enable it	
+LIBIDN=1
+AC_ARG_WITH(libidn,
+ [--with-libidn[=DIR]   Internationalized Domain Names support (needs GNU libidn)],dnl
+ [if test "$withval" != "no"; then
+   if test "$withval" != "yes"; then
+	IDNROOT=$withval
+	LDFLAGS="${LDFLAGS} -L$IDNROOT/lib"
+        CPPFLAGS="${CPPFLAGS} -I$IDNROOT/include"  
+   fi
+ else
+   LIBIDN=0
  fi],
- dnl Default: enable it
- [AC_DEFINE(IDN)
-  IDN=1])
+)
+if test "$LIBIDN" = "1"; then
+AC_DEFINE(LIBIDN,,[Internationalized Domain Names support])
+fi
 AC_ARG_WITH(ssl,
  [--with-ssl[=DIR]   SSL crypt support (needs OpenSSL)],dnl
  [if test "$withval" != "no"; then
-   AC_DEFINE(OPENSSL)
+   AC_DEFINE(OPENSSL,,[Crypto (SSL) support])
    OPENSSL=1
    if test "$withval" != "yes"; then
 	SSLROOT=$withval
@@ -56,7 +66,7 @@ AC_ARG_WITH(ssl,
 AC_ARG_WITH(gnutls,
  [--with-gnutls[=DIR]   SSL/TLS crypt support (needs GNU TLS), the argument DIR should not be necessary],dnl
  [if test "$withval" != "no"; then
-   AC_DEFINE(GNUTLS)
+   AC_DEFINE(GNUTLS,,[Crypto (TLS) support])
    GNUTLS=1
    CPPFLAGS="${CPPFLAGS} `libgnutls-config --cflags`"
    LDFLAGS="${LDFLAGS} `libgnutls-config --libs`"
@@ -119,10 +129,9 @@ AC_CHECK_FUNCS(getaddrinfo getnameinfo inet_ntop, ,
 AC_CHECK_FUNCS(gettimeofday socket sigaction strerror, , AC_MSG_ERROR(Missing mandatory function))
 AC_CHECK_FUNCS(usleep)
 
-if test "$IDN" = "1"; then
-CF_LIB_GNUIDN
+if test "$LIBIDN" = "1"; then
+CF_LIB_LIBIDN
 fi
-
 if test "$OPENSSL" = "1" && test "$GNUTLS" = "1"; then
 AC_MSG_ERROR([Choose OpenSSL or GNU TLS but not both])
 fi
@@ -140,7 +149,7 @@ AC_TRY_COMPILE(
   #include <sys/socket.h>
  ],
  [int foobar = MSG_EOF;],
- [AC_DEFINE(TTCP)
+ [AC_DEFINE(TTCP,,[Transaction TCP support])
   ac_have_ttcp="yes"],
  ac_have_ttcp=no)
 AC_MSG_RESULT($ac_have_ttcp)
@@ -148,7 +157,7 @@ AC_ARG_ENABLE(ttcp,
  [--enable-ttcp   T/TCP (Transaction TCP) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_ttcp = "yes"; then
-     AC_DEFINE(HAVE_TTCP)
+     AC_DEFINE(TTCP,,[Transaction TCP support])
      TTCP=1
    else
      AC_MSG_WARN([No T/TCP support on this system, request ignored])
@@ -156,7 +165,7 @@ AC_ARG_ENABLE(ttcp,
   fi],
  dnl Default: enable it if supported
  if test $ac_have_ttcp = "yes"; then
-   AC_DEFINE(HAVE_TTCP)
+   AC_DEFINE(TTCP,,[Transaction TCP support])
    TTCP=1
  fi)
 
@@ -167,7 +176,7 @@ AC_TRY_COMPILE(
   #include <netinet/in.h>
  ],
  [int foobar = IP_TOS;],
- [AC_DEFINE(HAVE_TOS)
+ [AC_DEFINE(HAVE_TOS,,[Type Of Service support])
   ac_have_tos="yes"],
  ac_have_tos="no")
 AC_MSG_RESULT($ac_have_tos)
@@ -175,7 +184,7 @@ AC_ARG_ENABLE(tos,
  [--enable-tos   TOS (Type Of Service) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_tos = "yes"; then
-     AC_DEFINE(HAVE_TOS)
+     AC_DEFINE(HAVE_TOS,,[Type Of Service support])
      TOS=1
    else
      AC_MSG_WARN([No TOS support on this system, request ignored])
@@ -183,7 +192,7 @@ AC_ARG_ENABLE(tos,
   fi],
  dnl Default: enable it if supported
  if test $ac_have_tos = "yes"; then
-   AC_DEFINE(HAVE_TOS)
+   AC_DEFINE(HAVE_TOS,,[Type Of Service support])
    TOS=1
  fi)
 
@@ -203,7 +212,7 @@ AC_ARG_ENABLE(priority,
  [--enable-priority   PRIORITY (socket priority) support],
  [if test "$enableval" = "yes"; then
    if test $ac_have_priority = "yes"; then
-     AC_DEFINE(HAVE_SOCKET_PRIORITY)
+     AC_DEFINE(HAVE_SOCKET_PRIORITY,,[Socket priority support])
      PRIORITY=1
    else
      AC_MSG_WARN([No socket priority support on this system, request ignored])
@@ -211,7 +220,7 @@ AC_ARG_ENABLE(priority,
   fi],
  dnl Default: enable it if supported
  if test $ac_have_priority = "yes"; then
-   AC_DEFINE(HAVE_SOCKET_PRIORITY)
+   AC_DEFINE(HAVE_SOCKET_PRIORITY,,[Socket priority support])
    PRIORITY=1
  fi)
 
@@ -238,7 +247,7 @@ DISPLAY_SETTING(ICP)
 DISPLAY_SETTING(OPENSSL)
 DISPLAY_SETTING(GNUTLS)
 DISPLAY_SETTING(SMTP)
-DISPLAY_SETTING(IDN)
+DISPLAY_SETTING(LIBIDN)
 DISPLAY_SETTING(TTCP)
 DISPLAY_SETTING(TOS)
 DISPLAY_SETTING(PRIORITY)

@@ -49,7 +49,7 @@
 #include <gnutls/gnutls.h>
 #endif
 
-#ifdef IDN
+#ifdef LIBIDN
 #include <stringprep.h>		/* stringprep_locale_to_utf8() */
 #include <idna.h>		/* idna_to_ascii_from_utf8() */
 #endif
@@ -142,7 +142,7 @@ struct timeval max_timeval;
 #define CHARGENERATED " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefg";
 
 char *server;
-#ifdef IDN
+#ifdef LIBIDN
 char *locale_server, *ace_server, *utf8_server;
 #endif
 

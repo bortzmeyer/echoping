@@ -158,6 +158,15 @@ else
 fi
 ])
 
+# Check GNU libidn
+# TODO: check the patched libc with AI_IDN. See libidn, in libc/getaddrinfo-idn.txt.
+AC_DEFUN([CF_LIB_LIBIDN],
+[
+AC_CHECK_LIB(idn,idna_to_ascii_8z,
+[LIBS="${LIBS} -lidn"],
+[AC_ERROR([Get the GNU libidn library (http://www.josefsson.org/libidn/) in order to use Unicode - multi-script - domain names or use --without-libidn to disable it])], dnl
+)])
+
 # Check OpenSSL
 AC_DEFUN([CF_LIB_OPENSSL],
 [
@@ -173,14 +182,6 @@ AC_DEFUN([CF_LIB_GNUTLS],
 AC_CHECK_LIB(gnutls,gnutls_global_init,
 [LIBS="${LIBS} `libgnutls-config --libs`"],
 [AC_ERROR([Get the GNU TLS library (http://www.gnutls.org/)])], dnl
-)])
-
-# Check GNU libidn
-AC_DEFUN([CF_LIB_GNUIDN],
-[
-AC_CHECK_LIB(idn,idna_to_ascii_from_utf8,
-[LIBS="${LIBS} `pkg-config libidn --libs-only-L` `pkg-config libidn --libs-only-l`"],
-[AC_ERROR([Get the GNU IDN library (http://www.josefsson.org/libidn/) or use --disable-idn])], dnl
 )])
 
 dnl experimental

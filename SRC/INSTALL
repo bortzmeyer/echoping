@@ -17,7 +17,8 @@ may not be available on your platform).
 --disable-http (suppress the HTTP support)
 --disable-smtp (suppress the SMTP support)
 --enable-icp   (add the ICP support, to monitor Web proxies like Squid)
---disable-idn   (suppress the IDN support, the handling of Unicode domaine names, see RFC 3490)
+--without-libidn   (suppress the IDN support, the handling of Unicode - multi-script - domain names, see RFC 3490)
+--with-libidn[=/where/is/libidn] (tell the system where to find the GNU libidn library <http://www.josefsson.org/libidn/>)
 --with-gnutls[=/where/is/gnutls] (add the SSL/TLS support, you will need 
          the GNU TLS library <http://www.gnutls.org/>)
 --with-ssl[=/where/is/ssl] (add the SSL/TLS support, you will need 

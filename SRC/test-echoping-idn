@@ -11,4 +11,4 @@ echo "dependent but you typically 'export LC_CTYPE=xx_XX.utf8'. 'locale -a' to g
 echo "possible values."
 
 ./echoping -h / -v café.gennic.net
-
+./echoping -h / -v www.trườngđạihọcbáchkhoahànội.edu.vn
