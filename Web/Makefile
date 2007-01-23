@@ -14,7 +14,7 @@ test: ${PAGESHTML}
 	done
 
 install: ${PAGESHTML}
-	cvs commit
+	svn commit
 	scp -v ${PAGESHTML} ${OTHERPAGES} ${DEST}
 
 checkbot:

@@ -16,7 +16,7 @@ hurry :-) Several operating systems have echoping already packaged
 (Debian, FreeBSD, NetBSD). <A
 HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
 wish. (Or you may prefer access the latest developments <A
-HREF="http://sourceforge.net/cvs/?group_id=4581">via CVS</A>: the
+HREF="http://sourceforge.net/svn/?group_id=4581">via Subversion</A>: the
 module is named "SRC".) You may be interested in <A HREF="http://sourceforge.net/project/?group_id=4581">SourceForge's page
 about echoping</A>, with the bug reports, etc.
 
