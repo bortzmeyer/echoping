@@ -10,6 +10,7 @@
 	typical example is that "old-school" Unix aggreation of arguments
 	("echoping -v4 localhost") is no longer accepted (use "echoping -v
 	-4 localhost").
+        * Many bug fixes, see the list at Sourceforge
 	
 5.2.0 (2004-02-29)
 

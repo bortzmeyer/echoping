@@ -750,7 +750,14 @@ main(argc, argv)
 			alarm(timeout);
 		if (i > 1) {
 #ifdef HAVE_USLEEP
-			usleep(wait * 1000000);
+		  /* SUSv3 states that the argument to usleep() shall
+		       be less * than 1000000, so split into two calls
+		       if necessary.  Bug #1473872, fix by Jeff Rizzo
+		       - riz@sourceforge */
+			if (wait >= 1) {
+				sleep((unsigned int) wait);
+			}
+			usleep((wait - (unsigned int) wait) * 1000000);
 #else
 			sleep(wait);
 #endif
@@ -1327,7 +1334,7 @@ main(argc, argv)
 				gnutls_deinit(session);
 				/*
 				 * gnutls_certificate_free_credentials(xcred);
-				 * 
+				 *
 				 */
 			}
 #endif
