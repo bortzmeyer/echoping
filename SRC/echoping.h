@@ -215,7 +215,7 @@ struct timeval double2tv ();
 char *make_http_sendline ();
 void find_server_and_port ();
 /* This one has prototypes, for a very subtile compiler issue. */
-int read_from_server (CHANNEL fs, short ssl);
+int read_from_server (CHANNEL fs, short ssl, boolean accept_redirects);
 #endif
 
 #ifdef ICP
