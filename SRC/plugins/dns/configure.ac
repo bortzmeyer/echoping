@@ -13,7 +13,7 @@ if test "$DNS_BUILD" != "0"; then
  AC_CHECK_FUNC(res_mkquery, , 
   [AC_CHECK_LIB(bind, res_mkquery, , 
    [AC_CHECK_LIB(resolv, res_mkquery, , 
-        [AC_MSG_ERROR([No DNS resolver development environment found, not building this plugin]) && DNS_BUILD=0])])])
+        [AC_MSG_WARN([No DNS resolver development environment found, not building this plugin]) && DNS_BUILD=0])])])
 fi
 
 AC_MSG_CHECKING([_res ])
