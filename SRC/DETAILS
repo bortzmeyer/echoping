@@ -114,5 +114,33 @@ TCP/IP Internets and Interconnected Devices"), specially its
 "Benchmark" section and the W. Richard Stevens' books (all of them),
 published by Addison-Wesley.
 
+If you want to modify echoping and test it against slow or lossy
+connections, it is good to be able to reporudce these bad conditions
+at will. To do so, you can use:
+
+On Linux, Netem :
+
+tc qdisc add dev eth0 root netem delay 50ms loss 10%
+tc qdisc add dev eth1 root netem delay 50ms loss 10%
+
+It depends on Netem (network emulation)
+
+ Networking -->
+   Networking Options -->
+     QoS and/or fair queuing -->
+        Network emulator
+
+We can also use a patch to the Linux kernel's Netfilter : 
+ 
+<http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-random>
+ 
+On FreeBSD, dummynet (<http://info.iet.unipi.it/~luigi/ip_dummynet>):
+
+ipfw add 1000 pipe 1 tcp from judith to kiwi echo
+ipfw pipe 1 config plr 0.5
+
+It works fine to test echoping with 50 % of loss.
+
+
 
 $Id$
