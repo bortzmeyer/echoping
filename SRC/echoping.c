@@ -87,7 +87,8 @@ main(argc, argv)
 	char           *fill_s;
 	boolean         fill_requested = FALSE;
 	unsigned int    i = 0;
-	char           *plugin_name, *complete_plugin_name = NULL;
+	char           *plugin_name = NULL;
+        char           *complete_plugin_name = NULL;
 	char           *ext;
 	void           *plugin = NULL;
 	int             plugin_result;
