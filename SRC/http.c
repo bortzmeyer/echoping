@@ -50,7 +50,7 @@ make_http_sendline (char *url, char *host, int port, int nocache)
 }
 
 int
-read_from_server (CHANNEL fs, short ssl)
+read_from_server (CHANNEL fs, short ssl, boolean accept_redirects)
 {
   int nr = 0;
   int total = 0;
@@ -101,8 +101,10 @@ read_from_server (CHANNEL fs, short ssl)
       if (first_line)
 	{
 	  reply_code = big_recvline[9];	/* 9 because "HTTP/1.x 200..." */
-	  if (reply_code != '2')	/* Status codes beginning with 3 are not errors
-					   but should never appear in reply to echoping's requests */
+	  if (reply_code != '2' && !(reply_code == '3' && accept_redirects))
+	    /* Status codes beginning with 3 are not errors
+	       See bug #850674 and RFC 2616, section
+	       10.3 */
 	    err_quit ("HTTP error \"%s\"", big_recvline);
 	}
       total = total + nr;

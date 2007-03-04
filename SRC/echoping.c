@@ -69,6 +69,7 @@ main (argc, argv)
   char rand_file[MAX_LINE];
 #endif
   char *sendline, recvline[MAX_LINE + 1];
+  boolean accept_http_redirects = FALSE;
 #ifdef ICP
   char retcode[DEFLINE];
   int length;
@@ -159,6 +160,8 @@ main (argc, argv)
     {"discard", 'd', POPT_ARG_NONE, &discard, 'd'},
     {"chargen", 'c', POPT_ARG_NONE, &chargen, 'c'},
     {"http", 'h', POPT_ARG_STRING, &url, 'h'},
+    {"accept-http-redirects", 'R', POPT_ARG_NONE, &accept_http_redirects, 'R',
+     "Accept HTTP return codes 3xx (redirections)"},
     {"icp", 'i', POPT_ARG_STRING, &url, 'i',
      "ICP protocol, for Web proxies/caches"},
     {"ttcp", 'r', POPT_ARG_NONE, &ttcp, 'r',
@@ -261,6 +264,9 @@ main (argc, argv)
 	  strcpy (port_name, DEFAULT_HTTP_TCP_PORT);
 	  port_to_use = USE_HTTP;
 	  http = 1;
+	  break;
+	case 'R':
+	  accept_http_redirects = TRUE;
 	  break;
 	case 'a':
 	  nocache = 1;
@@ -434,6 +440,13 @@ main (argc, argv)
     {
       strcpy (port_name, DEFAULT_HTTPS_TCP_PORT);
     }
+  if (!http && accept_http_redirects)
+    {
+      (void) fprintf (stderr,
+		      "%s: accept-http-redirects does not make sens if you do not use HTTP.\n",
+		      progname);
+      exit (1);
+    }
 #ifndef USE_TOS
   if (tos_requested)
     {
@@ -536,7 +549,10 @@ main (argc, argv)
       tcp = 1;
     }
   if (remaining == 0)
-    usage (poptcon);
+    {
+      (void) fprintf (stderr, "No host name indicated\n");
+      usage (poptcon);
+    }
   if (!module_find && remaining != 1)
     {
       printf ("%d args remaining, should be 1\n", remaining);
@@ -1242,7 +1258,9 @@ main (argc, argv)
 		      else
 		      channel.tls = session;
 #endif
-		      nr = read_from_server (channel, ssl);
+		      nr =
+			read_from_server (channel, ssl,
+					  accept_http_redirects);
 		    }
 #endif
 #ifdef SMTP
