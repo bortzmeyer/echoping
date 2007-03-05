@@ -18,21 +18,30 @@ make_http_sendline(char *url, char *host, int port, int nocache)
 	char           *cache_directive = "";
 #ifdef HTTP10
 	if (nocache)
-		cache_directive = "Pragma: no-cache\r\n";	/* RFC 1945, "Hypertext
-								 * Transfer Protocol --
-								 * HTTP/1.0" */
+		cache_directive = "Pragma: no-cache\r\n";	/* RFC 1945,
+								 * "Hypertext
+								 * Transfer Protocol 
+								 * -- HTTP/1.0" */
 	sprintf(sendline,
 		"GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n%s\r\n",
 		url, VERSION, cache_directive);
 #else
 	if (nocache) {
 		if (nocache == 1)
-			cache_directive = "Cache-control: max-age=0\r\n";	/* Simply force a
-										 * recheck with the
-										 * server */
+			cache_directive = "Cache-control: max-age=0\r\n";	/* Simply 
+										 * force 
+										 * a
+										 * recheck 
+										 * with 
+										 * the
+										 * server 
+										 */
 		else
-			cache_directive = "Cache-control: no-cache\r\n";	/* RFC 2616 "Hypertext
-										 * Transfer Protocol --
+			cache_directive = "Cache-control: no-cache\r\n";	/* RFC 
+										 * 2616 
+										 * "Hypertext
+										 * Transfer
+										 * Protocol --
 										 * HTTP/1.1" */
 	}
 	strcpy(hostname, HTParse(url, "", PARSE_HOST));
@@ -75,15 +84,16 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 		{
 			nr = TLS_readline(fs.tls, big_recvline, MAXTOREAD, TRUE);
 			if (nr == -1) {
-				err_ret("TLS_readline error: %s", gnutls_strerror(nr));
+				err_ret("TLS_readline error: %s",
+					gnutls_strerror(nr));
 			}
 		}
 #endif
-		/*
+		/* 
 		 * printf ("DEBUG: reading \"%s\"\n (%d chars)\n",
 		 * big_recvline, nr);
 		 */
-		/*
+		/* 
 		 * HTTP replies should be separated by CR-LF. Unfortunately,
 		 * some servers send only CR :-(
 		 */
@@ -94,14 +104,15 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 			/* SourceForge bug #109385 */
 			/* err_sys ("Error reading HTTP header"); */
 			return -1;
-		/*
+		/* 
 		 * if ((int) big_recvline[nr-1] == 10) nr--;
 		 */
 		if (first_line) {
 			reply_code = big_recvline[9];	/* 9 because "HTTP/1.x
 							 * 200..." */
-			if (reply_code != '2' && !(reply_code == '3' && accept_redirects))
-				/*
+			if (reply_code != '2'
+			    && !(reply_code == '3' && accept_redirects))
+				/* 
 				 * Status codes beginning with 3 are not
 				 * errors See bug #850674 and RFC 2616,
 				 * section 10.3
@@ -122,13 +133,13 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 	else
 	nr = TLS_readline(fs.tls, big_recvline, MAXTOREAD, FALSE);
 #endif
-	/*
+	/* 
 	 * printf ("DEBUG: reading body \"%s\"\n (%d chars)\n", big_recvline,
 	 * nr);
 	 */
 	if ((nr < 2) && (timeout_flag))	/* Probably a timeout */
 		return -1;
-	if (nr < 2)		/* Hmm, if the body is empty, we'll get a
+	if (nr < 2)		/* Hmm, if the body is empty, we'll get a *
 				 * meaningless error message */
 		err_sys("Error reading HTTP body");
 	total = total + nr;
