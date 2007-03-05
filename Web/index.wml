@@ -10,15 +10,18 @@ echoping with any protocol you like and/or use.
 <P>"echoping" is a small program to test (approximatively) performances of a 
 remote host by sending it TCP "echo" (or other protocol, such as HTTP) packets.
 
-<P>To install it, see the INSTALL file. Or type "<code>./configure && make
-&& sudo make install</code>" if you're in a
-hurry :-) Several operating systems have echoping already packaged
-(Debian, FreeBSD, NetBSD). <A
+<P>To install it, see the INSTALL file. Or type "<code>./configure &&
+make && sudo make install</code>" if you're in a hurry :-) Several
+operating systems have echoping already packaged (Debian, FreeBSD,
+NetBSD). <A
 HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
 wish. (Or you may prefer access the latest developments <A
-HREF="http://sourceforge.net/svn/?group_id=4581">via Subversion</A>: the
-module is named "SRC".) You may be interested in <A HREF="http://sourceforge.net/project/?group_id=4581">SourceForge's page
-about echoping</A>, with the bug reports, etc.
+HREF="http://sourceforge.net/svn/?group_id=4581">via Subversion</A>:
+the module is named "SRC"; but be careful, this is not for the faint
+of heart and you need to master GNU auto* tools.) You may be
+interested in <A
+HREF="http://sourceforge.net/project/?group_id=4581">SourceForge's
+page about echoping</A>, with the bug reports, etc.
 
 <P>To use it, simply:
 
