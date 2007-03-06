@@ -143,6 +143,10 @@ main(argc, argv)
 	int             priority_requested = 0;
 	int             tos;
 	int             tos_requested = 0;
+#ifdef TCP_INFO
+	struct tcp_info tcpinfo;
+	socklen_t       socket_length = sizeof(tcpinfo);
+#endif
 	char           *p;
 	echoping_options global_options;
 
@@ -617,13 +621,13 @@ main(argc, argv)
 						strcpy(port_name, "80");
 					} else
 					    if (strcmp
-						(port_name, DEFAULT_HTTPS_TCP_PORT)
-						== 0) {
+						(port_name,
+						 DEFAULT_HTTPS_TCP_PORT) == 0) {
 						strcpy(port_name, "443");
 					} else
 					    if (strcmp
-						(port_name, DEFAULT_ICP_UDP_PORT)
-						== 0) {
+						(port_name,
+						 DEFAULT_ICP_UDP_PORT) == 0) {
 						strcpy(port_name, "3130");
 					}
 				}
@@ -947,8 +951,7 @@ main(argc, argv)
 					if (tcp) {
 						(void) gettimeofday(&connectedtv,
 								    (struct timezone
-								     *)
-								    NULL);
+								     *) NULL);
 						temp = connectedtv;
 						tvsub(&temp, &conntv);
 						if (verbose) {
@@ -1338,6 +1341,17 @@ main(argc, argv)
 			}
 		}		/* That's all, folks */
 		alarm(0);
+#ifdef TCP_INFO
+		/* Thanks to Perry Lorier <perry@coders.net> for the tip */
+		if (tcp && verbose) {
+			if (getsockopt
+			    (sockfd, SOL_TCP, TCP_INFO, &tcpinfo, &socket_length)
+			    != -1) {
+				printf("Estimated TCP RTT: %.04f seconds\n",
+				       tcpinfo.tcpi_rtt / 1000000.0);
+			}
+		}
+#endif
 		if (http) {
 #ifdef OPENSSL
 			if (ssl)

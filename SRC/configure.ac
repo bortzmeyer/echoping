@@ -215,6 +215,33 @@ AC_ARG_ENABLE(ttcp,
    TTCP=1
  fi)
 
+AC_MSG_CHECKING([TCP info from socket])
+AC_TRY_COMPILE(
+ [#include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/tcp.h>
+ ],
+ [int foobar = SOL_TCP;],
+ [AC_DEFINE(TCP_INFO,,[TCP info from socket])
+  ac_have_tcp_info="yes"],
+ ac_have_tcp_info=no)
+AC_MSG_RESULT($ac_have_tcp_info)
+AC_ARG_ENABLE(tcp_info,
+ [  --enable-tcp-info   TCP info from socket],
+ [if test "$enableval" = "yes"; then
+   if test $ac_have_tcp_info = "yes"; then
+     AC_DEFINE(TCP_INFO,,[TCP info from socket])
+     TCP_INFO=1
+   else
+     AC_MSG_WARN([No TCP info support on this system, request ignored])
+   fi
+  fi],
+ dnl Default: enable it if supported
+ if test $ac_have_tcp_info = "yes"; then
+   AC_DEFINE(TCP_INFO,,[TCP info])
+   TCP_INFO=1
+ fi)
+
 dnl Type Of Service
 AC_MSG_CHECKING([Type Of Service])
 AC_TRY_COMPILE(
