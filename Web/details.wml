@@ -52,8 +52,7 @@ SunOS need time to recover :-)
 <LI>ping, probably available with your system
 <LI>traceroute, idem (otherwise, see <A HREF="ftp://ftp.ee.lbl.gov/">LBL</A>)
 <LI><A HREF="ftp://ftp.arl.mil/pub/ttcp/">ttcp</A>, the best measurement tool but it needs some control over the 
-  two machines (nothing to do with
-  the T/TCP protocol)
+  two machines 
 <LI><A HREF="ftp://ftp.scl.ameslab.gov/pub/netpipe/">Netpipe</A>, it needs some control over the two machines 
 <LI><A HREF="http://www.psc.edu/~pscnoc/treno_info.html">treno</A> (evaluates available bandwidth for TCP) 
 <LI>spray is a tool which I dont't know very well. It is available on some 

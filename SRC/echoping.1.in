@@ -9,7 +9,6 @@ echoping \- tests a remote host with TCP or UDP
 .RI [-6] 
 .RI [-v] 
 .RI [-V] 
-.RI [-r] 
 .RI [-f fill] 
 .RI [-t timeout] 
 .RI [-c] 
@@ -106,8 +105,6 @@ Force the proxy (if you use one) to revalidate data with the original server
 Use the SSL/TLS (cryptography) protocol. For HTTP tests only.
 .IP -S
 Use the SMTP protocol (instead of echo) for the given server.
-.IP -r
-Use T/TCP (if it has been compiled with it). See the INSTALL file for details.
 .IP -4
 Use only IPv4 (even if the target machine has an IPv6 address)
 .IP -6

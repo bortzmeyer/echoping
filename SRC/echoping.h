@@ -89,9 +89,6 @@ extern int sys_nerr;
 #ifdef HAVE_SIGACTION
 #define USE_SIGACTION 1
 #endif
-#ifdef HAVE_TTCP
-#define USE_TTCP 1
-#endif
 #ifdef HAVE_TOS
 #define USE_TOS 1
 #endif

@@ -47,7 +47,6 @@ test hosts which aren't yours.
 <LI>can use cryptographic connections with HTTP,
 <LI>uses UDP instead of TCP for the protocols which accept it (like echo),
 <LI>can repeat the test and display various measures about it,
-<LI>can use T/TCP on systems which support it.
 </UL>
 
 <P><A HREF="http://sourceforge.net/bugs/?func=browse&group_id=4581&set=open">Known bugs</A>

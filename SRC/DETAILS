@@ -56,8 +56,7 @@ Unix:
 - ping, probably available with your system
 - traceroute, idem (otherwise, see <ftp://ftp.ee.lbl.gov/>)
 - ttcp, the best measurement tool but it needs some control over the 
-  two machines <ftp://ftp.arl.mil/pub/ttcp> (nothing to do with
-  the T/TCP protocol)
+  two machines <ftp://ftp.arl.mil/pub/ttcp> 
 - Netpipe, it needs some control over the 
   two machines <ftp://ftp.scl.ameslab.gov/pub/netpipe/>
 - treno (evaluates available bandwidth for TCP) 

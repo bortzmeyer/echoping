@@ -27,7 +27,6 @@ Current features:
 - supports IPv6 as well as IPv4,
 - supports IDN (Unicode domain names),
 - supports plugins written by you, to test even more protocols (see PLUGINS),
-- can use T/TCP on systems which support it.
 
 Examples of output:
 

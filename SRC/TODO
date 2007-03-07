@@ -18,9 +18,6 @@ Wishes:
 
 Display other calculations such as kurtosis.
 
-Check the TCP timeout with T/TCP. Difficult to test, few T/TCP
-machines exist. Timeouts on T/TCP connections are a bit experimental.
-
 TCP timeout with long packets seem to confuse Cisco routers. Does
 someone can reproduce it and perform tests? It seems to work now.
 

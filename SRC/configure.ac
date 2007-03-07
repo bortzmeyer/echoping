@@ -119,7 +119,6 @@ AC_ARG_WITH(popt,
  fi],
  dnl Default: disable it
 )
-dnl See T/TCP later 
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -188,37 +187,11 @@ if test "$GNUTLS" = "1"; then
 CF_LIB_GNUTLS
 fi
 
-dnl T/TCP
-AC_MSG_CHECKING([T/TCP])
-AC_TRY_COMPILE(
- [#include <sys/types.h>
-  #include <sys/socket.h>
- ],
- [int foobar = MSG_EOF;],
- [AC_DEFINE(TTCP,,[Transaction TCP support])
-  ac_have_ttcp="yes"],
- ac_have_ttcp=no)
-AC_MSG_RESULT($ac_have_ttcp)
-AC_ARG_ENABLE(ttcp,
- [  --enable-ttcp   T/TCP (Transaction TCP) support],
- [if test "$enableval" = "yes"; then
-   if test $ac_have_ttcp = "yes"; then
-     AC_DEFINE(TTCP,,[Transaction TCP support])
-     TTCP=1
-   else
-     AC_MSG_WARN([No T/TCP support on this system, request ignored])
-   fi
-  fi],
- dnl Default: enable it if supported
- if test $ac_have_ttcp = "yes"; then
-   AC_DEFINE(TTCP,,[Transaction TCP support])
-   TTCP=1
- fi)
-
 AC_MSG_CHECKING([TCP info from socket])
 AC_TRY_COMPILE(
  [#include <sys/types.h>
   #include <sys/socket.h>
+  /* TODO: including tcp.h may not be necessary */
   #include <netinet/tcp.h>
  ],
  [int foobar = SOL_TCP;],
@@ -353,7 +326,6 @@ DISPLAY_SETTING(OPENSSL)
 DISPLAY_SETTING(GNUTLS)
 DISPLAY_SETTING(SMTP)
 DISPLAY_SETTING(LIBIDN)
-DISPLAY_SETTING(TTCP)
 DISPLAY_SETTING(TOS)
 DISPLAY_SETTING(PRIORITY)
 

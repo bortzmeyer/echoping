@@ -119,7 +119,6 @@ main(argc, argv)
 	icp_opcode      opcode = ICP_OP_QUERY;
 #endif
 
-	boolean         ttcp = 0;
 	boolean         tcp = 0;
 	boolean         ssl = 0;
 
@@ -174,8 +173,6 @@ main(argc, argv)
 		 "Hostname to use in HTTP Host: header"},
 		{"icp", 'i', POPT_ARG_STRING, &url, 'i',
 		 "ICP protocol, for Web proxies/caches"},
-		{"ttcp", 'r', POPT_ARG_NONE, &ttcp, 'r',
-		 "Use the T/TCP protocol (Transaction TCP)"},
 		{"udp", 'u', POPT_ARG_NONE, &udp, 'u'},
 		{"timeout", 't', POPT_ARG_INT, &timeout, 't'},
 		{"fill", 'f', POPT_ARG_STRING, &fill_s, 'f'},
@@ -196,7 +193,6 @@ main(argc, argv)
 	poptContext     poptcon;
 
 	global_options.udp = FALSE;
-	global_options.ttcp = FALSE;
 	global_options.verbose = FALSE;
 
 	null_timeval.tv_sec = 0;
@@ -386,13 +382,6 @@ main(argc, argv)
 			       progname);
 		exit(1);
 	}
-#ifndef USE_TTCP
-	if (ttcp) {
-		(void) fprintf(stderr,
-			       "%s: not compiled with T/TCP support.\n", progname);
-		exit(1);
-	}
-#endif
 #if ! (defined(OPENSSL) || defined(GNUTLS))
 	if (ssl) {
 		(void) fprintf(stderr,
@@ -430,11 +419,6 @@ main(argc, argv)
 	if (ssl && !http) {
 		(void) fprintf(stderr,
 			       "%s: SSL is only supported for HTTP requests.\n",
-			       progname);
-		exit(1);
-	}
-	if (udp && ttcp) {
-		(void) fprintf(stderr, "%s: UDP and T/TCP are incompatible.\n",
 			       progname);
 		exit(1);
 	}
@@ -495,7 +479,6 @@ main(argc, argv)
 				dlerror());
 		}
 		global_options.udp = udp;
-		global_options.ttcp = ttcp;
 		global_options.verbose = verbose;
 		if (family == AF_INET)
 			global_options.only_ipv4 = 1;
@@ -534,9 +517,6 @@ main(argc, argv)
 			err_sys("Cannot find terminate in %s: %s", plugin_name,
 				dlerror());
 		}
-	}
-	if (!udp && !ttcp) {
-		tcp = 1;
 	}
 	if (remaining == 0) {
 		(void) fprintf(stderr, "No host name indicated\n");
@@ -928,7 +908,7 @@ main(argc, argv)
 			if (plugin_result == -2)
 				err_quit("");
 		} else {
-			if (!ttcp && !icp) {
+			if (!icp) {
 				/* 
 				 * Connect to the server.
 				 */
@@ -1039,25 +1019,12 @@ main(argc, argv)
 					 */
 				}
 #endif
-			}
-			/* Not T/TCP */
-			else {
+			} else {
 				/* No initial connection */
 			}
 			if ((port_to_use == USE_ECHO) || (port_to_use == USE_DISCARD)
 			    || (port_to_use == USE_HTTP) || (port_to_use == USE_ICP)
 			    || (port_to_use == USE_SMTP)) {
-#ifdef USE_TTCP
-				if (ttcp) {
-					if (sendto(sockfd, sendline, n, MSG_EOF,
-						   res->ai_addr,
-						   res->ai_addrlen) != n)
-						err_sys("sendto error on socket");
-					if (verbose) {
-						printf("T/TCP connection done\n");
-					}
-				} else
-#endif
 				if (!udp) {
 					if (!ssl) {
 						/* 
