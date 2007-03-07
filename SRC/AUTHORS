@@ -28,6 +28,9 @@ adaptation to the new API, which allows IPv6.
 Luca Deri <deri@ntop.org> for the patch separating kernel (TCP) and
 application latency.
 
+Andy Juniper <ajuniper@freeuk.com> for the patch which excludes
+outliers from averages and from bug fixes on statistical calculations.
+
 SourceForge for the very good environment to work with. SourceForge
 changed the life of many free software programmers!
 

@@ -111,6 +111,11 @@ Use only IPv4 (even if the target machine has an IPv6 address)
 Use only IPv6 (even if the target machine has an IPv4 address)
 .IP -f\ character
 Fill the packet with this character (default is random filling)
+.IP -D 
+Tries to display actual data transfer duration only, not total time
+.IP -N\ n
+Displays an average which excludes values ("outliers") which are
+further than +/- N*standard deviation 
 .IP -p\ n
 Send packets with the socket priority to the integer
 .IR n .

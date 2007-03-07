@@ -118,3 +118,11 @@ good to read. I appreciate RFC 2330 and 3148.
 TCP/IP Internets and Interconnected Devices"), specially its "Benchmark"
 section and the Richard Stevens' books (all of them), published by 
 Addison-Wesley.
+
+<P>Last, but not least, since statistics is typically a very neglected
+area in computer networks, <A
+HREF="http://www.statsoft.com/textbook/stbasic.html">Basic
+Statistics</A> is a fery useful resource. For the reasons why echoping
+displays median as well as average, see <A
+HREF="http://shlang.com/writing/mean-delay-considered-harmful.html">Mean
+Delay Considered Harmful</A>.
