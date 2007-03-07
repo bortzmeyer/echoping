@@ -49,6 +49,8 @@ To measure performances on the Internet you can also see:
 
 Unix:
 
+- thrulay, measures the capacity of a network by sending a bulk TCP
+  stream over it <http://shlang.com/thrulay/>
 - bing, a bandwidth measurement tool
   <http://www.freenix.fr/freenix/logiciels/bing.html>
 - patchchar or pchar <http://www.employees.org/~bmah/Software/pchar/>,

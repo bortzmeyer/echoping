@@ -49,7 +49,7 @@ test hosts which aren't yours.
 <LI>can repeat the test and display various measures about it,
 </UL>
 
-<P><A HREF="http://sourceforge.net/bugs/?func=browse&group_id=4581&set=open">Known bugs</A>
+<P><A HREF="http://sourceforge.net/bugs/?func=browse&amp;group_id=4581&amp;set=open">Known bugs</A>
 
 <P>Examples of output:
 
@@ -71,7 +71,10 @@ Checked
 Elapsed time: 0.326960 seconds
 </PRE>
 
-<LI>(Repeated tests with average and median displayed.)
+<LI>(Repeated tests with average / mean and <A
+HREF="http://www.internet2.edu/~shalunov/writing/mean-delay-considered-harmful.html">median</A>
+displayed.)
+  
 <PRE>
 % echoping -n 10 faraway-machine
 [...]

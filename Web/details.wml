@@ -44,11 +44,13 @@ SunOS need time to recover :-)
 <H3>Unix</H3>
 
 <UL>
+<LI><A HREF="http://www.internet2.edu/~shalunov/thrulay/">thrulay</A>,
+  measures the capacity of a network by sending a bulk TCP stream over it
 <LI><A
   HREF="http://www.freenix.fr/freenix/logiciels/bing.html">bing</A>, a
   bandwidth measurement tool
 <LI>pathchar or <A
-  HREF="http://www.employees.org/~bmah/Software/pchar/">pchar, a bandwidth measurement tool
+  HREF="http://www.employees.org/~bmah/Software/pchar/">pchar</A>, a bandwidth measurement tool
 <LI>ping, probably available with your system
 <LI>traceroute, idem (otherwise, see <A HREF="ftp://ftp.ee.lbl.gov/">LBL</A>)
 <LI><A HREF="ftp://ftp.arl.mil/pub/ttcp/">ttcp</A>, the best measurement tool but it needs some control over the 
