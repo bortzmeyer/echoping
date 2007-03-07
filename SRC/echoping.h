@@ -206,6 +206,7 @@ void tvmin ();
 void tvmax ();
 int tvcmp ();
 void tvstddev ();
+void tvstddevavg ();
 double tv2double ();
 struct timeval double2tv ();
 /* http.c */

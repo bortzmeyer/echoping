@@ -26,11 +26,12 @@ char           *progname;
 int             return_code = 0;
 int             rc;
 unsigned int    number = 1;
-struct timeval  max, min, total, median, stddev, temp;
+struct timeval  max, min, total, median, stddev, temp, measured;
 struct timeval  conntv, connectedtv, sendtv, recvtv;
 unsigned int    successes, attempts = 0;
 unsigned int    size = DEFLINE;
 unsigned int    j = 0;
+int             n_stddev = 0;
 
 int             family = PF_UNSPEC;
 
@@ -99,6 +100,7 @@ main(argc, argv)
 	boolean         timeout_requested = 0;
 	boolean         size_requested = 0;
 	char           *url = "";
+	boolean         measure_data_transfer_only = FALSE;
 #if USE_SIGACTION
 	struct sigaction mysigaction;
 #endif
@@ -188,6 +190,9 @@ main(argc, argv)
 		{"ipv6", '6', POPT_ARG_NONE, NULL, '6'},
 		{"module", 'm', POPT_ARG_STRING, &plugin_name, 'm',
 		 "Loads the given plugin"},
+		{"dataonly", 'D', POPT_ARG_NONE, NULL, 'D'},
+		{"numstddev", 'N', POPT_ARG_INT, &n_stddev, 'N',
+		 "Number of stddeviations to classify outliers"},
 		POPT_TABLEEND
 	};
 	poptContext     poptcon;
@@ -290,6 +295,12 @@ main(argc, argv)
 		case 'S':
 			strcpy(port_name, "smtp");
 			port_to_use = USE_SMTP;
+			break;
+		case 'D':
+			measure_data_transfer_only = TRUE;
+			break;
+		case 'N':
+			remaining--;
 			break;
 		case 'p':
 			remaining--;
@@ -905,6 +916,14 @@ main(argc, argv)
 			alarm(timeout);
 		}
 		(void) gettimeofday(&oldtv, (struct timezone *) NULL);
+		/* work out the time it took... */
+		if (measure_data_transfer_only) {
+			measured = recvtv;
+			tvsub(&measured, &sendtv);
+		} else {
+			measured = newtv;
+			tvsub(&measured, &oldtv);
+		}
 		if (plugin) {
 			plugin_result = plugin_execute();
 			if (plugin_result == -2)
@@ -1392,7 +1411,10 @@ main(argc, argv)
 			}
 #endif
 			results[i - 1].valid = 1;
-			results[i - 1].timevalue = newtv;
+			if (measure_data_transfer_only)
+				results[i - 1].timevalue = measured;
+			else
+				results[i - 1].timevalue = newtv;
 			successes++;
 		}
 		if (number > 1) {
@@ -1497,6 +1519,13 @@ printstats()
 		printf("Median time: %d.%06d seconds (%.0f bytes per sec.)\n",
 		       (int) median.tv_sec, (int) median.tv_usec,
 		       (double) size / tv2double(median));
+		if (n_stddev) {
+			tvstddevavg(&stddev, successes, total, results,
+				    (double) n_stddev);
+			printf
+			    ("Average of values within %d standard deviations: %d.%06d\n",
+			     n_stddev, (int) stddev.tv_sec, (int) stddev.tv_usec);
+		}
 	}
 }
 
