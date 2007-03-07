@@ -119,8 +119,8 @@ main(argc, argv)
 	icp_opcode      opcode = ICP_OP_QUERY;
 #endif
 
-	boolean         tcp = 0;
-	boolean         ssl = 0;
+	boolean         tcp = FALSE;
+	boolean         ssl = FALSE;
 
 	boolean         stop_at_newlines = 1;
 
@@ -422,6 +422,8 @@ main(argc, argv)
 			       progname);
 		exit(1);
 	}
+	if (!udp && !icp)
+		tcp = TRUE;
 	if (ssl && http) {
 		strcpy(port_name, DEFAULT_HTTPS_TCP_PORT);
 	}
