@@ -9,7 +9,6 @@
  *
  *  */
 
-
 char           *progname;
 
 #include	"echoping.h"
@@ -691,7 +690,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 */
+					 * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -1052,6 +1051,10 @@ main(argc, argv)
 						 * Write something to the
 						 * server
 						 */
+						if (port_to_use == USE_SMTP) {
+							/* Get the greeting line */
+							nr = smtp_read_response_from_server(files);
+						}
 						if (writen(sockfd, sendline, n) != n) {
 							if ((nr < 0 || nr != n)
 							    && timeout_flag) {
