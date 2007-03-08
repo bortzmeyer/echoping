@@ -13,11 +13,11 @@ fi
 
 ./echoping -h http://www.netaktiv.com/ cache:$PROXY_PORT
 
-./echoping -h http://www.freenix.org/ cache:$PROXY_PORT
+./echoping -h http://www.debian.org/ cache:$PROXY_PORT
 
-./echoping -a -h http://www.freenix.org/ cache:$PROXY_PORT
+./echoping -a -h http://www.debian.org/ cache:$PROXY_PORT
 
-./echoping -A -h http://www.freenix.org/ cache:$PROXY_PORT
+./echoping -A -h http://www.debian.org/ cache:$PROXY_PORT
 
 
 
