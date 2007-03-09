@@ -189,9 +189,9 @@ main(argc, argv)
 		{"ipv6", '6', POPT_ARG_NONE, NULL, '6'},
 		{"module", 'm', POPT_ARG_STRING, &plugin_name, 'm',
 		 "Loads the given plugin"},
-		{"dataonly", 'D', POPT_ARG_NONE, NULL, 'D'},
-		{"numstddev", 'N', POPT_ARG_INT, &n_stddev, 'N',
-		 "Number of stddeviations to classify outliers"},
+		{"data-only", 'D', POPT_ARG_NONE, NULL, 'D'},
+		{"num-std-dev", 'N', POPT_ARG_INT, &n_stddev, 'N',
+		 "Number of standard deviations to classify outliers"},
 		POPT_TABLEEND
 	};
 	poptContext     poptcon;
@@ -690,7 +690,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * See bug #1512776 */
+					 * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -1226,7 +1226,7 @@ main(argc, argv)
 					}
 #endif
 
-				} else {
+				} else {	/* UDP */
 #ifdef USE_SIGACTION
 					mysigaction.sa_handler = to_alarm;
 					sigemptyset(&mysigaction.sa_mask);
@@ -1526,8 +1526,9 @@ printstats()
 			tvstddevavg(&stddev, successes, total, results,
 				    (double) n_stddev);
 			printf
-			    ("Average of values within %d standard deviations: %d.%06d\n",
-			     n_stddev, (int) stddev.tv_sec, (int) stddev.tv_usec);
+			    ("Average of values within %d standard deviation%s: %d.%06d\n",
+			     n_stddev, (n_stddev == 1 ? "" : "s"),
+			     (int) stddev.tv_sec, (int) stddev.tv_usec);
 		}
 	}
 }

@@ -134,6 +134,7 @@ tvstddev(out, number, average, results)
 
  /* tvstddevavg -- Computes the average of values within a set of results where the
   * sample is within the given number of standard deviations from the average */
+/* TODO: IWBN to return the number of excluded outliers */
 void
 tvstddevavg(out, number, average, results, n_stddev)
 	struct timeval *out;	/* contains std dev on entry */
