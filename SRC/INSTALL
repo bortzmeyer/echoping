@@ -47,6 +47,19 @@ other choices than using echoping 5. popt can be retrieved from, for
 instance, ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-1.7.tar.gz or
 ask Freshmeat at http://freshmeat.net/projects/popt/.
 
+If, on a 64bits machine such as one using AMD Opteron, compilation
+stops with something like:
+
+/usr/lib/libpopt.so: could not read symbols: File in wrong format
+
+it could mean that popt was compiled only in 32bits. Recompile popt
+(warning: other applications may use it) or compile and keep two popt
+(practical details on how to keep two versions are welcome) or compile
+echoping in 32bits. With gcc:
+
+CFLAGS=-m32 ./configure --config-cache
+make
+
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
 
