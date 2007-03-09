@@ -101,15 +101,21 @@ tvstddev(out, number, average, results)
 	struct result  *results;
 {
 	int             i;
-	struct timeval  result, avg, var = null_timeval;
+	struct timeval  result = null_timeval;
+	struct timeval  avg = null_timeval;
+#ifdef DEBUG
+	struct timeval  var = null_timeval;
+#endif
 	struct timeval  large, small;
 	double          d_offset, d_square, d_variance = 0;
 	*out = null_timeval;
 	for (i = 0; i < number; i++) {
 		if (results[i].valid == 1) {
 			result = results[i].timevalue;
-			/* printf ("value is %f (average is %f)\n", tv2double
-			 * (result), tv2double (average)); */
+#ifdef DEBUG
+			printf("DEBUG: Value is %f (average is %f)\n", tv2double
+			       (result), tv2double(average));
+#endif
 			avg = average;
 			if (tvcmp(&result, &avg) == -1) {
 				small = result;
@@ -119,11 +125,15 @@ tvstddev(out, number, average, results)
 				small = avg;
 			}
 			tvsub(&large, &small);
-			/* printf ("abs offset is %f\n", tv2double (large)); */
+#ifdef DEBUG
+			printf("abs offset is %f\n", tv2double(large));
+#endif
 			d_offset = tv2double(large);
 			d_square = d_offset * d_offset;
 			d_variance += d_square;
-			/* printf ("variance is now %f\n", tv2double (var)); */
+#ifdef DEBUG
+			printf("variance is now %f\n", tv2double(var));
+#endif
 		}
 	}
 	result = double2tv(sqrt(d_variance / (double) number));

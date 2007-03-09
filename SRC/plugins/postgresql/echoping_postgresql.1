@@ -33,14 +33,14 @@ echoping_postgresql \- echoping plugin which connects to a PostgreSQL RDBMS serv
 .\" respectively.
 postgresql is an echoping plugin to connect to PostgreSQL RDBMS servers.
 .SH ARGUMENTS
-.B [request]
+.B [SQL-request]
 The request to the PostgreSQL server (in SQL). Only SELECT are
 supported. The default is 'SELECT now()'.
 .TP
 .SH OPTIONS
 .TP
 .B \-c, \-\-conninfo
-Connection information for the Postgresql server. Something like 'host=foo dbname=bar'
+Connection information for the Postgresql server. Something like 'dbname=bar'
 .TP
 .B \-r, \-\-readall
 Read all the data sent by the Postgresql server

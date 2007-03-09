@@ -392,6 +392,12 @@ main(argc, argv)
 			       progname);
 		exit(1);
 	}
+	if (n_stddev && number <= 2) {
+		(void) fprintf(stderr,
+			       "%s: Average and standard deviation are meaningless since you perform only two or less iteration(s).\n",
+			       progname);
+		exit(1);
+	}
 #if ! (defined(OPENSSL) || defined(GNUTLS))
 	if (ssl) {
 		(void) fprintf(stderr,
@@ -690,7 +696,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * * See bug #1512776 */
+					 * * * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP

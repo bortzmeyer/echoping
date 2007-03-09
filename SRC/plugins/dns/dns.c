@@ -78,10 +78,10 @@ init(const int argc, const char **argv)
 		{"type", 't', POPT_ARG_STRING, &type_name, 0,
 		 "Type of resources queried (A, MX, SOA, etc)",
 		 "type"},
-		{"tcp", NULL, POPT_ARG_NONE, &use_tcp, 0,
+		{"tcp", (char) NULL, POPT_ARG_NONE, &use_tcp, 0,
 		 "Use TCP for the request (virtual circuit)",
 		 "tcp"},
-		{"no-recurse", NULL, POPT_ARG_NONE, &no_recurse, 0,
+		{"no-recurse", (char) NULL, POPT_ARG_NONE, &no_recurse, 0,
 		 "Do not ask recursion",
 		 "no-recurse"},
 		POPT_AUTOHELP POPT_TABLEEND
@@ -148,11 +148,11 @@ start(struct addrinfo *res)
 		(void) memcpy((void *) &name_server_sockaddr_in,
 			      &name_server_sockaddr, sizeof(struct sockaddr));
 	} else if (name_server_sockaddr.sa_family == AF_INET6) {
+#ifdef HAVE_RES_EXT
 		/* TODO: the code for IPv6 servers is hopelessly broken. Start again 
 		 */
 		fprintf(stderr,
 			"WARNING: IPv6 nameservers not really supported yet (experts may apply). Falling back to IPv4 and the default server. You may use -4, too\n");
-#ifdef HAVE_RES_EXT
 		/* Converts a generic sockaddr to an IPv6 sockaddr_in6 */
 		(void) memcpy((void *) &name_server_sockaddr_in6,
 			      &name_server_sockaddr, sizeof(struct sockaddr));

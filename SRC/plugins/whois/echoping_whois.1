@@ -22,8 +22,8 @@ echoping_whois \- echoping plugin which connects to a whois server
 .RI [echoping\ options]
 .RI -m\ whois
 .B hostname
-.RI -r\ request
-.RI -d
+.RI [-d]
+.RI request
 .SH DESCRIPTION
 .PP
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
@@ -31,10 +31,11 @@ echoping_whois \- echoping plugin which connects to a whois server
 .\" respectively.
 whois is an echoping plugin to connect to whois/nicname servers (see
 RFC 3912).
-.SH OPTIONS
+.SH ARGUMENTS
 .TP
-.B \-r, \-\-request
+.B request
 The request to the whois server (typically a domain name)
+.SH OPTIONS
 .TP
 .B \-d, \-\-dump
 Dumps the result of the request
