@@ -10,10 +10,24 @@ DNS_BUILD=1
 AC_CHECK_FUNCS(poptGetContext,, 
    [AC_CHECK_LIB(popt,poptGetContext,,[AC_MSG_WARN([No popt development environment found, not building this plugin]) && DNS_BUILD=0])])
 if test "$DNS_BUILD" != "0"; then
+
  AC_CHECK_FUNC(res_mkquery, , 
   [AC_CHECK_LIB(bind, res_mkquery, , 
    [AC_CHECK_LIB(resolv, res_mkquery, , 
-        [AC_MSG_WARN([No DNS resolver development environment found, not building this plugin]) && DNS_BUILD=0])])])
+dnl http://bugs.debian.org/254089
+	[ saved_LIBS="$LIBS"
+	LIBS="$LIBS -lresolv"
+	AC_MSG_CHECKING(for res_mkquery in -lresolv again)
+	AC_LINK_IFELSE([[
+#include <resolv.h>
+int main()
+{
+	res_mkquery (0, 0, 0, 0, 0, 0, 0, 0, 0);
+	return 0;
+}]],
+	LIBS="$saved_LIBS -lresolv"; AC_MSG_RESULT(yes),
+	LIBS="$saved_LIBS"; AC_MSG_RESULT(no)
+        [AC_MSG_WARN([No DNS resolver development environment found, not building this plugin]) && DNS_BUILD=0])])])])
 fi
 
 AC_MSG_CHECKING([_res ])
