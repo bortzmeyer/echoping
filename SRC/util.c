@@ -43,7 +43,7 @@ to_upper(char *input)
 	char           *result;
 	result = (char *) malloc(strlen(input));
 	for (c = 0; c < strlen(input); c++)
-		result[c] = toupper(input[c]);
+		result[c] = toupper((int)input[c]);
 	result[strlen(input)] = '\0';
 	return result;
 }
