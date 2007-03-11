@@ -6,10 +6,11 @@ echo ""
 echo "Since this tests tries remote servers, a failure is not always "
 echo " echoping's fault: it may be a network problem."
 
-./echoping central.internatif.org
+# There are no more public echo servers :-(
+#./echoping echo.example.org
 
 ./echoping -h / www.debian.org
 
-./echoping -h / www.freenix.org
+./echoping -h / www.afnic.fr
 
 ./echoping -S mx3.hotmail.com

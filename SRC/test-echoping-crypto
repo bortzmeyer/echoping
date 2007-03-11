@@ -11,11 +11,8 @@ echo " echoping's fault: it may be a network problem."
 echo ""
 
 # We need to iterate to catch some SSL programming errors. See bug #130151 
-./echoping -C -h / -n 2 www.modssl.org
-
-echo ""
-
-./echoping -C -h / -n 2 www.creditmutuel.fr
+#./echoping -C -h / -n 2 www.modssl.org
+./echoping -C -h / -n 2 www.verisign.com
 
 echo ""
 
