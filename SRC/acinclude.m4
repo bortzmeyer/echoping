@@ -214,7 +214,7 @@ ac_last_port=
 
 dnl Our (W. Richard Stevens') macro to check for a function prototype in 
 dnl a given header.  
-AC_DEFUN(AC_CHECK_FUNC_PROTO,
+AC_DEFUN([AC_CHECK_FUNC_PROTO],
         [AC_CACHE_CHECK(for $1 function prototype in $2, ac_cv_have_$1_proto,
                 AC_EGREP_HEADER($1, $2,
                         ac_cv_have_$1_proto=yes,
@@ -228,7 +228,7 @@ AC_DEFUN(AC_CHECK_FUNC_PROTO,
 dnl BROKEN: do not use
 dnl Copied from autoconf and edited to add an argument: an include file
 dnl AC_CHECK_FUNC_WITH_HEADER(FUNCTION, HEADER, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
-AC_DEFUN(AC_CHECK_FUNC_WITH_HEADER,
+AC_DEFUN([AC_CHECK_FUNC_WITH_HEADER],
 [AC_MSG_CHECKING([for $1])
 AC_CACHE_VAL(ac_cv_func_$1,
 [AC_TRY_LINK(
