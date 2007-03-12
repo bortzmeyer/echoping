@@ -6,10 +6,13 @@ echoping a struct addrinfo. All the DNS stuff, including IDN, is
 performed by echoping. You can immediately start using the struct
 addrinfo.
 
-But some libraries (typically, the one used by the DBMS) do not work
+But some libraries (typically, the one used by the DBMSs) do not work
 on struct addrinfo but on strings such as "dbname=test
 hostname=foo.bar". Plugins using these libraries will have to use the
 raw interface. The host name given as argument is ignored.
+
+[Do note there is *no* interface where the TCP connection and shutdown
+are done by echoping. They are always performed by the plugin.]
 
 You indicate to echoping wether you use the raw interface or the
 cooked one by returning a port name or NULL from the init() function.

@@ -21,6 +21,7 @@ int             n;
 int             sockfd;
 FILE           *files = NULL;
 poptContext     whois_poptcon;
+echoping_options general_options;
 
 void
 whois_usage(const char *msg)
@@ -46,6 +47,7 @@ init(const int argc, const char **argv, echoping_options global_options)
 		 ""},
 		POPT_AUTOHELP POPT_TABLEEND
 	};
+    general_options = global_options;
 	if (global_options.udp)
 		err_quit("UDP is incompatible with this whois plugin");
 	/* Will probably be catched before because /etc/services have no entry for
@@ -88,6 +90,10 @@ execute()
 	int             nr = 0;
 	char            recvline[MAX_LINE + 1];
 	char            complete_request[MAX_REQUEST];
+#ifdef HAVE_TCP_INFO
+	struct tcp_info tcpinfo;
+	socklen_t       socket_length = sizeof(tcpinfo);
+#endif
 	if ((sockfd =
 	     socket(whois_server.ai_family, whois_server.ai_socktype,
 		    whois_server.ai_protocol)) < 0)
@@ -106,6 +112,17 @@ execute()
 			printf("%s", recvline);
 	if (dump)
 		printf("\n");
+#ifdef HAVE_TCP_INFO
+		/* Thanks to Perry Lorier <perry@coders.net> for the tip */
+		if (general_options.verbose) {
+			if (getsockopt
+			    (sockfd, SOL_TCP, TCP_INFO, &tcpinfo, &socket_length)
+			    != -1) {
+				printf("Estimated TCP RTT: %.04f seconds\n",
+				       tcpinfo.tcpi_rtt / 1000000.0);
+			}
+		}
+#endif
 	close(sockfd);
 	return 1;
 }
