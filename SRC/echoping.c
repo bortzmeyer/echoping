@@ -49,7 +49,10 @@ main(argc, argv)
 	char          **leftover;
 
 	int             sockfd = -1;
-	struct addrinfo hints, hints_numeric, *res;
+	struct addrinfo hints, *res;
+#ifdef LIBIDN
+        struct addrinfo hints_numeric;
+#endif
 	int             error;
 	char            hbuf[NI_MAXHOST], pbuf[NI_MAXSERV];
 #ifdef NI_WITHSCOPEID
