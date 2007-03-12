@@ -131,10 +131,8 @@ It depends on Netem (network emulation)
      QoS and/or fair queuing -->
         Network emulator
 
-We can also use a patch to the Linux kernel's Netfilter : 
- 
-<http://www.netfilter.org/patch-o-matic/pom-base.html#pom-base-random>
- 
+[If it has been compiled as a module, then do a "modprobe sch_netem".]
+
 On FreeBSD, dummynet (<http://info.iet.unipi.it/~luigi/ip_dummynet>):
 
 ipfw add 1000 pipe 1 tcp from judith to kiwi echo
@@ -142,6 +140,8 @@ ipfw pipe 1 config plr 0.5
 
 It works fine to test echoping with 50 % of loss.
 
+(In French, see
+http://www.bortzmeyer.org/tester-protocoles-reseaux-avec-pertes.html)
 
 
 $Id$
