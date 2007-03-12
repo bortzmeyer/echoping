@@ -146,7 +146,7 @@ main(argc, argv)
 	int             priority_requested = 0;
 	int             tos;
 	int             tos_requested = 0;
-#ifdef TCP_INFO
+#ifdef HAVE_TCP_INFO
 	struct tcp_info tcpinfo;
 	socklen_t       socket_length = sizeof(tcpinfo);
 #endif
@@ -1341,7 +1341,7 @@ main(argc, argv)
 			}
 		}		/* That's all, folks */
 		alarm(0);
-#ifdef TCP_INFO
+#ifdef HAVE_TCP_INFO
 		/* Thanks to Perry Lorier <perry@coders.net> for the tip */
 		if (tcp && verbose) {
 			if (getsockopt
