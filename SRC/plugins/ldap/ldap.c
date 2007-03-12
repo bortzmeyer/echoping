@@ -76,7 +76,7 @@ init(const int argc, const char **argv,
 	if (request == NULL || !strcmp(request, ""))
 		request = "(objectclass=*)";
 	if (scope_string != NULL) {
-		scope_string = to_upper(scope_string);
+		scope_string = (char *)to_upper(scope_string);
 		if (!strcmp(scope_string, "BASE"))
 			scope = LDAP_SCOPE_BASE;
 		else if (!strcmp(scope_string, "SUB"))
