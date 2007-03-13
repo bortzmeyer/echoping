@@ -51,7 +51,7 @@ main(argc, argv)
 	int             sockfd = -1;
 	struct addrinfo hints, *res;
 #ifdef LIBIDN
-        struct addrinfo hints_numeric;
+	struct addrinfo hints_numeric;
 #endif
 	int             error;
 	char            hbuf[NI_MAXHOST], pbuf[NI_MAXSERV];
@@ -699,7 +699,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * * * * See bug #1512776 */
+					 * * * * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -1017,7 +1017,7 @@ main(argc, argv)
 							       xcred);
 					gnutls_transport_set_ptr(session,
 								 (gnutls_transport_ptr)
-								 sockfd);
+								 (long) sockfd);
 					tls_result = gnutls_handshake(session);
 					if (tls_result < 0) {
 						if ((errno == EINTR)
