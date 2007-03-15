@@ -94,7 +94,7 @@ main(argc, argv)
 	char           *complete_plugin_name = NULL;
 	char           *ext;
 	void           *plugin = NULL;
-	int             plugin_result;
+	int             plugin_result = -3;	/* Initialize to illegal value */
 
 	void            to_alarm();	/* our alarm() signal handler */
 	void            interrupted();
@@ -699,7 +699,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * * * * * See bug #1512776 */
+					 * * * * * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -934,6 +934,10 @@ main(argc, argv)
 		}
 		if (plugin) {
 			plugin_result = plugin_execute();
+			/* If plugin_result == -1, there is a temporary error and we 
+			 * did not get data, we must not use it in the average /
+			 * median calculations. So, successes will not be
+			 * incremented later. */
 			if (plugin_result == -2)
 				err_quit("");
 		} else {
@@ -1427,7 +1431,8 @@ main(argc, argv)
 				results[i - 1].timevalue = measured;
 			else
 				results[i - 1].timevalue = newtv;
-			successes++;
+			if (!plugin || (plugin_result == 0))
+				successes++;
 		}
 		if (number > 1) {
 #ifdef OPENSSL
