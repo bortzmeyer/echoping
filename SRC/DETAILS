@@ -29,11 +29,18 @@ physical line raw throughput measures (unlike bing). On the other end,
 the action it performs are close from a HTTP request and it is
 meaningful to use it (carefully) to measure Web performances.
 
+More on Linux:
+
+On operating systems, like Linux, who have the TCP_INFO option (see
+http://linuxgazette.net/136/pfeiffer.html for a detailed
+presentation), echoping can also display interesting TCP information.
+
 UDP and inetd:
 
 With UDP servers you can have surprises: the first test is quite often
-much slower since inetd has to launch the process. After that, the
-process stays a while so the next texts run faster.
+much slower since inetd or xinetd typically has to launch the
+process. After that, the process stays a while so the next texts run
+faster.
 
 A nice example:
 

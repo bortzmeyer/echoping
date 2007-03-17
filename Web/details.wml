@@ -24,6 +24,12 @@ line raw throughput measures (unlike bing). On the other end, the action it
 performs are close from a HTTP request and it is meaningful to use it 
 (carefully) to measure Web performances. 
 
+<H3>More on Linux</H3>
+
+<P>On operating systems, like Linux, who have the TCP_INFO option (see
+<A HREF="http://linuxgazette.net/136/pfeiffer.html">a detailed
+presentation</A>), echoping can also display interesting TCP information.
+
 <H2>UDP and inetd</H2>
 
 <P>With UDP servers you can have surprises: the first test is quite often

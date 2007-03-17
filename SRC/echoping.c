@@ -699,7 +699,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * See bug #1512776 */
+					 * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -1346,13 +1346,21 @@ main(argc, argv)
 		}		/* That's all, folks */
 		alarm(0);
 #ifdef HAVE_TCP_INFO
-		/* Thanks to Perry Lorier <perry@coders.net> for the tip */
+		/* Thanks to Perry Lorier <perry@coders.net> for the tip. See a
+		 * longer paper in http://linuxgazette.net/136/pfeiffer.html */
 		if (tcp && verbose) {
 			if (getsockopt
 			    (sockfd, SOL_TCP, TCP_INFO, &tcpinfo, &socket_length)
 			    != -1) {
-				printf("Estimated TCP RTT: %.04f seconds\n",
-				       tcpinfo.tcpi_rtt / 1000000.0);
+				/* TODO: find out the meaning of the various fields
+				 * inthe struct tcp_info (it seems documented only
+				 * in the Linux kernel sources) and display stuff
+				 * like reordering (see RFC 4737), window, lost
+				 * packets, etc. */
+				printf
+				    ("Estimated TCP RTT: %.04f seconds (std. deviation %0.03f)\n",
+				     tcpinfo.tcpi_rtt / 1000000.0,
+				     tcpinfo.tcpi_rttvar / 1000000.0);
 			}
 		}
 #endif
