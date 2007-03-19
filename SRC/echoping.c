@@ -699,7 +699,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * * See bug #1512776 */
+					 * * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -1382,7 +1382,7 @@ main(argc, argv)
 		(void) gettimeofday(&newtv, (struct timezone *) NULL);
 		temp = newtv;
 		tvsub(&temp, &oldtv);
-		if (!timeout_flag && (!plugin || plugin_result == 0)) {	/* If it
+		if (!timeout_flag && (!plugin || plugin_result >= 0)) {	/* If it
 									 * worked... 
 									 */
 			tvadd(&total, &temp);
