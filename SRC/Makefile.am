@@ -9,6 +9,7 @@ echoping_LDADD =
 echoping_LDFLAGS = -export-dynamic
 DOCS=DETAILS PLUGINS
 SUBDIRS=plugins
+SVN_REPO=http://echoping.svn.sourceforge.net/svnroot/echoping
 
 TESTS=test-echoping-local test-echoping-remote 
 MORE_TESTS=test-echoping-proxy test-echoping-icp test-echoping-crypto test-echoping-tos test-echoping-ipv6 test-echoping-idn test-echoping-plugins
@@ -57,8 +58,9 @@ internal_tests: internal_tests.o $(echoping_OBJECTS)
 debug: 
 	$(MAKE) DEBUG=1 CFLAGS='-g -O0'
 
-upload: dist
-	@echo "Have you updated ChangeLog and tagged (cvs tag RELEASE_x_x_x) everything?"
+upload: 
+	@echo "Have you updated ChangeLog and tagged everything?"
+	@echo "[Tag is 'svn copy -m \"TAG Release x.y.z\" ${SVN_REPO}/trunk ${SVN_REPO}/tags/RELEASE_x_y_z']"
 	@echo "If so, make upload-force"
 
 upload-force: dist
@@ -71,7 +73,7 @@ realclean: distclean
 
 EXTRA_DIST = $(man_MANS) $(TESTS) $(DOCS) $(MORE_TESTS)
 
-## Otherwise, we depend on GNUmake, but for CVS users, not for regular
+## Otherwise, we depend on GNUmake, but for Subversion users, not for regular
 ## tarball users
 ##AUTOMAKE_OPTIONS = no-dependencies
 

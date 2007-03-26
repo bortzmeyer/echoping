@@ -1,10 +1,10 @@
-6.0 (not yet released) 
+6.0 (2007-03-26)
 
-	* Plugins: several plugins (TODO: list) are now shipped with
-	echoping and you can write your own. All new protocols will now be
-	supported via plugins. Consequences:
-	   - you now need an Unix with a working dlopen(3)
-	   - echoping now requires the popt parsing library
+	* Plugins: several plugins (whois, postgresql, dns) are now
+	shipped with echoping and you can write your own. All new
+	protocols will now be supported via plugins. Consequences:
+	   * you now need an Unix with a working dlopen(3)
+	   * echoping now requires the popt parsing library
 	* popt: echoping now depends on popt. One main change: options
 	parsing is lightly different so some scripts *may* break. A
 	typical example is that "old-school" Unix aggreation of arguments
