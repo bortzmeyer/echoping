@@ -1,4 +1,4 @@
-6.0 (2007-03-26)
+6.0.0 (2007-03-26)
 
 	* Plugins: several plugins (whois, postgresql, dns) are now
 	shipped with echoping and you can write your own. All new
