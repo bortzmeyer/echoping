@@ -2,26 +2,22 @@
 
 <!-- $Id$ -->
 
-<P><em>Recent news:</em> a beta version of the future echoping is <A
-HREF="ftp://ftp.internatif.org/pub/unix/echoping/">available</A>. This
-version, 6.0, will be the first with plugins, so you can extend
-echoping with any protocol you like and/or use.
-
 <P>"echoping" is a small program to test (approximatively) performances of a 
-remote host by sending it TCP "echo" (or other protocol, such as HTTP) packets.
+remote host by sending it requests such as HTTP requests.
 
-<P>To install it, see the INSTALL file. Or type "<code>./configure &&
-make && sudo make install</code>" if you're in a hurry :-) Several
-operating systems have echoping already packaged (Debian, FreeBSD,
-NetBSD). <A
+<P>To install it, see the INSTALL file. Or type "<code>./configure
+--config-cache&& make && sudo make install</code>" if you're in a
+hurry :-) Several operating systems have echoping already packaged
+(Debian, Gentoo, FreeBSD, NetBSD). <A
 HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
-wish. (Or you may prefer access the latest developments <A
-HREF="http://sourceforge.net/svn/?group_id=4581">via Subversion</A>:
-the module is named "SRC"; but be careful, this is not for the faint
-of heart and you need to master GNU auto* tools.) You may be
-interested in <A
+wish. You may be interested also in <A
 HREF="http://sourceforge.net/project/?group_id=4581">SourceForge's
 page about echoping</A>, with the bug reports, etc.
+
+You may prefer access the latest developments <A
+HREF="http://sourceforge.net/svn/?group_id=4581">via Subversion</A>:
+the module is named "SRC"; but <EM>be careful</EM>, this is not for the faint
+of heart and you need to master GNU auto* tools.
 
 <P>To use it, simply:
 
@@ -41,6 +37,8 @@ test hosts which aren't yours.
 <P>Current features:
 
 <UL>
+<LI>plugins, so you can extend
+echoping with any protocol you like and/or use,
 <LI>Supports IPv6 as well as IPv4,
 <LI>Supports IDN (Unicode domain names like <CODE>café.gennic.net</CODE>),
 <LI>uses the protocols echo, discard, chargen or HTTP,
