@@ -699,7 +699,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * * * See bug #1512776 */
+					 * * * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -960,6 +960,13 @@ main(argc, argv)
 #endif
 					} else
 						err_sys("Can't connect to server");
+					/* TODO: it would be better to continue: if
+					 * -n was given, other iterations may
+					 * succeed. A flag indicating success or
+					 * error is probably necessary, it would
+					 * replace the mess around 'if
+					 * (!timeout_flag && (!plugin ||
+					 * plugin_result >= 0))' */
 				} else {
 					if (tcp) {
 						(void) gettimeofday(&connectedtv,
