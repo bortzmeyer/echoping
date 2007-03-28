@@ -12,7 +12,9 @@ char           *
 make_http_sendline(char *url, char *host, int port, int nocache)
 {
 	short           sport = (short) port;
-	int             size = 200;	/* Enough? */
+	int             size = 255;	/* Enough? RFC 2616, section 3.2.1 says it
+					 * should work, although there is no hard
+					 * limit. */
 	char           *sendline = (char *) malloc(size);
 	char           *hostname = (char *) malloc(size);
 	char           *cache_directive = "";
@@ -21,7 +23,7 @@ make_http_sendline(char *url, char *host, int port, int nocache)
 		cache_directive = "Pragma: no-cache\r\n";	/* RFC 1945,
 								 * "Hypertext
 								 * Transfer Protocol 
-								 * -- HTTP/1.0" */
+								 * * -- HTTP/1.0" */
 	sprintf(sendline,
 		"GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n%s\r\n",
 		url, VERSION, cache_directive);
@@ -44,7 +46,14 @@ make_http_sendline(char *url, char *host, int port, int nocache)
 										 * Protocol --
 										 * HTTP/1.1" */
 	}
-	strcpy(hostname, HTParse(url, "", PARSE_HOST));
+	strncpy(hostname, HTParse(url, "", PARSE_HOST), size);	/* See bug #1688940
+								 * to see why we use 
+								 * strNcpy . If the
+								 * URL includes no
+								 * host name *and*
+								 * is very long, the 
+								 * hostname buffer
+								 * overflows. */
 	if (!strcmp(hostname, ""))
 		sprintf(hostname, "%s:%d", host, sport);
 	sprintf(sendline,
@@ -139,7 +148,7 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 	 */
 	if ((nr < 2) && (timeout_flag))	/* Probably a timeout */
 		return -1;
-	if (nr < 2)		/* Hmm, if the body is empty, we'll get a *
+	if (nr < 2)		/* Hmm, if the body is empty, we'll get a * *
 				 * meaningless error message */
 		err_sys("Error reading HTTP body");
 	total = total + nr;
