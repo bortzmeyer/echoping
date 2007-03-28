@@ -11,10 +11,12 @@
 #define ICP_FLAG_HIT_OBJ	0x80000000ul
 #define ICP_FLAG_SRC_RTT	0x40000000ul
 
-#ifdef __alpha__
+#if SIZEOF_INT == 4
 typedef unsigned int u_num32;
-#else
+#elif SIZEOF_LONG == 4
 typedef unsigned long u_num32;
+#else
+#error "No suitable type for representing a 32-bits value"
 #endif
 
 struct icp_common_s {

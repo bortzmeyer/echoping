@@ -174,6 +174,10 @@ AC_CHECK_FUNCS(dlopen, ,
    [AC_CHECK_LIB(dl,dlopen, ,
        [AC_MSG_ERROR([echoping requires dlopen (dynamic loading of libraries) for plugins])])])
 
+dnl Checking size of ints, we often need it for binary protocols like ICP
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+
 if test "$LIBIDN" = "1"; then
 CF_LIB_LIBIDN
 fi
