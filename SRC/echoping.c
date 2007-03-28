@@ -1071,10 +1071,12 @@ main(argc, argv)
 						 * Write something to the
 						 * server
 						 */
+#ifdef SMTP
 						if (port_to_use == USE_SMTP) {
 							/* Get the greeting line */
 							nr = smtp_read_response_from_server(files);
 						}
+#endif
 						if (writen(sockfd, sendline, n) != n) {
 							if ((nr < 0 || nr != n)
 							    && timeout_flag) {
