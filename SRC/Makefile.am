@@ -5,6 +5,7 @@
 bin_PROGRAMS = echoping
 man_MANS = echoping.1
 echoping_SOURCES = echoping.c error.c readline.c writen.c util.c http.c icp.c HTParse.c echoping.h icp.h HTParse.h smtp.c
+pkginclude_HEADERS = echoping.h compilation.h
 echoping_LDADD = 
 echoping_LDFLAGS = -export-dynamic
 DOCS=DETAILS PLUGINS

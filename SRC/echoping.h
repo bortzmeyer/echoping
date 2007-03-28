@@ -10,9 +10,8 @@
 
 #define DEFLINE 256
 #define UDPMAX 65535
-#ifdef HTTP
+/* Mostly for HTTP */
 #define MAXTOREAD 150000
-#endif
 #ifdef SMTP
 #define MAXSMTP 1024
 #define MAXSMTPLINES 30

@@ -1,5 +1,5 @@
 dnl $Id$
-AC_INIT(echoping, 6.0.0, bortz@users.sourceforge.net)
+AC_INIT(echoping, 6.0.1-BETA, bortz@users.sourceforge.net)
 AC_CANONICAL_HOST
 AC_PROG_CC(cc gcc)
 AC_LIBTOOL_DLOPEN
