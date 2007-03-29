@@ -12,21 +12,25 @@ char           *
 make_http_sendline(char *url, char *host, int port, int nocache)
 {
 	short           sport = (short) port;
-	int             size = 255;	/* Enough? RFC 2616, section 3.2.1 says it
-					 * should work, although there is no hard
-					 * limit. */
+	int             size = 350;	/* Enough? RFC 2616, section 3.2.1 says 255
+					 * should be enough, although there is no
+					 * hard limit. We reserve more because there 
+					 * * are the protocol elements, the HTTP
+					 * headers, etc */
 	char           *sendline = (char *) malloc(size);
 	char           *hostname = (char *) malloc(size);
 	char           *cache_directive = "";
+	int             result;
 #ifdef HTTP10
 	if (nocache)
 		cache_directive = "Pragma: no-cache\r\n";	/* RFC 1945,
 								 * "Hypertext
 								 * Transfer Protocol 
-								 * * -- HTTP/1.0" */
-	sprintf(sendline,
-		"GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n%s\r\n",
-		url, VERSION, cache_directive);
+								 * * * * --
+								 * HTTP/1.0" */
+	result = snprintf(sendline, size,
+			  "GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n%s\r\n",
+			  url, VERSION, cache_directive);
 #else
 	if (nocache) {
 		if (nocache == 1)
@@ -48,19 +52,16 @@ make_http_sendline(char *url, char *host, int port, int nocache)
 	}
 	strncpy(hostname, HTParse(url, "", PARSE_HOST), size);	/* See bug #1688940
 								 * to see why we use 
-								 * strNcpy . If the
-								 * URL includes no
-								 * host name *and*
-								 * is very long, the 
-								 * hostname buffer
-								 * overflows. */
+								 * * strNcpy. */
 	if (!strcmp(hostname, ""))
-		sprintf(hostname, "%s:%d", host, sport);
-	sprintf(sendline,
-		"GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n%s\r\n",
-		url, VERSION, hostname, cache_directive);
+		snprintf(hostname, size, "%s:%d", host, sport);
+	result = snprintf(sendline, size,
+			  "GET %s HTTP/1.1\r\nUser-Agent: Echoping/%s\r\nHost: %s\r\nConnection: close\r\n%s\r\n",
+			  url, VERSION, hostname, cache_directive);
 	free(hostname);
 #endif
+	if (result >= size)
+		err_quit("URL and/or hostname too long(s)");
 	return sendline;
 }
 
@@ -148,7 +149,7 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 	 */
 	if ((nr < 2) && (timeout_flag))	/* Probably a timeout */
 		return -1;
-	if (nr < 2)		/* Hmm, if the body is empty, we'll get a * *
+	if (nr < 2)		/* Hmm, if the body is empty, we'll get a * * * *
 				 * meaningless error message */
 		err_sys("Error reading HTTP body");
 	total = total + nr;
