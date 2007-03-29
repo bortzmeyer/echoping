@@ -26,8 +26,7 @@ make_http_sendline(char *url, char *host, int port, int nocache)
 		cache_directive = "Pragma: no-cache\r\n";	/* RFC 1945,
 								 * "Hypertext
 								 * Transfer Protocol 
-								 * * * * --
-								 * HTTP/1.0" */
+								 * * -- HTTP/1.0" */
 	result = snprintf(sendline, size,
 			  "GET %s HTTP/1.0\r\nUser-Agent: Echoping/%s\r\n%s\r\n",
 			  url, VERSION, cache_directive);
@@ -53,6 +52,7 @@ make_http_sendline(char *url, char *host, int port, int nocache)
 	strncpy(hostname, HTParse(url, "", PARSE_HOST), size);	/* See bug #1688940
 								 * to see why we use 
 								 * * strNcpy. */
+	hostname[size] = '\0';	/* Not added automatically */
 	if (!strcmp(hostname, ""))
 		snprintf(hostname, size, "%s:%d", host, sport);
 	result = snprintf(sendline, size,
@@ -149,8 +149,8 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 	 */
 	if ((nr < 2) && (timeout_flag))	/* Probably a timeout */
 		return -1;
-	if (nr < 2)		/* Hmm, if the body is empty, we'll get a * * * *
-				 * meaningless error message */
+	if (nr < 2)		/* Hmm, if the body is empty, we'll get a * * * * *
+				 * * meaningless error message */
 		err_sys("Error reading HTTP body");
 	total = total + nr;
 	return total;		/* How to do if we want only the body's size? */
