@@ -5,7 +5,7 @@
  */
 
 #define IN_PLUGIN
-#include "../../echoping.h"
+#include <echoping/echoping.h>
 
 struct addrinfo daytime_server;
 int             sockfd;
