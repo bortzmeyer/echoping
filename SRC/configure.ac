@@ -305,6 +305,7 @@ else
 fi
 AC_DEFINE_UNQUOTED(PLUGINS_DIR, "$plugins_dir", [Directory where the plugins will be installed])
 AC_SUBST(plugins_dir)
+# TODO: make distcheck complains here that "plugins" does not exist???
 echo $plugins_dir > plugins/dir
 AC_CONFIG_SUBDIRS(plugins)
 

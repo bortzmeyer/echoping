@@ -60,7 +60,8 @@ debug:
 	$(MAKE) DEBUG=1 CFLAGS='-g -O0'
 
 upload: 
-	@echo "Have you updated ChangeLog and tagged everything?"
+	@echo "Have you updated configure-common.ac and ChangeLog and committed?"
+	@echo "Then, have you ran \"make distcheck\" and tagged everything?"
 	@echo "[Tag is 'svn copy -m \"TAG Release x.y.z\" ${SVN_REPO}/trunk ${SVN_REPO}/tags/RELEASE_x_y_z']"
 	@echo "If so, make upload-force"
 
