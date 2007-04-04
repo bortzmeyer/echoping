@@ -1,4 +1,4 @@
-CCFLAGS=-Wall -O0 -g -fPIC
+XCFLAGS=-Wall -O0 -g -fPIC ${CFLAGS}
 LDFLAGS=-shared
 
 OBJECTS=daytime.o
@@ -6,7 +6,7 @@ OBJECTS=daytime.o
 all: daytime.so
 
 %.o: %.c
-	${CC} ${CCFLAGS} -c -o $@ $<
+	${CC} ${XCFLAGS} -c -o $@ $<
 
 %.so: %.o
 	${CC} ${LDFLAGS} -o $@ $<
