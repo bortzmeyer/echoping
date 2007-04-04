@@ -12,7 +12,8 @@ hostname=foo.bar". Plugins using these libraries will have to use the
 raw interface. The host name given as argument is ignored.
 
 [Do note there is *no* interface where the TCP connection and shutdown
-are done by echoping. They are always performed by the plugin.]
+are done by echoping. (See bug #1694510) They are always performed by
+the plugin.]
 
 You indicate to echoping wether you use the raw interface or the
 cooked one by returning a port name or NULL from the init() function.
@@ -48,7 +49,7 @@ void terminate ()
 Start your plugin source code with:
 
 #define IN_PLUGIN
-#include "/wherever/echoping/is/installed/echoping.h"
+#include <echoping/echoping.h>
 
 You can look at random.c, the simplest plugin, and whois.c, the
 simplest which still does something useful.
