@@ -6,6 +6,10 @@ m4_include(configure-common.ac)
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
+dnl Checking size of ints, we often need it for binary protocols like ICP
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+
 dnl User options
 dnl http://sources.redhat.com/ml/automake-prs/2001-q3/msg00033.html
 max_iterations_specified=0
@@ -173,10 +177,6 @@ AC_CHECK_FUNCS(usleep) dnl TODO: use the Autoconf macro http://www.gnu.org/softw
 AC_CHECK_FUNCS(dlopen, , 
    [AC_CHECK_LIB(dl,dlopen, ,
        [AC_MSG_ERROR([echoping requires dlopen (dynamic loading of libraries) for plugins])])])
-
-dnl Checking size of ints, we often need it for binary protocols like ICP
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long)
 
 if test "$LIBIDN" = "1"; then
 CF_LIB_LIBIDN

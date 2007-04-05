@@ -60,15 +60,6 @@ echoping in 32bits. With gcc:
 CFLAGS=-m32 ./configure --config-cache
 make
 
-If you get a:
-
-checking size of int... configure: error: cannot compute sizeof (int)
-
-it probably means configure's test programs cannot find libpopt (read
-config.log if you want a confirmation). Set LD_LIBRARY_PATH to include
-the directory where libpopt resides (it is not necessary to run
-echoping, just for the compilation).
-
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
 
