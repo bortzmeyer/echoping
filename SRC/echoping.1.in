@@ -17,7 +17,7 @@ echoping \- tests a remote host with TCP or UDP
 .RI [-s size] 
 .RI [-n number] 
 .RI [-w delay] 
-.RI [-h url]
+.RI [-h url-or-path]
 .RI [-R] 
 .RI [-i url] 
 .RI [-p priority] 
@@ -84,13 +84,12 @@ Use UDP instead of TCP
 Use the "discard" service instead of echo
 .IP -c
 Use the "chargen" service instead of echo
-.IP -h\ url
+.IP -h\ url-or-path
 Use the HTTP protocol (instead of echo) for the given URL. If the
-hostname is the Web server, the URL has to
-be a relative one (for instance '/' or '/pics/foobar.gif') because HTTP 1.0
-servers will not understand a request for an absolute URL. If the
-hostname is a proxy/cache like Squid, the URL has to
-be an absolute one.
+hostname is the Web server, the argument has to
+be a path, a relative URL (for instance '/' or '/pics/foobar.gif'). If the
+hostname is a proxy/cache like Squid, the argument has to
+be an absolute URL.
 .IP -R 
 Accept HTTP status codes 3xx (redirections) as normal responses (the
 default is to regard them as errors)
