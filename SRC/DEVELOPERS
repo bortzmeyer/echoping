@@ -1,0 +1,20 @@
+This file stores a few small tips for developers.
+
+=== Starting from a fresh copy ===
+
+When you have just retrieved echoping via Subversion (this does not
+apply to regular tarballs), you must first create all the files
+required by the autotools. You need these autotools (autoconf,
+automake and libtool) and then:
+
+./recreate-autofiles
+
+=== Merging from a maintenance branch back into the trunk ===
+
+If you have fixed bugs in a branch and want to merge them into the
+trunk as well:
+
+cd /where/is/the/trunk
+svn merge -r N:M ../branches/MAINT_X_Y
+
+$Id$
