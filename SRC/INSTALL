@@ -60,6 +60,11 @@ echoping in 32bits. With gcc:
 CFLAGS=-m32 ./configure --config-cache
 make
 
+If your make program is not in the PATH (for instance, on Solaris, it
+is typically installed in /usr/ccs/bin/make), the simplest trick is:
+
+./configure --config-cache MAKE=/your/path/to/make
+
 Standard "autoconf/configure" options are supported such as --prefix
 to set the installation root directory.
 
