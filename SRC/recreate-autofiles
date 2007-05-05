@@ -10,7 +10,7 @@ autoheader
 libtoolize --force
 automake --add-missing 
 autoconf
-pushd plugins
+cd plugins
 aclocal
 automake --foreign --add-missing
 autoconf
@@ -22,3 +22,4 @@ for dir in dns random whois ldap postgresql; do
    autoconf
    cd ..
 done
+cd ..
