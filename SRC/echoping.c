@@ -148,9 +148,7 @@ main(argc, argv)
 	int             tos_requested = 0;
 	int             protocol;
 	boolean         sctp_requested = FALSE;
-#ifdef HAVE_SCTP
 	int             sctp = 0;
-#endif
 #ifdef HAVE_TCP_INFO
 	struct tcp_info tcpinfo;
 	socklen_t       socket_length = sizeof(tcpinfo);
