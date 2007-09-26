@@ -274,6 +274,33 @@ AC_ARG_ENABLE(priority,
    PRIORITY=1
  fi)
 
+dnl SCTP, RFC 4960, feature request #1676608
+AC_MSG_CHECKING([SCTP])
+AC_TRY_COMPILE(
+ [#include <sys/types.h>
+  #include <netinet/in.h>
+ ],
+ [int foobar = IPPROTO_SCTP;],
+ [AC_DEFINE(HAVE_SCTP,,[SCTP support])
+  ac_have_sctp="yes"],
+ ac_have_sctp="no")
+AC_MSG_RESULT($ac_have_sctp)
+AC_ARG_ENABLE(sctp,
+ [  --enable-sctp   SCTP (Stream Control Transmission Protocol) support],
+ [if test "$enableval" = "yes"; then
+   if test $ac_have_sctp = "yes"; then
+     AC_DEFINE(HAVE_SCTP,,[Stream Control Transmission Protocol support])
+     SCTP=1
+   else
+     AC_MSG_WARN([No SCTP support on this system, request ignored])
+   fi
+  fi],
+ dnl Default: enable it if supported
+ if test $ac_have_sctp = "yes"; then
+   AC_DEFINE(HAVE_SCTP,,[Stream Control Transmission Protocol support])
+   SCTP=1
+ fi)
+
 if test "$GCC" = yes; then
         CFLAGS="$CFLAGS -Wall"
 fi
@@ -332,6 +359,7 @@ DISPLAY_SETTING(GNUTLS)
 DISPLAY_SETTING(SMTP)
 DISPLAY_SETTING(LIBIDN)
 DISPLAY_SETTING(TOS)
+DISPLAY_SETTING(SCTP)
 DISPLAY_SETTING(PRIORITY)
 
 compil_date=`date +%Y-%m-%d`

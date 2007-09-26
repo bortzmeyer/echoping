@@ -146,6 +146,11 @@ main(argc, argv)
 	int             priority_requested = 0;
 	int             tos;
 	int             tos_requested = 0;
+	int             protocol;
+	boolean         sctp_requested = FALSE;
+#ifdef HAVE_SCTP
+	int             sctp = 0;
+#endif
 #ifdef HAVE_TCP_INFO
 	struct tcp_info tcpinfo;
 	socklen_t       socket_length = sizeof(tcpinfo);
@@ -184,6 +189,7 @@ main(argc, argv)
 		{"ssl", 'C', POPT_ARG_NONE, &ssl, 'C'},
 		{"priority", 'p', POPT_ARG_INT, &priority, 'p'},
 		{"type-of-service", 'P', POPT_ARG_INT, &tos, 'P'},
+		{"sctp", 'T', POPT_ARG_NONE, &sctp, 'T'},
 		{"check-original", 'a', POPT_ARG_NONE, NULL, 'a',
 		 "For HTTP through a proxy/cache"},
 		{"ignore-cache", 'A', POPT_ARG_NONE, NULL, 'A',
@@ -311,6 +317,9 @@ main(argc, argv)
 		case 'P':
 			remaining--;
 			tos_requested = 1;
+			break;
+		case 'T':
+			sctp_requested = TRUE;
 			break;
 		case 's':
 			remaining--;
@@ -465,6 +474,13 @@ main(argc, argv)
 		(void) fprintf(stderr,
 			       "%s: Not compiled with socket priority support.\n",
 			       progname);
+		exit(1);
+	}
+#endif
+#ifndef HAVE_SCTP
+	if (sctp_requested) {
+		(void) fprintf(stderr,
+			       "%s: Not compiled with SCTP support.\n", progname);
 		exit(1);
 	}
 #endif
@@ -699,7 +715,7 @@ main(argc, argv)
 	if (smtp) {
 		sendline = "QUIT\r\n";	/* Surprises some SMTP servers which log a
 					 * frightening NOQUEUE. Anyone knows better? 
-					 * * * * See bug #1512776 */
+					 * * * * * See bug #1512776 */
 	} else
 #endif
 #ifdef ICP
@@ -813,10 +829,14 @@ main(argc, argv)
 		/* 
 		 * Open a socket.
 		 */
+		protocol = res->ai_protocol;
+#ifdef HAVE_SCTP
+		if (sctp)
+			protocol = IPPROTO_SCTP;
+#endif
 		if (!plugin) {
 			if ((sockfd =
-			     socket(res->ai_family, res->ai_socktype,
-				    res->ai_protocol)) < 0)
+			     socket(res->ai_family, res->ai_socktype, protocol)) < 0)
 				err_sys("Can't open socket");
 			if (udp) {
 				struct addrinfo hints2, *res2;

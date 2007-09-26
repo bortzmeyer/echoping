@@ -14,6 +14,7 @@ echoping \- tests a remote host with TCP or UDP
 .RI [-c] 
 .RI [-d] 
 .RI [-u] 
+.RI [-T]
 .RI [-s size] 
 .RI [-n number] 
 .RI [-w delay] 
@@ -80,6 +81,8 @@ Number of seconds to wait a reply before giving up. For TCP, this is the
 maximum number of seconds for the whole connection (setup and data exchange).
 .IP -u
 Use UDP instead of TCP
+.IP -T
+Use SCTP instead of TCP
 .IP -d
 Use the "discard" service instead of echo
 .IP -c
