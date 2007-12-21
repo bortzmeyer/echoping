@@ -1,0 +1,10 @@
+small-services is an echoping plugin which implements the following
+network services: 
+
+* echo (RFC 862)
+* discard (RFC 863)
+* chargen (RFC 864)
+
+As of today (2007-12-21), these services are in the main echoping tree
+but the idea is to move them to this plugin in the future. See
+echoping Feature Request #1694557 at Sourceforge.
