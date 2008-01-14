@@ -593,7 +593,7 @@ main(argc, argv)
 	if (http || icp) {
 		char           *text_port = NULL;
 
-		if (*server == '[') {	/* RFC 2732 */
+		if (*server == '[') {	/* RFC 3986, section 3.2.2 */
 			server++;
 			for (p = server; *p && *p != ']'; p++) {
 			}
