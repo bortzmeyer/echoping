@@ -74,9 +74,14 @@ init(const int argc, const char **argv,
 	if (base == NULL)
 		base = "";
 	if (request == NULL || !strcmp(request, ""))
-		request = "(objectclass=*)";
+		request = "(objectclass=*)";	/* Default mentioned in OpenLDAP
+						 * documentation.  Joerg Roth fears
+						 * that it may trigger "Size limit
+						 * exceeded" if there are many
+						 * objects at this node. RFC 4515
+						 * seems silent here. */
 	if (scope_string != NULL) {
-		scope_string = (char *)to_upper(scope_string);
+		scope_string = (char *) to_upper(scope_string);
 		if (!strcmp(scope_string, "BASE"))
 			scope = LDAP_SCOPE_BASE;
 		else if (!strcmp(scope_string, "SUB"))
@@ -118,6 +123,8 @@ start()
 	 * 
 	 * So, we perform a dummy search immediately.
 	 */
+	/* TODO: Since it is just to see if the server replies, we could use a
+	 * request like (objectclass=dummystuff) to be sure to not return anything */
 	result = ldap_search_s(session, base, LDAP_SCOPE_ONELEVEL, "(objectclass=*)", NULL,	/* Return 
 												 * all 
 												 * attributes 
