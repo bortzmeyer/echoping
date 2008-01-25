@@ -122,13 +122,13 @@ start()
 	 * depreciated in a later release.
 	 * 
 	 * So, we perform a dummy search immediately.
+	 *  
+	 * See #1879652 for why we use "dummystuff" and not "*"
+	 *
 	 */
-	/* TODO: Since it is just to see if the server replies, we could use a
-	 * request like (objectclass=dummystuff) to be sure to not return anything */
-	result = ldap_search_s(session, base, LDAP_SCOPE_ONELEVEL, "(objectclass=*)", NULL,	/* Return 
-												 * all 
-												 * attributes 
-												 */
+	result = ldap_search_s(session, base, LDAP_SCOPE_ONELEVEL, "(objectClass=People)", NULL,	/* Return
+													 * * all * 
+													 * attributes */
 			       1, &response);
 	if (result != 0) {
 		err_quit
