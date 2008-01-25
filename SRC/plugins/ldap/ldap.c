@@ -126,9 +126,11 @@ start()
 	 * See #1879652 for why we use "dummystuff" and not "*"
 	 *
 	 */
-	result = ldap_search_s(session, base, LDAP_SCOPE_ONELEVEL, "(objectClass=People)", NULL,	/* Return
+	result = ldap_search_s(session, base, LDAP_SCOPE_ONELEVEL, "(objectClass=dummystuff)", NULL,	/* Return
 													 * * all * 
-													 * attributes */
+													 * *
+													 * attributes 
+													 */
 			       1, &response);
 	if (result != 0) {
 		err_quit
