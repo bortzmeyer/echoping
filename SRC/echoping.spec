@@ -7,7 +7,7 @@ Release: 1
 Copyright: GNU
 Group: Utilities/Network
 Packager: Stephane Bortzmeyer <bortz@users.sourceforge.net>
-Source:  ftp://ftp.internatif.org/pub/unix/echoping/%{name}-%{version}.tar.gz
+Source:  http://downloads.sourceforge.net/echoping/echoping-%{version}.tar.gz
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
 Url: http://echoping.sourceforge.net
 Prefix: /usr/local

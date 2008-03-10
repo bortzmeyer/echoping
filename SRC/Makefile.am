@@ -66,7 +66,6 @@ upload:
 	@echo "If so, make upload-force"
 
 upload-force: dist
-	scp $(distdir).tar.gz  bortzmeyer@ftp.internatif.org:'~ftp/pub/unix/echoping'
 	rm -f upload.log
 	ncftpput -d upload.log upload.sourceforge.net /incoming $(distdir).tar.gz
 

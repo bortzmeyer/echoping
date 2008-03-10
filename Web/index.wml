@@ -9,7 +9,7 @@ remote host by sending it requests such as HTTP requests.
 --config-cache&& make && sudo make install</code>" if you're in a
 hurry :-) Several operating systems have echoping already packaged
 (Debian, Gentoo, FreeBSD, NetBSD). <A
-HREF="ftp://ftp.internatif.org/pub/unix/echoping">Download</A>, if you
+HREF="http://sourceforge.net/project/showfiles.php?group_id=4581&package_id=4579">Download</A>, if you
 wish. You may be interested also in <A
 HREF="http://sourceforge.net/project/?group_id=4581">SourceForge's
 page about echoping</A>, with the bug reports, etc.
