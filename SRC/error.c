@@ -7,7 +7,7 @@
 void
 my_perror()
 {
-	fprintf(stderr, " %s\n", sys_err_str());
+    fprintf(stderr, " %s\n", sys_err_str());
 }
 
 /*
@@ -22,18 +22,18 @@ my_perror()
 void
 err_ret(char *str, ...)
 {
-	va_list         args;
+    va_list         args;
 
-	va_start(args, str);
-	vfprintf(stderr, str, args);
-	va_end(args);
+    va_start(args, str);
+    vfprintf(stderr, str, args);
+    va_end(args);
 
-	my_perror();
+    my_perror();
 
-	fflush(stdout);
-	fflush(stderr);
+    fflush(stdout);
+    fflush(stderr);
 
-	return;
+    return;
 }
 
 /*
@@ -49,14 +49,14 @@ err_ret(char *str, ...)
 void
 err_quit(char *str, ...)
 {
-	va_list         args;
+    va_list         args;
 
-	va_start(args, str);
-	vfprintf(stderr, str, args);
-	fputc('\n', stderr);
-	va_end(args);
+    va_start(args, str);
+    vfprintf(stderr, str, args);
+    fputc('\n', stderr);
+    va_end(args);
 
-	exit(1);
+    exit(1);
 }
 
 /*
@@ -73,23 +73,23 @@ err_quit(char *str, ...)
 void
 err_sys(char *str, ...)
 {
-	va_list         args;
+    va_list         args;
 
-	va_start(args, str);
-	vfprintf(stderr, str, args);
-	va_end(args);
+    va_start(args, str);
+    vfprintf(stderr, str, args);
+    va_end(args);
 
-	my_perror();
+    my_perror();
 
-	exit(1);
+    exit(1);
 }
 
 void
 usage(poptContext context)
 {
-	poptPrintUsage(context, stderr, 0);
-	fprintf(stderr, " hostname [plugin-options...]\n");
-	exit(1);
+    poptPrintUsage(context, stderr, 0);
+    fprintf(stderr, " hostname [plugin-options...]\n");
+    exit(1);
 }
 
 /*
@@ -105,12 +105,12 @@ usage(poptContext context)
 char           *
 sys_err_str()
 {
-	static char     msgstr[200];
+    static char     msgstr[200];
 
-	if (errno != 0) {
-		sprintf(msgstr, "(%s)", strerror(errno));
-	} else {
-		msgstr[0] = '\0';
-	}
-	return (msgstr);
+    if (errno != 0) {
+        sprintf(msgstr, "(%s)", strerror(errno));
+    } else {
+        msgstr[0] = '\0';
+    }
+    return (msgstr);
 }

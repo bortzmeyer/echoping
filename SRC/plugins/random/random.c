@@ -12,11 +12,11 @@
 char           *
 init(const int argc, const char *argv[])
 {
-	struct timeval  tv;
-	(void) gettimeofday(&tv, (struct timezone *) NULL);
-	srand(tv.tv_usec);
-	return "7";		/* Not used, just to say we use the cooked interface 
-				 */
+    struct timeval  tv;
+    (void) gettimeofday(&tv, (struct timezone *) NULL);
+    srand(tv.tv_usec);
+    return "7";                 /* Not used, just to say we use the cooked interface 
+                                 */
 }
 
 void
@@ -27,8 +27,8 @@ start()
 int
 execute()
 {
-	usleep(rand() % 1000000);
-	return 1;
+    usleep(rand() % 1000000);
+    return 1;
 }
 
 void
