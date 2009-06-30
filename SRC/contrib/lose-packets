@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# Dangerous. Use only if you know what you do.
+
+# Linux-only
+
+# Configure the Linux traffic control to lose packets, in order to test
+# echoping.
+
+# http://linux-net.osdl.org/index.php/Netem
+
+DEVICE="tap0"
+PROTOCOL="udp"
+DEST_PORTS="7 53"
+# In percent
+LOSS=20
+# In milli-seconds
+DELAY=40
+CLEAN_FIRST="YES"
+USE_IPTABLES="YES"
+
+# Do not touch afterwards
+INTERESTING="4"
+PLAIN="0"
+
+if [ ! -z "$CLEAN_FIRST" ]; then
+   tc qdisc del dev ${DEVICE} root
+   iptables -t mangle -F INPUT
+   iptables -t mangle -F OUTPUT
+fi
+
+tc qdisc add dev ${DEVICE} root handle 1: prio
+
+tc qdisc add dev ${DEVICE} parent 1:2 handle ${INTERESTING}: \
+    netem delay ${DELAY}ms loss ${LOSS}% 
+
+#tc qdisc add dev ${DEVICE} parent ${INTERESTING}:1 \
+#    tbf rate 20kbit buffer 1600 limit 3000
+
+if [ -z "$USE_IPTABLES" ] || [ "$USE_IPTABLES" = "NO" ]; then
+    for port in ${DEST_PORTS}; do
+	# Note: $PROTOCOL is ignored...
+	tc filter add dev ${DEVICE} protocol ip parent 1:0 prio 2 u32 \
+	    match ip dport ${port} 0xffff flowid 10:5
+    done
+else
+    tc filter add dev ${DEVICE} protocol ip parent 1:0 prio 2 \
+	handle ${INTERESTING} fw flowid 10:5
+    # Not perfect: it seems all ports are affected :-(
+    for port in ${DEST_PORTS}; do
+	# Ingress
+	iptables -t mangle -A INPUT -i ${DEVICE} -p ${PROTOCOL} --sport ${port} \
+	    -j MARK --set-mark ${INTERESTING}
+        # Egress
+	iptables -t mangle -A OUTPUT -o ${DEVICE} -p ${PROTOCOL} --dport ${port} \
+	    -j MARK --set-mark ${INTERESTING}
+    done
+fi
