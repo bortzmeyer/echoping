@@ -92,14 +92,21 @@ AC_ARG_WITH(ssl,
 AC_ARG_WITH(gnutls,
  [  --with-gnutls[=DIR]   SSL/TLS crypt support (needs GNU TLS), the argument DIR should not be necessary],dnl
  [if test "$withval" != "no"; then
-   AC_DEFINE(GNUTLS,,[Crypto (TLS) support])
-   GNUTLS=1
-   CPPFLAGS="${CPPFLAGS} `libgnutls-config --cflags`"
-   LDFLAGS="${LDFLAGS} `libgnutls-config --libs`"
-   if test "$withval" != "yes"; then
-	GNUTLSROOT=$withval
-	LDFLAGS="${LDFLAGS} -L$GNUTLSROOT/lib"
-        CPPFLAGS="${CPPFLAGS} -I$GNUTLSROOT/include"  
+  if test "$withval" = "yes"; then
+      PKG_CHECK_MODULES([LIBGNUTLS], [gnutls >= 1.0.0],
+      [
+      echo "GnuTLS found"
+      AC_DEFINE(GNUTLS,,[Crypto (TLS) support])
+      GNUTLS=1
+      CFLAGS="$CFLAGS $LIBGNUTLS_CFLAGS"
+      LIBS="$LIBS $LIBGNUTLS_LIBS"
+      ],)
+      else
+      AC_DEFINE(GNUTLS,,[Crypto (TLS) support])
+      GNUTLS=1
+      GNUTLSROOT=$withval
+      LDFLAGS="${LDFLAGS} -L$GNUTLSROOT/lib -lgnutls"
+      CPPFLAGS="${CPPFLAGS} -I$GNUTLSROOT/include"
    fi
  fi],
  dnl Default: disable it 

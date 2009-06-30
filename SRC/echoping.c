@@ -32,7 +32,7 @@ unsigned int    size = DEFLINE;
 unsigned int    j = 0;
 int             n_stddev = 0;
 
-int             family = PF_UNSPEC;
+int             family = AF_UNSPEC;
 
 struct result   results[MAX_ITERATIONS];
 struct timeval  good_results[MAX_ITERATIONS];
@@ -678,8 +678,8 @@ main(argc, argv)
 #ifdef SMTP
     if (smtp) {
         sendline = "QUIT\r\n";  /* Surprises some SMTP servers which log a
-                                 * frightening NOQUEUE. Anyone knows better? * * *
-                                 * * See bug #1512776 */
+                                 * frightening NOQUEUE. Anyone knows better? * * * * 
+                                 * See bug #1512776 */
     } else
 #endif
 #ifdef ICP
@@ -907,9 +907,9 @@ main(argc, argv)
         }
         if (plugin) {
             plugin_result = plugin_execute();
-            /* If plugin_result == -1, there is a temporary error and we did not
-             * get data, we must not use it in the average / median calculations.
-             * So, successes will not be incremented later. */
+            /* If plugin_result == -1, there is a temporary error and we did not get 
+             * data, we must not use it in the average / median calculations. So,
+             * successes will not be incremented later. */
             if (plugin_result == -2)
                 err_quit("");
         } else {
@@ -932,7 +932,7 @@ main(argc, argv)
                         err_sys("Can't connect to server");
                     /* TODO: it would be better to continue: if -n was given, other
                      * iterations may succeed. A flag indicating success or error is 
-                     * probably necessary, it would replace the mess around 'if
+                     * * probably necessary, it would replace the mess around 'if
                      * (!timeout_flag && (!plugin || plugin_result >= 0))' */
                 } else {
                     if (tcp) {
