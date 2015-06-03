@@ -61,7 +61,7 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
 {
     int             nr = 0;
     int             total = 0;
-    char            reply_code;
+    int             reply_code;
     int             first_line = TRUE;
     short           body = FALSE;
 #ifdef OPENSSL
@@ -107,8 +107,15 @@ read_from_server(CHANNEL fs, short ssl, boolean accept_redirects)
          * if ((int) big_recvline[nr-1] == 10) nr--;
          */
         if (first_line) {
-            reply_code = big_recvline[9];       /* 9 because "HTTP/1.x 200..." */
-            if (reply_code != '2' && !(reply_code == '3' && accept_redirects))
+            /* sscanf parse "HTTP/1.x 200" */
+            sscanf(big_recvline,"%*s %d", &reply_code);
+
+            /* 204 No Content is not an error, message body is empty by definition, see RFC 2616 */
+            if (reply_code == 204)
+                return 0;       /* zero bytes is correct */
+
+            if (!  (reply_code >= 200 && reply_code < 300) &&
+                ! ((reply_code >= 300 && reply_code < 400) && accept_redirects))
                 /* 
                  * Status codes beginning with 3 are not
                  * errors See bug #850674 and RFC 2616,
