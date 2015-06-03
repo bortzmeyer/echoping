@@ -7,9 +7,9 @@ Release: 1
 Copyright: GNU
 Group: Utilities/Network
 Packager: Stephane Bortzmeyer <bortz@users.sourceforge.net>
-Source:  http://downloads.sourceforge.net/echoping/echoping-%{version}.tar.gz
+Source:  https://github.com/bortzmeyer/echoping/archive/master.zip
 BuildRoot:    %{_tmppath}/%{name}-%{version}-build
-Url: http://echoping.sourceforge.net
+Url: http://bortzmeyer.github.io/echoping/
 Prefix: /usr/local
 # Requires: openssl
 # BuildRequires: openssl-devel openssl 
